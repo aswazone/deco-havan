@@ -1,0 +1,67 @@
+.gradient-custom-2 {
+    /* fallback for old browsers */
+    background: #00a884;
+    
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(to right, #00a884, #009688, #00897b, #00796b);
+    
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: linear-gradient(to right, #00a884, #009688, #00897b, #00796b);
+    }
+.gradient-custom-3 {
+        background: #267685; /* Fallback color */
+        
+        /* For older versions of Chrome and Safari */
+        background: -webkit-linear-gradient(to right, #267685, #1e6774, #155563, #0d4552);
+        
+        /* For modern browsers */
+        background: linear-gradient(to right, #267685, #1e6774, #155563, #0d4552);
+    }
+    
+    @media (min-width: 768px) {
+    .gradient-form {
+    height: 100vh !important;
+    }
+    }
+    @media (min-width: 769px) {
+    .gradient-custom-2 {
+    border-top-right-radius: .3rem;
+    border-bottom-right-radius: .3rem;
+    }
+    }
+    .btn-primary:hover {
+        background-color: hsl(208, 64%, 68%) !important;
+    }
+
+    .bg-image-login {
+        background-image: url("assets/bg-login.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+    }
+    .bg-image-signup {
+        background-image: url("assets/bg-signup.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+    }
+
+
+/* -----------------------------------------------------------------------------------------OTP */
+.user-details {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.user-info, .shipping-info, .order-history {
+    margin-bottom: 15px;
+}
+h2, h3 {
+    color: #333;
+}
+p, li {
+    color: #555;
+}

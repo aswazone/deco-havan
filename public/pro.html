@@ -1,0 +1,590 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="author" content="Untree.co">
+  <link rel="shortcut icon" href="favicon.png">
+
+  <meta name="description" content="" />
+  <meta name="keywords" content="bootstrap, bootstrap4" />
+
+		<!-- Bootstrap CSS -->
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+		<link href="css/tiny-slider.css" rel="stylesheet">
+		<link href="css/style.css" rel="stylesheet">
+		<title>Furni Free Bootstrap 5 Template for Furniture and Interior Design Websites by Untree.co </title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+				font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			}
+	
+			body {
+				background: #f8f9fa;
+				min-height: 100vh;
+			}
+	
+			.container {
+				max-width: 1200px;
+				margin: 0 auto;
+				display: grid;
+				grid-template-columns: 300px 1fr;
+				gap: 30px;
+			}
+	
+			.profile-sidebar {
+				background: white;
+				border-radius: 15px;
+				padding: 30px;
+				height: fit-content;
+			}
+	
+			.profile-main {
+				background: white;
+				border-radius: 15px;
+				padding: 30px;
+			}
+	
+			.profile-picture {
+				width: 150px;
+				height: 150px;
+				border-radius: 50%;
+				background: #f1f2f6;
+				margin: 0 auto 20px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 50px;
+				color: #2d3436;
+				position: relative;
+				cursor: pointer;
+			}
+	
+			.edit-avatar {
+				position: absolute;
+				bottom: 5px;
+				right: 5px;
+				background: #2d3436;
+				color: white;
+				width: 35px;
+				height: 35px;
+				border-radius: 50%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				cursor: pointer;
+				font-size: 16px;
+			}
+	
+			.user-name {
+				text-align: center;
+				font-size: 1.5em;
+				margin-bottom: 5px;
+			}
+	
+			.user-email {
+				text-align: center;
+				color: #636e72;
+				margin-bottom: 20px;
+			}
+	
+			.menu-items {
+				list-style: none;
+			}
+	
+			.menu-item {
+				padding: 12px 15px;
+				border-radius: 8px;
+				cursor: pointer;
+				transition: all 0.3s ease;
+				margin-bottom: 5px;
+				display: flex;
+				align-items: center;
+				gap: 10px;
+			}
+	
+			.menu-item.active {
+				background: #2d3436;
+				color: white;
+			}
+	
+			.menu-item:hover:not(.active) {
+				background: #f1f2f6;
+			}
+	
+			.tab-content {
+				display: none;
+			}
+	
+			.tab-content.active {
+				display: block;
+			}
+	
+			.section-title {
+				font-size: 1.5em;
+				margin-bottom: 20px;
+				color: #2d3436;
+			}
+	
+			.form-group {
+				margin-bottom: 20px;
+			}
+	
+			.form-group label {
+				display: block;
+				margin-bottom: 8px;
+				color: #2d3436;
+			}
+	
+			.form-group input {
+				width: 100%;
+				padding: 12px;
+				border: 1px solid #ddd;
+				border-radius: 8px;
+				font-size: 1em;
+			}
+	
+			.form-grid {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 20px;
+			}
+	
+			.btn {
+				background: #2d3436;
+				color: white;
+				border: none;
+				padding: 12px 25px;
+				border-radius: 8px;
+				cursor: pointer;
+				font-size: 1em;
+				transition: background 0.3s ease;
+			}
+	
+			.btn:hover {
+				background: #1e2729;
+			}
+	
+			.btn-outline {
+				background: transparent;
+				border: 2px solid #2d3436;
+				color: #2d3436;
+			}
+	
+			.btn-outline:hover {
+				background: #2d3436;
+				color: white;
+			}
+	
+			.order-card {
+				border: 1px solid #ddd;
+				border-radius: 10px;
+				padding: 20px;
+				margin-bottom: 15px;
+			}
+	
+			.order-header {
+				display: flex;
+				justify-content: space-between;
+				margin-bottom: 15px;
+				padding-bottom: 15px;
+				border-bottom: 1px solid #ddd;
+			}
+	
+			.order-items {
+				margin-bottom: 15px;
+			}
+	
+			.order-item {
+				display: flex;
+				gap: 15px;
+				margin-bottom: 10px;
+			}
+	
+			.item-image {
+				width: 80px;
+				height: 80px;
+				background: #f1f2f6;
+				border-radius: 8px;
+			}
+	
+			.stats-grid {
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				gap: 20px;
+				margin-bottom: 30px;
+			}
+	
+			.stat-card {
+				background: #f8f9fa;
+				padding: 20px;
+				border-radius: 10px;
+				text-align: center;
+			}
+	
+			.stat-value {
+				font-size: 2em;
+				font-weight: bold;
+				color: #2d3436;
+				margin-bottom: 5px;
+			}
+	
+			.stat-label {
+				color: #636e72;
+			}
+	
+			.badge {
+				background: #f1f2f6;
+				color: #2d3436;
+				padding: 5px 10px;
+				border-radius: 15px;
+				font-size: 0.9em;
+			}
+	
+			.badge.success {
+				background: #00b894;
+				color: white;
+			}
+	
+			.address-card {
+				border: 1px solid #ddd;
+				border-radius: 10px;
+				padding: 20px;
+				margin-bottom: 15px;
+				position: relative;
+			}
+	
+			.address-actions {
+				position: absolute;
+				top: 20px;
+				right: 20px;
+			}
+	
+			.size-preference {
+				display: flex;
+				gap: 10px;
+				margin-bottom: 20px;
+			}
+	
+			.size-box {
+				width: 40px;
+				height: 40px;
+				border: 2px solid #ddd;
+				border-radius: 8px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				cursor: pointer;
+			}
+	
+			.size-box.selected {
+				border-color: #2d3436;
+				background: #2d3436;
+				color: white;
+			}
+	
+			@media (max-width: 768px) {
+				.container {
+					grid-template-columns: 1fr;
+				}
+	
+				.form-grid {
+					grid-template-columns: 1fr;
+				}
+	
+				.stats-grid {
+					grid-template-columns: 1fr;
+				}
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<!-- Start Header/Navigation -->
+		<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
+
+			<div class="container">
+				<div class="text-start">
+					<img src="assets/logo-white.png"
+						style="width: 185px;" alt="logo">
+				</div>
+
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+
+				<div class="collapse navbar-collapse" id="navbarsFurni">
+					<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
+						<li class="nav-item ">
+							<a class="nav-link" href="index.html">Home</a>
+						</li>
+						<li><a class="nav-link" href="shop.html">Shop</a></li>
+						<li><a class="nav-link" href="about.html">About us</a></li>
+						<li><a class="nav-link" href="services.html">Services</a></li>
+						<li><a class="nav-link" href="blog.html">Blog</a></li>
+						<li><a class="nav-link" href="contact.html">Contact us</a></li>
+					</ul>
+
+					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+						<li><a class="nav-link pe-1" href="#"><i class="fa-regular fa-user"></i></a></li>
+						<li><a class="nav-link px-3" href="wishlist.html"><i class="fa-regular fa-heart"></i></a></li>
+						<li><a class="nav-link ps-4 active" href="cart.html"><i class="fa fa-shopping-cart"></i></a></li>
+					</ul>
+				</div>
+			</div>
+				
+		</nav>
+		<!-- End Header/Navigation -->
+		<div class="container" style="box-shadow: 0 0 10px rgba(0,0,0,0.1); border-radius: 10px; padding: 20px;">
+			<!-- Sidebar -->
+			<div class="profile-sidebar">
+				<div class="profile-picture">
+					
+					<div class="edit-avatar"> </div>
+				</div>
+				<h2 class="user-name">John Doe</h2>
+				<p class="user-email">john.doe@example.com</p>
+	
+				<ul class="menu-items d-flex d-md-block flex-md-column">
+					<li class="menu-item active d-flex align-items-center" onclick="showTab('profile')"><i class="fa-solid fa-user me-2 d-md-none"></i><span class="d-none d-md-block">Profile</span></li>
+					<li class="menu-item d-flex align-items-center" onclick="showTab('orders')"><i class="fa-solid fa-box me-2 d-md-none"></i><span class="d-none d-md-block">Orders</span></li>
+					<li class="menu-item d-flex align-items-center" onclick="showTab('addresses')"><i class="fa-solid fa-location-dot me-2 d-md-none"></i><span class="d-none d-md-block">Addresses</span></li>
+					<li class="menu-item d-flex align-items-center" onclick="showTab('preferences')"><i class="fa-solid fa-gear me-2 d-md-none"></i><span class="d-none d-md-block">Preferences</span></li>
+					<li class="menu-item d-flex align-items-center" onclick="showTab('security')"><i class="fa-solid fa-lock me-2 d-md-none"></i><span class="d-none d-md-block">Security</span></li>
+				</ul>
+			</div>
+	
+			<!-- Main Content -->
+			<div class="profile-main">
+				<!-- Profile Tab -->
+				<div id="profile" class="tab-content active">
+					<h1 class="display-4 mb-4bold">Profile Info</h1>
+					<div class="stats-grid">
+						<div class="stat-card">
+							<div class="stat-value">12</div>
+							<div class="stat-label">Orders</div>
+						</div>
+						<div class="stat-card">
+							<div class="stat-value">3</div>
+							<div class="stat-label">Wishlisted</div>
+						</div>
+						<div class="stat-card">
+							<div class="stat-value">250</div>
+							<div class="stat-label">Points</div>
+						</div>
+					</div>
+	
+					<form id="profile-form">
+						<div class="form-grid">
+							<div class="form-group">
+								<label>First Name</label>
+								<input type="text" value="John">
+							</div>
+							<div class="form-group">
+								<label>Last Name</label>
+								<input type="text" value="Doe">
+							</div>
+						</div>
+						<div class="form-group">
+							<label>Email</label>
+							<input type="email" value="john.doe@example.com">
+						</div>
+						<div class="form-group">
+							<label>Phone</label>
+							<input type="tel" value="+1 234 567 8900">
+						</div>
+						<button class="btn btn-primary" onclick="saveProfile(event)">Save Changes</button>
+					</form>
+				</div>
+	
+				<!-- Orders Tab -->
+				<div id="orders" class="tab-content">
+					<h2 class="section-title">Order History</h2>
+					<div class="order-card">
+						<div class="order-header">
+							<div>
+								<strong>Order #12345</strong>
+								<div style="color: #636e72">Placed on Oct 15, 2023</div>
+							</div>
+							<span class="badge success">Delivered</span>
+						</div>
+						<div class="order-items">
+							<div class="order-item">
+								<div class="item-image"></div>
+								<div>
+									<div><strong>Premium Cotton T-Shirt</strong></div>
+									<div style="color: #636e72">Size: L | Color: Black</div>
+									<div>$29.99</div>
+								</div>
+							</div>
+						</div>
+						<button class="btn btn-primary">View Details</button>
+					</div>
+					<div class="order-card">
+						<div class="order-header">
+							<div>
+								<strong>Order #12345</strong>
+								<div style="color: #636e72">Placed on Oct 15, 2023</div>
+							</div>
+							<span class="badge btn-danger">Canceled</span>
+						</div>
+						<div class="order-items">
+							<div class="order-item">
+								<div class="item-image"></div>
+								<div>
+									<div><strong>Premium Cotton T-Shirt</strong></div>
+									<div style="color: #636e72">Size: L | Color: Black</div>
+									<div>$29.99</div>
+								</div>
+							</div>
+						</div>
+						<button class="btn btn-primary ">View Details</button>
+					</div>
+				</div>
+	
+				<!-- Addresses Tab -->
+				<div id="addresses" class="tab-content">
+					<h2 class="section-title">Saved Addresses</h2>
+					<div class="address-card">
+						<div class="address-actions">
+							<button class="btn btn-outline">Edit</button>
+						</div>
+						<h3>Home</h3>
+						<p>123 Main Street</p>
+						<p>Apt 4B</p>
+						<p>New York, NY 10001</p>
+						<p>United States</p>
+					</div>
+					<button class="btn btn-primary">Add New Address</button>
+				</div>
+	
+				<!-- Preferences Tab -->
+				<div id="preferences" class="tab-content">
+					<h2 class="section-title">Shopping Preferences</h2>
+					<div class="form-group">
+						<label>Preferred Size</label>
+						<div class="size-preference">
+							<div class="size-box">S</div>
+							<div class="size-box selected">M</div>
+							<div class="size-box">L</div>
+							<div class="size-box">XL</div>
+						</div>
+					</div>
+					<div class="form-group" style="display: flex; flex-direction: column; align-items: flex-start;">
+						<label>Email Notifications</label>
+						<div style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 10px;">
+							<label style="display: flex; align-items: center;">
+								<input type="checkbox" checked style="margin-right: 10px;"> Order updates
+							</label>
+							<label style="display: flex; align-items: center;">
+								<input type="checkbox" checked style="margin-right: 10px;"> Promotions and deals
+							</label>
+						</div>
+					</div>
+					<button class="btn btn-primary">Save Preferences</button>
+				</div>
+	
+				<!-- Security Tab -->
+				<div id="security" class="tab-content">
+					<h2 class="section-title">Security Settings</h2>
+					<div class="form-group">
+						<label>Current Password</label>
+						<input type="password">
+					</div>
+					<div class="form-group">
+						<label>New Password</label>
+						<input type="password">
+					</div>
+					<div class="form-group">
+						<label>Confirm New Password</label>
+						<input type="password">
+					</div>
+					<button class="btn btn-primary">Update Password</button>
+				</div>
+			</div>
+		</div>
+	
+		<script>
+			// Tab switching functionality
+			function showTab(tabId) {
+				// Update menu items
+				document.querySelectorAll('.menu-item').forEach(item => {
+					item.classList.remove('active');
+				});
+				document.querySelector(`.menu-item[onclick="showTab('${tabId}')"]`).classList.add('active');
+	
+				// Update tab content
+				document.querySelectorAll('.tab-content').forEach(tab => {
+					tab.classList.remove('active');
+				});
+				document.getElementById(tabId).classList.add('active');
+			}
+	
+			// Size preference selection
+			document.querySelectorAll('.size-box').forEach(box => {
+				box.addEventListener('click', () => {
+					document.querySelectorAll('.size-box').forEach(b => b.classList.remove('selected'));
+					box.classList.add('selected');
+				});
+			});
+	
+			// Profile save functionality
+			function saveProfile(e) {
+				e.preventDefault();
+				const btn = e.target;
+				const originalText = btn.textContent;
+				btn.textContent = 'Saving...';
+	
+				// Simulate API call
+				setTimeout(() => {
+					btn.textContent = 'Saved!';
+					setTimeout(() => {
+						btn.textContent = originalText;
+					}, 2000);
+				}, 1000);
+			}
+	
+			// Add hover effects to interactive elements
+			document.querySelectorAll('.order-card, .address-card').forEach(card => {
+				card.addEventListener('mouseover', () => {
+					card.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+					card.style.transform = 'translateY(-2px)';
+					card.style.transition = 'all 0.3s ease';
+				});
+	
+				card.addEventListener('mouseout', () => {
+					card.style.boxShadow = 'none';
+					card.style.transform = 'translateY(0)';
+				});
+			});
+	
+			// Profile picture upload simulation
+			document.getElementById('profile-picture').addEventListener('click', () => {
+				const input = document.createElement('input');
+				input.type = 'file';
+				input.accept = 'image/*';
+				input.addEventListener('change', () => {
+					const file = input.files[0];
+					const reader = new FileReader();
+					reader.onload = () => {
+						document.getElementById('profile-picture').style.backgroundImage = `url(${reader.result})`;
+					};
+					reader.readAsDataURL(file);
+				});
+				input.click();
+			});
+		</script>
+
+
+		<script src="js/bootstrap.bundle.min.js"></script>
+		<script src="js/tiny-slider.js"></script>
+		<script src="js/custom.js"></script>
+	</body>
+
+</html>

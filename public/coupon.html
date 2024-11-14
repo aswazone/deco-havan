@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f8f9fa;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            color: #2d3436;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #636e72;
+        }
+
+        .categories {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .category {
+            padding: 8px 20px;
+            background: white;
+            border: 2px solid transparent;
+            border-radius: 25px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+
+        .category.active {
+            background: #2d3436;
+            color: white;
+        }
+
+        .category:hover:not(.active) {
+            border-color: #2d3436;
+        }
+
+        .search-bar {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            font-size: 1em;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+
+        .coupons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .coupon-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .coupon-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .coupon-image {
+            height: 150px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .discount-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #2d3436;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .coupon-content {
+            padding: 20px;
+        }
+
+        .expiry {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #636e72;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .coupon-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2d3436;
+        }
+
+        .coupon-details {
+            color: #636e72;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .coupon-code {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .code {
+            font-family: monospace;
+            font-size: 1.1em;
+            letter-spacing: 1px;
+            color: #2d3436;
+        }
+
+        .copy-btn {
+            background: #2d3436;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: #1e2729;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: #2d3436;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .countdown {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .category-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #f1f2f6;
+            border-radius: 15px;
+            font-size: 0.8em;
+            color: #636e72;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Exclusive Coupons</h1>
+            <p>Save big on premium men's fashion with our hand-picked deals</p>
+        </div>
+
+        <div class="categories">
+            <div class="category active">All Deals</div>
+            <div class="category">Formal Wear</div>
+            <div class="category">Casual Wear</div>
+            <div class="category">Accessories</div>
+            <div class="category">Footwear</div>
+            <div class="category">New Arrivals</div>
+            <div class="category">Clearance</div>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" placeholder="Search for coupons..." onkeyup="searchCoupons(this.value)">
+        </div>
+
+        <div class="coupons-grid">
+            <!-- Coupon 1 -->
+            <div class="coupon-card">
+                <div class="coupon-image" style="background-image: url('/api/placeholder/400/200')">
+                    <div class="discount-badge">50% OFF</div>
+                </div>
+                <div class="coupon-content">
+                    <div class="expiry">
+                        <span>⏰</span>
+                        Expires in: <span class="countdown" data-expires="2024-12-31">3 days</span>
+                    </div>
+                    <h3 class="coupon-title">Premium Suits Collection</h3>
+                    <div class="category-tag">Formal Wear</div>
+                    <p class="coupon-details">Get 50% off on our exclusive collection of designer suits. Valid on selected items.</p>
+                    <div class="coupon-code">
+                        <span class="code">SUIT50</span>
+                        <button class="copy-btn" onclick="copyCoupon(this, 'SUIT50')">Copy Code</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coupon 2 -->
+            <div class="coupon-card">
+                <div class="coupon-image" style="background-image: url('/api/placeholder/400/200')">
+                    <div class="discount-badge">30% OFF</div>
+                </div>
+                <div class="coupon-content">
+                    <div class="expiry">
+                        <span>⏰</span>
+                        Expires in: <span class="countdown" data-expires="2024-12-25">5 days</span>
+                    </div>
+                    <h3 class="coupon-title">Casual Comfort Wear</h3>
+                    <div class="category-tag">Casual Wear</div>
+                    <p class="coupon-details">30% discount on all casual wear including t-shirts, jeans, and shorts.</p>
+                    <div class="coupon-code">
+                        <span class="code">CASUAL30</span>
+                        <button class="copy-btn" onclick="copyCoupon(this, 'CASUAL30')">Copy Code</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coupon 3 -->
+            <div class="coupon-card">
+                <div class="coupon-image" style="background-image: url('/api/placeholder/400/200')">
+                    <div class="discount-badge">25% OFF</div>
+                </div>
+                <div class="coupon-content">
+                    <div class="expiry">
+                        <span>⏰</span>
+                        Expires in: <span class="countdown" data-expires="2024-12-20">7 days</span>
+                    </div>
+                    <h3 class="coupon-title">Luxury Accessories</h3>
+                    <div class="category-tag">Accessories</div>
+                    <p class="coupon-details">25% off on premium accessories including watches, belts, and wallets.</p>
+                    <div class="coupon-code">
+                        <span class="code">ACC25</span>
+                        <button class="copy-btn" onclick="copyCoupon(this, 'ACC25')">Copy Code</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Category switching
+        document.querySelectorAll('.category').forEach(category => {
+            category.addEventListener('click', () => {
+                document.querySelector('.category.active').classList.remove('active');
+                category.classList.add('active');
+                // Add filtering logic here
+            });
+        });
+
+        // Copy coupon code
+        function copyCoupon(button, code) {
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+            });
+        }
+
+        // Search functionality
+        function searchCoupons(query) {
+            query = query.toLowerCase();
+            document.querySelectorAll('.coupon-card').forEach(card => {
+                const title = card.querySelector('.coupon-title').textContent.toLowerCase();
+                const details = card.querySelector('.coupon-details').textContent.toLowerCase();
+                if (title.includes(query) || details.includes(query)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Update countdown timers
+        function updateCountdowns() {
+            document.querySelectorAll('.countdown').forEach(countdown => {
+                const expiryDate = new Date(countdown.dataset.expires);
+                const now = new Date();
+                const diff = expiryDate - now;
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                
+                if (days > 1) {
+                    countdown.textContent = ${days} days;
+                } else if (days === 1) {
+                    countdown.textContent = '1 day';
+                } else {
+                    const hours = Math.floor(diff / (1000 * 60 * 60));
+                    countdown.textContent = ${hours} hours;
+                }
+            });
+        }
+
+        // Initialize countdowns
+        updateCountdowns();
+        setInterval(updateCountdowns, 1000 * 60); // Update every minute
+
+        // Hover effects for cards
+        document.querySelectorAll('.coupon-card').forEach(card => {
+            card.addEventListener('mouseover', () => {
+                card.style.transform = 'translateY(-5px)';
+                card.style.boxShadow = '0 10px 20px rgba(0,0,0,0.1)';
+            });
+            
+            card.addEventListener('mouseout', () => {
+                card.style.transform = 'translateY(0)';
+                card.style.boxShadow = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
