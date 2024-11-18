@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const {Schema} = mongoose;
 
 const userSchema = new Schema({
-    username:{
+    name:{
         type:String,
         required:true
     },
@@ -22,10 +22,10 @@ const userSchema = new Schema({
         spares:true,
         default:null
     },
-    googleId:{
-        type:String,
-        unique:true,
-    },
+    // googleId:{
+    //     type:String,
+    //     unique:true,
+    // },
     isBlocked:{
         type:Boolean,
         default:false
@@ -34,50 +34,54 @@ const userSchema = new Schema({
         type:Boolean,
         default:false
     },
-    cart:[{
-        type:Schema.Types.ObjectId,
-        ref:'Cart'
-    }],
-    wallet:{
-        type:Number,
-        default:0
-    },
-    wishlist:[{
-        type:Schema.Types.ObjectId,
-        ref:'Wishlist'
-    }],
-    orderHistory:[{
-        type:Schema.Types.ObjectId,
-        ref:'Order'
-    }],
-    createdAt:{
-        type:Date,
-        default:Date.now
-    },
-    referalCode:{
-        type:String,
-    },
-    redeemed:{
-        type:Boolean
-    },
-    redeemedUsers:[{
-        type: Schema.Types.ObjectId,
-        ref:'User'
-    }],
-    searchHistory:[{
-        category:{
-            type:Schema.Types.ObjectId,
-            ref:'Category'
-        },
-        brand:{
-            type:String
-        },
-        searchOn:{
-            type:Date,
-            default:Date.now
-        }
-    }]
-})
+    // cart:[{
+    //     type:Schema.Types.ObjectId,
+    //     ref:'Cart'
+    // }],
+    // wallet:{
+    //     type:Number,
+    //     default:0
+    // },
+    // wishlist:[{
+    //     type:Schema.Types.ObjectId,
+    //     ref:'Wishlist'
+    // }],
+    // orderHistory:[{
+    //     type:Schema.Types.ObjectId,
+    //     ref:'Order'
+    // }],
+    // createdAt:{
+    //     type:Date,
+    //     default:Date.now
+    // },
+    // referalCode:{
+    //     type:String,
+    //     // required:true
+    // },
+    // redeemed:{
+    //     type:Boolean,
+    //     // default:false
+    // },
+    // redeemedUsers:[{
+    //     type: Schema.Types.ObjectId,
+    //     ref:'User',
+    //     // required:true
+    // }],
+    // searchHistory:[{
+    //     category:{
+    //         type:Schema.Types.ObjectId,
+    //         ref:'Category'
+    //     },
+    //     brand:{
+    //         type:String
+    //     },
+    //     searchOn:{
+    //         type:Date,
+    //         default:Date.now
+    //     }
+    // }]
+
+},{timestamps:true});
 
 const User = mongoose.model("User",userSchema)
 module.exports = User;

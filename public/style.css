@@ -65,3 +65,8 @@ h2, h3 {
 p, li {
     color: #555;
 }
+.error-msg {
+    color: red;
+    font-size: 0.75rem;
+    display: none;
+}
