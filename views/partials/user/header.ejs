@@ -54,11 +54,21 @@
 					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
 						<li class="nav-item dropdown">
 							<a class="nav-link pe-1 dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+								<% if (locals.user) { %>
+									<span class="me-2"><%= locals.user.name %></span>
+								<% } %>
 								<i class="fa-regular fa-user"></i>
 							</a>
 							<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-								<li><a class="dropdown-item" href="/login">Login</a></li>
-								<li><a class="dropdown-item" href="/signup">Signup</a></li>
+								<% if (locals.user) { %>
+									<!-- User is logged in -->
+									<li><a class="dropdown-item" href="/profile">Profile</a></li>
+									<li><a class="dropdown-item" href="/logout">Logout</a></li>
+								  <% } else { %>
+									<!-- User is not logged in -->
+									<li><a class="dropdown-item" href="/login">Login</a></li>
+									<li><a class="dropdown-item" href="/signup">Sign Up</a></li>
+								  <% } %>
 							</ul>
 						</li>
 						<li><a class="nav-link px-3 active" href="/wishlist"><i class="fa-regular fa-heart"></i></a></li>

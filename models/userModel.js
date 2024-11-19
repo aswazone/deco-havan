@@ -22,10 +22,11 @@ const userSchema = new Schema({
         spares:true,
         default:null
     },
-    // googleId:{
-    //     type:String,
-    //     unique:true,
-    // },
+    googleId:{
+        type:String,
+        required:false,
+        unique:true,
+    },
     isBlocked:{
         type:Boolean,
         default:false
