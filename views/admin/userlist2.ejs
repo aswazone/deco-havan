@@ -1,0 +1,187 @@
+<%- include("../../views/partials/admin/header")%>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+    <section class="content-main">
+        <div class="content-header">
+            <h2 class="content-title">User-Mangement</h2>
+            <!-- <div>
+                <a href="#" class="btn btn-primary"><i class="material-icons md-plus"></i> Create new</a>
+            </div> -->
+        </div>
+        <div class="card mb-4">
+            <header class="card-header">
+                <div class="row gx-3">
+                    <div class="col-lg-4 col-md-6 me-auto">
+                        <input type="text" placeholder="Search..." class="form-control" />
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-6">
+                        <select class="form-select">
+                            <option>Status</option>
+                            <option>Active</option>
+                            <option>Disabled</option>
+                            <option>Show all</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-6">
+                        <select class="form-select">
+                            <option>Show 20</option>
+                            <option>Show 30</option>
+                            <option>Show 40</option>
+                        </select>
+                    </div>
+                </div>
+            </header>
+            <!-- card-header end// -->
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Registered</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for (let i=0; i< data.length; i++) {%>
+                            <tr>
+                                <td width="40%">
+                                    <a href="#" class="itemside">
+                                        <div class="left">
+                                            <img src="assets/imgs/people/avatar-1.png" class="img-sm img-avatar"
+                                                alt="Userpic" />
+                                        </div>
+                                        <div class="info pl-3">
+                                            <h6 class="mb-0 title"><%= data[i].name%></h6>
+                                            <small class="text-muted">User ID: <%= data[i]._id%></small>
+                                        </div>
+                                    </a>
+                                </td>
+                                <td><%= data[i].email%></td>
+                                <td><%= data[i].phone%></td>
+
+                                <td><%= data[i].createdAt.toLocaleString('en-US', { 
+                                    year: 'numeric', 
+                                    month: 'long', 
+                                    day: 'numeric', 
+                                    hour: '2-digit', 
+                                    minute: '2-digit', 
+                                    second: '2-digit', 
+                                    hour12: true 
+                                }) %></td>
+                                <td class="text-end">
+                                    <% if (data[i].isBlocked === false) { %>
+                                        <button id="togglebtn" onclick="toggleButton('<%= data[i]._id%>',true)" class="btn btn-sm btn-outline-danger rounded font-sm mt-15">Block</button>
+                                    <% } else { %>
+                                        <button id="togglebtn" onclick="toggleButton('<%= data[i]._id%>',false)" class="btn btn-sm btn-info text-white rounded font-sm mt-15">Unblock</button>
+                                    <% } %>
+                                </td>
+                            </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                    <!-- table-responsive.// -->
+                </div>
+            </div>
+            <!-- card-body end// -->
+        </div>
+        <!-- card end// -->
+        <div class="pagination-container">
+            <!-- Previous Button -->
+            <% if (currentPage > 1) { %>
+                <a href="/admin/users?page=<%= currentPage - 1 %>&search=<%= search %>">&laquo; Previous</a>
+            <% } %>
+        
+            <!-- Page Numbers -->
+            <% for (let i = 1; i <= totalPages; i++) { %>
+                <% if (i === currentPage) { %>
+                    <span class="current-page"><%= i %></span>
+                <% } else { %>
+                    <a href="/admin/users?page=<%= i %>&search=<%= search %>"><%= i %></a>
+                <% } %>
+            <% } %>
+        
+            <!-- Next Button -->
+            <% if (currentPage < totalPages) { %>
+                <a href="/admin/users?page=<%= currentPage + 1 %>&search=<%= search %>">Next &raquo;</a>
+            <% } %>
+        </div>
+        
+      
+    </section>
+    <script>
+
+        
+        function toggleButton(id, condition) {
+            console.log(id, condition);
+
+            fetch('/admin/toggleStatus', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: id,
+                    condition: condition
+                })
+            })
+            .then(response => {
+                console.log(response);
+                
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                if (data.success) {
+                    document.getElementById('togglebtn').textContent = 'Unblock';
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    .then(() => {
+                        window.location.reload();
+                    })
+                   
+                } else { 
+                    document.getElementById('togglebtn').textContent = 'Block';
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    .then(() => {
+                        window.location.reload();
+                    })
+                }
+            })
+
+            .catch(error => {
+                console.log(error.message, 'blocking problem');
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'An error occurred',
+                    text: error.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            });
+        }
+
+    </script>
+    <%- include("../../views/partials/admin/footer")%>
+

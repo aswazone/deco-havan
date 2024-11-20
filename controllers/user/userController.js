@@ -102,6 +102,47 @@ const login = async (req, res) => {
 
 }
 
+const googleSignup = async (req, res) => {
+    try {
+        const { name, email, googleId } = req.body;
+        console.log('google signup',req.body);
+
+
+        // if (password !== cpassword) {
+        //     return res.json({ success: false, message: 'Passwords do not match !' });
+        // }
+
+        const findUser = await User.findOne({ email });
+        console.log(findUser);
+        
+
+        // if (findUser) {
+        //     return res.render( '',{ success: false, message: 'User is already exists !' });
+        // }
+
+        // const otp = generateOtp();
+
+        // const emailSent = await sendVerificationEmail(email, otp);
+
+        // if (!emailSent) {
+        //     return res.json({ success: false, message: 'Email sending failed' });
+        // }
+
+        // req.session.userOtp = otp;
+        req.session.user = findUser._id;
+        res.redirect('/');
+
+
+        // res.json({ success: true, message: 'OTP sent successfully' });
+        // console.log('OTP sent :', otp);
+
+
+    } catch (error) {
+        console.error('signup error', error.message);
+        res.json({ success: false, message: 'Server error' });
+    }
+}
+
 const logout = async (req, res)=>{
     try {
         req.session.destroy((err)=>{
@@ -313,6 +354,7 @@ module.exports = {
     loadHomepage,
     pageNotFound,
     loadSignup,
+    googleSignup,
     loadLogin,
     loadShopping,
     loadCart,

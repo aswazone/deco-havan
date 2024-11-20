@@ -1,13 +1,15 @@
+
 const express = require('express');
 const app = express();
 const path = require('path')
 const userRouter = require('./routes/userRouter')
+const adminRouter = require('./routes/adminRouter')
 const session = require('express-session');
 const passport = require('./config/passport')
 const env = require('dotenv').config();
 const DB = require('./config/db');
-DB()
 
+DB()
 
 
 app.use((express.json()));
@@ -37,6 +39,7 @@ app.set('views', [path.join(__dirname,'views/user'),path.join(__dirname,'views/a
 app.use(express.static('public'))
 
 app.use('/',userRouter);
+app.use('/admin',adminRouter);
 
 //port listening
 app.listen(process.env.PORT,()=>{

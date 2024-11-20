@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.0/mdb.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.0/mdb.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+        integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            background-size: cover;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <section class="vh-100">
+        <div class="container py-3 h-100">
+            <div class="row justify-content-center align-items-center h-100">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card shadow rounded-3">
+                        <div class="row g-0">
+                            <!-- Left Side Image -->
+                            <div class="col-md-6 d-none d-md-block">
+                                <img src="/assets/admin-left.jpg" class="img-fluid rounded-start h-100 p-3"
+                                    alt="Admin Login">
+                            </div>
+                            <!-- Right Side Form -->
+                            <div class="col-md-6">
+                                <div class="card-body p-md-5">
+                                    <div class="text-center">
+                                        <img src="/assets/admin-logo.png" alt="Admin Logo" class="mb-4"
+                                            style="width: 150px;">
+                                        <h4 class="fw-bold text-primary">Admin Panel</h4>
+                                    </div>
+                                    <form id="loginform">
+                                        <div class="form-outline mb-4">
+                                            <label class="form-label" for="email">Email</label>
+                                            <input type="email" id="email" name="email" class="form-control"
+                                                placeholder="Enter your email" />
+                                            <div id="error1" class="text-danger mt-1"></div>
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            <label class="form-label" for="password">Password</label>
+                                            <input type="password" id="password" name="password" class="form-control"
+                                                placeholder="Enter your password" />
+                                            <div id="error2" class="text-danger mt-1"></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-4">
+                                            <div class="form-check">
+                                                <input type="checkbox" id="rememberMe" class="form-check-input" />
+                                                <label class="form-check-label" for="rememberMe">Remember me</label>
+                                            </div>
+                                            <a href="/forgot-password" class="text-muted">Forgot password?</a>
+                                        </div>
+                                        <button class="btn btn-primary btn-block mb-4" type="submit">Log in</button>
+                                    </form>
+                                    <div class="text-center">
+                                        <small class="text-muted">Only authorized personnel allowed</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+        const loginform = document.getElementById('loginform');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            email.addEventListener('input', () => {
+                document.getElementById('error1').style.display = 'none';
+            });
+
+            password.addEventListener('input', () => {
+                document.getElementById('error2').style.display = 'none';
+            });
+
+            loginform.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                fetch('/admin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email.value,
+                        password: password.value,
+                    })
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                title: data.message,
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                window.location.href = '/admin/dashboard';
+                            });
+                        } else {
+                            Swal.fire({
+                                title: data.message,
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            title: 'An error occurred',
+                            text: error.message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    });
+            });
+        });
+    </script>
+</body>
+
+</html>

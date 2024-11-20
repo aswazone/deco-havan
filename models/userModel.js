@@ -26,6 +26,8 @@ const userSchema = new Schema({
         type:String,
         required:false,
         unique:true,
+        spares:true,
+        default:null
     },
     isBlocked:{
         type:Boolean,

@@ -22,7 +22,11 @@ router.get('/cart',userController.loadCart);
 router.get('/pageNotFound',userController.pageNotFound);
 
 router.get('/auth/google',passport.authenticate('google',{scope:['profile','email']}));
-router.get('/auth/google/callback',passport.authenticate('google',{failureRedirect:'/login'}),(req,res)=> res.redirect('/'))
+router.get('/auth/google/callback',passport.authenticate('google',{failureRedirect:'/login'}),(req,res)=> {
+    console.log('call goo');
+    
+    res.redirect('/')
+});
 
 
 
