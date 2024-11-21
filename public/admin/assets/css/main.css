@@ -4428,3 +4428,65 @@ body.dark .dropdown-menu .dropdown-item.text-danger {
   }
 }
 /*# sourceMappingURL=main.css.map */
+.error-msg {
+  color: red;
+  font-size: 0.75rem;
+  display: none;
+}
+
+.btn-group .btn {
+  border: 1px solid #94c7f3;
+  padding: 5px 15px;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  background-color: #f5f9ff;
+  color: #333;
+}
+
+.btn-group .btn:hover {
+  border-color: #5a9fd4;
+  background-color: #e5f1ff;
+}
+
+.btn-list {
+  background-color: #e5f1ff; /* Light blue */
+  color: #333;
+  border-color: #94c7f3;
+}
+
+.btn-list:hover {
+  background-color: #d6e5fb; /* Darker blue on hover */
+  border-color: #5a9fd4;
+  color: #333;
+}
+
+.btn-list.active {
+  background-color: #94c7f3; /* Active state */
+  color: #333;
+  border-color: #5a9fd4;
+}
+
+.btn-unlist {
+  background-color: #e5f1ff; /* Light blue */
+  color: #333;
+  border-color: #94c7f3;
+}
+
+.btn-unlist:hover {
+  background-color: #d6e5fb; /* Darker blue on hover */
+  border-color: #5a9fd4;
+  color: #333;
+}
+
+.btn-unlist.active {
+  background-color: #94c7f3; /* Active state */
+  color: #333;
+  border-color: #5a9fd4;
+}
+
+/* Common hover effect for both */
+.btn-group .btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

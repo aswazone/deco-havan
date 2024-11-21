@@ -2,6 +2,13 @@ const User = require('../../models/userModel');
 const bcrypt = require('bcrypt');
 
 
+const pageNotFound = async (req, res)=>{
+    try {
+        res.render('admin-page-404')
+    } catch (error) {
+        res.redirect('/pageNotFound')
+    }
+}
 const loadLogin = async (req, res)=>{
     try {
         if(req.session.admin){
@@ -83,5 +90,6 @@ module.exports = {
     loadLogin,
     login,
     loadDashboard,
-    logout
+    logout,
+    pageNotFound
 }

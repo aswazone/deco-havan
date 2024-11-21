@@ -1,0 +1,575 @@
+<%- include("../../views/partials/admin/header")%>
+  <section class="content-main">
+    <div class="content-header">
+      <div>
+        <h2 class="content-title card-title">Categories</h2>
+        <p>Add, edit or delete a category</p>
+      </div>
+      <div>
+        <input type="text" placeholder="Search Categories" class="form-control bg-white" />
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-3">
+            <form id="categoryform">
+              <div class="mb-4">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" placeholder="Type here" class="form-control" id="name" />
+                <div id="error1" class="error-msg"></div>
+              </div>
+              <div class="mb-4">
+                <label for="slug" class="form-label">Slug</label>
+                <input type="text" placeholder="Type here" class="form-control" id="slug" />
+              </div>
+              <div class="mb-4">
+                <label class="form-label">Parent</label>
+                <select class="form-select">
+                  <option>None</option>
+                  <option>door</option>
+                  <option>Chairs</option>
+                  <option>Tables</option>
+                  <option>Sofas</option>
+                  <option>Beds</option>
+                  <option>Cabinets</option>
+                  <option>Desks</option>
+                  <option>Shelves</option>
+                </select>
+              </div>
+              <div class="mb-4">
+                <label class="form-label">Description</label>
+                <textarea id="description" placeholder="Type here" class="form-control"></textarea>
+                <div id="error2" class="error-msg"></div>
+              </div>
+              <div class="d-grid">
+                <button class="btn btn-primary " type="submit">Create category</button>
+              </div>
+            </form>
+          </div>
+          <div class="col-md-9">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th class="text-center">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" />
+                      </div>
+                    </th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Offers price</th>
+                    <th>Offers</th>
+                    <th>Status</th>
+                    <th>List/Unlist</th>
+                    <th class="text-end">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% cat.reverse().forEach((category,index)=>{ %>
+                    <tr>
+                      <td class="text-center">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" />
+                        </div>
+                      </td>
+                      <td>ID:#123</td>
+                      <td><b>
+                          <%=category.name%>
+                        </b></td>
+                      <td>
+                        <%=category.description%>
+                      </td>
+                      <td>
+                        <%if(category.categoryOffer){%>
+                          <%=category.categoryOffer%>%
+
+                            <%}else{%>
+                              <span class="text-muted">No offer</span>
+                              <%}%>
+
+                      </td>
+                      <td class="text-center">
+                        <% if(category.categoryOffer===0){ %>
+                          <button type="button" class="btn  btn-outline-primary btn-sm font-sm"
+                            onclick="addOffer('<%=category._id%>')">
+                            Add offer
+                          </button>
+                          <% } else { %>
+
+                            <button type="button" onclick="removeOffer('<%=category._id%>')" id="deletebtn"
+                              class="btn  btn-outline-danger btn-sm font-sm">
+                              <i class="material-icons md-delete_forever" style="font-size: 1.2rem"></i>
+                            </button>
+                            <% } %>
+                      </td>
+                      <td>
+                        <% if(category.isListed) { %>
+                          <span class="badge rounded-pill bg-success">Listed</span>
+                          <% } else { %>
+                            <span class="badge rounded-pill bg-danger">Unlisted</span>
+                            <% } %>
+                      </td>
+                      <td>
+                        <div class="btn-group" role="group" aria-label="Basic example" data-category-id="<%= category._id %>">
+                          <% if (category.isListed) { %>
+                            <!-- If listed -->
+                            <button
+                              type="button"
+                              class="btn btn-sm font-sm btn-list active"
+                              onclick="toggleButton('<%= category._id %>', false)">
+                              List
+                            </button>
+                            <button
+                              type="button"
+                              class="btn btn-sm font-sm btn-unlist"
+                              onclick="toggleButton('<%= category._id %>', true)">
+                              Unlist
+                            </button>
+                          <% } else { %>
+                            <!-- If unlisted -->
+                            <button
+                              type="button"
+                              class="btn btn-sm font-sm btn-list"
+                              onclick="toggleButton('<%= category._id %>', true)">
+                              List
+                            </button>
+                            <button
+                              type="button"
+                              class="btn btn-sm font-sm btn-unlist active"
+                              onclick="toggleButton('<%= category._id %>', false)">
+                              Unlist
+                            </button>
+                          <% } %>
+                        </div>
+                      </td>
+                      
+                      <td class="text-end">
+                        <div class="dropdown">
+                          <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm">
+                            <i class="material-icons md-more_horiz"></i>
+                          </a>
+                          <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#">View detail</a>
+                            <a class="dropdown-item" href="#">Edit info</a>
+                            <a class="dropdown-item text-danger" href="#">Delete</a>
+                          </div>
+                        </div>
+                        <!-- dropdown //end -->
+                      </td>
+                    </tr>
+                    <%})%>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- .col// -->
+        </div>
+        <!-- .row // -->
+      </div>
+      <!-- card body .// -->
+    </div>
+    <!-- card .// -->
+  </section>
+
+  <!-- pagination -->
+
+
+<div class="pagination-container">
+  <!-- Previous Button -->
+  <% if (currentPage> 1) { %>
+    <a href="/admin/users?page=<%= currentPage - 1 %>&search=<%= search %>">&laquo; Previous</a>
+    <% } %>
+
+      <!-- Page Numbers -->
+      <% for (let i=1; i <=totalPages; i++) { %>
+        <% if (i===currentPage) { %>
+          <span class="current-page">
+            <%= i %>
+          </span>
+          <% } else { %>
+            <a href="/admin/users?page=<%= i %>&search=<%= search %>">
+              <%= i %>
+            </a>
+            <% } %>
+              <% } %>
+
+                <!-- Next Button -->
+                <% if (currentPage < totalPages) { %>
+                  <a href="/admin/users?page=<%= currentPage + 1 %>&search=<%= search %>">Next &raquo;</a>
+                  <% } %>
+  </div>
+  <script>
+
+    const categoryform = document.getElementById('categoryform');
+    const name = document.getElementById('name');
+    const description = document.getElementById('description');
+    const error_1 = document.getElementById('error1')
+    const error_2 = document.getElementById('error2')
+
+    let isValid = false
+    function nameValidateCheck() {
+      console.log("inside name check")
+      const nameval = name.value;
+      console.log("name is:", nameval, "this")
+      const namepattern = /^[A-Za-z\s]+$/;
+
+      if (nameval.trim() === "") {
+        console.log("condition 1")
+        error_1.style.display = "block";
+        error_1.innerHTML = "Please enter a valid name";
+        isValid = false;
+      } else if (!namepattern.test(nameval)) {
+        console.log("condition 2")
+        error_1.style.display = "block";
+        error_1.innerHTML = "Name can only contain alphabet and spaces";
+        isValid = false;
+      } else {
+        console.log("condition 3")
+        error_1.style.display = "none";
+        error_1.innerHTML = "";
+        isValid = true;
+      }
+    }
+
+
+    function descriptionValidate() {
+      const descriptionval = description.value;
+
+      if (descriptionval === '') {
+        error_2.style.display = "block";
+        error_2.innerHTML = "Please enter a description !!"
+        isValid = false;
+      } else {
+        error_2.style.display = "none";
+        error_2.innerHTML = ""
+        isValid = true;
+      }
+    }
+
+
+    async function addOffer(categoryId) {
+      try {
+        const { value: amount } = await Swal.fire({
+          title: 'Enter amount',
+          input: 'number',
+          inputLabel: 'Amount',
+          showCancelButton: true,
+        });
+
+        if (amount) {
+          console.log('add-fetch 1');
+
+          const response = await fetch('/admin/addCategoryOffer', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              categoryId,
+              percentage: amount,
+            })
+          });
+
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+
+          const data = await response.json();
+
+          if (data.success) {
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'success',
+              title: data.message,
+              showConfirmButton: false,
+              timer: 2000
+            })
+              .then(() => {
+                window.location.href = '/admin/category'
+              })
+          } else {
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'error',
+              title: 'Creation failed !!',
+              text: data.message,
+              showConfirmButton: false,
+              timer: 2000
+            })
+              .then(() => {
+                window.location.href = '/admin/category'
+              })
+          }
+        }
+      } catch (error) {
+        // Handle error
+        console.log('catch 1');
+
+        Swal.fire({
+          title: 'An error occurred',
+          text: error.message,
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+
+        console.log(error);
+      }
+    }
+
+    async function removeOffer(categoryId) {
+      const result = await Swal.fire({
+        title: 'Are you sure?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, remove it!'
+      })
+
+
+      if (result) {
+        try {
+          const response = await fetch('/admin/removeCategoryOffer', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              categoryId: categoryId,
+            })
+          });
+
+          const data = await response.json();
+
+          console.log(data);
+
+          if (data.success) {
+            // Create success message with slide out effect
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'success',
+              title: 'Offer Deleted!',
+              showConfirmButton: false,
+              timer: 2000,
+              didOpen: () => {
+                const toast = Swal.getToast();
+                toast.style.transition = 'transform 0.3s ease-in-out';
+                toast.style.transform = 'translateX(100%)'; // Start the animation off-screen
+                setTimeout(() => {
+                  toast.style.transform = 'translateX(0%)'; // Slide in after delay
+                }, 0); // Instant slide-in
+              },
+            }).then(() => {
+              window.location.href = '/admin/category'; // Redirect after animation
+            });
+          } else {
+            // Create error message with slide out effect
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'error',
+              title: 'Creation Failed!',
+              text: data.message,
+              showConfirmButton: false,
+              timer: 2000,
+              didOpen: () => {
+                const toast = Swal.getToast();
+                toast.style.transition = 'transform 0.3s ease-in-out';
+                toast.style.transform = 'translateX(100%)'; // Start the animation off-screen
+                setTimeout(() => {
+                  toast.style.transform = 'translateX(0%)'; // Slide in after delay
+                }, 0); // Instant slide-in
+              },
+            }).then(() => {
+              window.location.href = '/admin/category'; // Redirect after animation
+            });
+          }
+        } catch (error) {
+          // Handle error
+          Swal.fire({
+            title: 'An error occurred',
+            text: error.message,
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+          console.log(error);
+        }
+      }
+
+    }
+
+    async function toggleButton(categoryId, condition) {
+  console.log('Toggling status for:', categoryId, 'to', condition ? 'Listed' : 'Unlisted');
+
+  try {
+    const response = await fetch('/admin/listToggleStatus', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        categoryId: categoryId,
+        condition: condition
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+    console.log(data);
+
+    if (data.success) {
+      // Update UI dynamically
+      const btnGroup = document.querySelector(`[data-category-id="${categoryId}"]`);
+      const badge = btnGroup.closest('tr').querySelector('td:nth-child(7) span');
+      if (btnGroup) {
+        if (condition) {
+          // If toggled to "Listed"
+          btnGroup.querySelector('.btn-list').classList.add('active');
+          btnGroup.querySelector('.btn-unlist').classList.remove('active');
+          badge.textContent = 'Listed';
+          badge.className = 'badge rounded-pill bg-success';
+        } else {
+          // If toggled to "Unlisted"
+          btnGroup.querySelector('.btn-list').classList.remove('active');
+          btnGroup.querySelector('.btn-unlist').classList.add('active');
+          badge.textContent = 'Unlisted';
+          badge.className = 'badge rounded-pill bg-danger';
+        }
+      }
+
+      // Show success message
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: data.message,
+        showConfirmButton: false,
+        timer: 1500
+      });
+    } else {
+      // Show error message
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'error',
+        title: 'Failed to update status',
+        text: data.message,
+        showConfirmButton: false,
+        timer: 1500
+      });
+    }
+  } catch (error) {
+    console.error('Error toggling status:', error.message);
+
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'error',
+      title: 'An error occurred',
+      text: error.message,
+      showConfirmButton: false,
+      timer: 1500
+    });
+  }
+}
+
+
+    console.log('1');
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+      console.log('start');
+
+
+      categoryform.addEventListener("submit", (e) => {
+        e.preventDefault()
+
+        nameValidateCheck();
+        descriptionValidate();
+
+        const hasErrors =
+          error_1.innerHTML.trim() !== "" ||
+          error_2.innerHTML.trim() !== "";
+
+        console.log(hasErrors);
+
+        if (!isValid || hasErrors) {
+          e.preventDefault();
+        }
+
+        console.log('form submitted');
+
+        const name = document.getElementById('name');
+        const description = document.getElementById('description')
+
+        fetch('/admin/category', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ name: name.value, description: description.value })
+        })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .then(data => {
+            console.log(data);
+            if (data.success) {
+              Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'New category created !!',
+                showConfirmButton: false,
+                timer: 2000
+              })
+                .then(() => {
+                  window.location.href = '/admin/category'
+                })
+            } else {
+              Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: 'Creation failed !!',
+                text: data.message,
+                showConfirmButton: false,
+                timer: 2000
+              })
+                .then(() => {
+                  window.location.href = '/admin/category'
+                })
+            }
+          })
+          .catch(error => {
+            Swal.fire({
+              title: 'An error occurred',
+              text: error.message,
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
+          });
+
+      })
+    })
+
+
+
+
+
+
+
+  </script>
+  <%- include("../../views/partials/admin/footer")%>

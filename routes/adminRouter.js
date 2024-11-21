@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/admin/adminController')
 const customerController = require('../controllers/admin/customerController')
+const categoryController = require('../controllers/admin/categoryController.js');
 const {userAuth,adminAuth} = require('../middleware/auth');
 
 
@@ -10,6 +11,7 @@ router.get('/login',adminController.loadLogin);
 router.post('/login',adminController.login);
 router.get('/logout',adminController.logout);
 router.get('/dashboard',adminAuth,adminController.loadDashboard);
+router.get('/pageNotFound',adminController.pageNotFound);
 
 //user-management
 // router.get('/user',userAuth,adminController.loadUser);
@@ -20,6 +22,13 @@ router.get('/dashboard',adminAuth,adminController.loadDashboard);
 //user-maanagement
 router.get('/users',adminAuth,customerController.loadUser);
 router.patch('/toggleStatus',adminAuth,customerController.usertoggleStatus);
+
+//category-management
+router.get('/category',adminAuth,categoryController.loadCategory);
+router.post('/category',adminAuth,categoryController.addCategory);
+router.post('/addCategoryOffer',adminAuth,categoryController.addCategoryOffer);
+router.post('/removeCategoryOffer',adminAuth,categoryController.removeCategoryOffer);
+router.patch('/listToggleStatus',adminAuth,categoryController.listToggleStatus);
 
 
 
