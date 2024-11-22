@@ -29,7 +29,11 @@ router.post('/category',adminAuth,categoryController.addCategory);
 router.post('/addCategoryOffer',adminAuth,categoryController.addCategoryOffer);
 router.post('/removeCategoryOffer',adminAuth,categoryController.removeCategoryOffer);
 router.patch('/listToggleStatus',adminAuth,categoryController.listToggleStatus);
+router.get('/editCategory',adminAuth,categoryController.getEditCategory);
+router.post('/editCategory/:id',adminAuth,categoryController.editCategory);
 
+// //product-management
+// router.get('/addProducts'.adminAuth,productController.getAddProductPage);
 
 
 

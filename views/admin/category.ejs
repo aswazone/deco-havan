@@ -153,8 +153,8 @@
                           </a>
                           <div class="dropdown-menu">
                             <a class="dropdown-item" href="#">View detail</a>
-                            <a class="dropdown-item" href="#">Edit info</a>
-                            <a class="dropdown-item text-danger" href="#">Delete</a>
+                            <a class="dropdown-item text-success" href="/admin/editCategory?id=<%=category._id%>">Edit</a>
+                            <a class="dropdown-item text-danger" >Delete</a>
                           </div>
                         </div>
                         <!-- dropdown //end -->
@@ -173,6 +173,9 @@
     </div>
     <!-- card .// -->
   </section>
+
+  
+  
 
   <!-- pagination -->
 
@@ -202,7 +205,7 @@
                   <% } %>
   </div>
   <script>
-
+    
     const categoryform = document.getElementById('categoryform');
     const name = document.getElementById('name');
     const description = document.getElementById('description');
@@ -405,85 +408,89 @@
     }
 
     async function toggleButton(categoryId, condition) {
-  console.log('Toggling status for:', categoryId, 'to', condition ? 'Listed' : 'Unlisted');
+      console.log('Toggling status for:', categoryId, 'to', condition ? 'Listed' : 'Unlisted');
 
-  try {
-    const response = await fetch('/admin/listToggleStatus', {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        categoryId: categoryId,
-        condition: condition
-      })
-    });
+      try {
+        const response = await fetch('/admin/listToggleStatus', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            categoryId: categoryId,
+            condition: condition
+          })
+        });
 
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    const data = await response.json();
-    console.log(data);
-
-    if (data.success) {
-      // Update UI dynamically
-      const btnGroup = document.querySelector(`[data-category-id="${categoryId}"]`);
-      const badge = btnGroup.closest('tr').querySelector('td:nth-child(7) span');
-      if (btnGroup) {
-        if (condition) {
-          // If toggled to "Listed"
-          btnGroup.querySelector('.btn-list').classList.add('active');
-          btnGroup.querySelector('.btn-unlist').classList.remove('active');
-          badge.textContent = 'Listed';
-          badge.className = 'badge rounded-pill bg-success';
-        } else {
-          // If toggled to "Unlisted"
-          btnGroup.querySelector('.btn-list').classList.remove('active');
-          btnGroup.querySelector('.btn-unlist').classList.add('active');
-          badge.textContent = 'Unlisted';
-          badge.className = 'badge rounded-pill bg-danger';
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
         }
+
+        const data = await response.json();
+        console.log(data);
+
+        if (data.success) {
+          // Update UI dynamically
+          const btnGroup = document.querySelector(`[data-category-id="${categoryId}"]`);
+          const badge = btnGroup.closest('tr').querySelector('td:nth-child(7) span');
+          if (btnGroup) {
+            if (condition) {
+              // If toggled to "Listed"
+              btnGroup.querySelector('.btn-list').classList.add('active');
+              btnGroup.querySelector('.btn-unlist').classList.remove('active');
+              badge.textContent = 'Listed';
+              badge.className = 'badge rounded-pill bg-success';
+            } else {
+              // If toggled to "Unlisted"
+              btnGroup.querySelector('.btn-list').classList.remove('active');
+              btnGroup.querySelector('.btn-unlist').classList.add('active');
+              badge.textContent = 'Unlisted';
+              badge.className = 'badge rounded-pill bg-danger';
+            }
+          }
+
+          // Show success message
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: data.message,
+            showConfirmButton: false,
+            timer: 1500
+          });
+        } else {
+          // Show error message
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'Failed to update status',
+            text: data.message,
+            showConfirmButton: false,
+            timer: 1500
+          });
+        }
+      } catch (error) {
+        console.error('Error toggling status:', error.message);
+
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'An error occurred',
+          text: error.message,
+          showConfirmButton: false,
+          timer: 1500
+        });
       }
-
-      // Show success message
-      Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: 'success',
-        title: data.message,
-        showConfirmButton: false,
-        timer: 1500
-      });
-    } else {
-      // Show error message
-      Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: 'error',
-        title: 'Failed to update status',
-        text: data.message,
-        showConfirmButton: false,
-        timer: 1500
-      });
     }
-  } catch (error) {
-    console.error('Error toggling status:', error.message);
-
-    Swal.fire({
-      toast: true,
-      position: 'top-end',
-      icon: 'error',
-      title: 'An error occurred',
-      text: error.message,
-      showConfirmButton: false,
-      timer: 1500
-    });
-  }
-}
-
 
     console.log('1');
+
+   
+    
+    
+      
 
 
     document.addEventListener("DOMContentLoaded", () => {

@@ -162,12 +162,53 @@ const Product = require('../../models/productModel');
           return res.status(500).json({ success: false, message: 'Server error' });
         }
       };
+    
+      const getEditCategory=async(req,res)=>{
+        try {
+            let id=req.query.id;
+            console.log(id,'edit');
+            const category=await Category.findOne({_id:id});
+            console.log(category,'aftre');
+            res.render("edit-category",{category:category});
+        } catch (error) {
+            res.redirect("/pageNotFound");
+        }
+    };
+    //accessing query params from frontent
+    const editCategory=async(req,res)=>{
+        try {
+            const id=req.params.id;
+            const {categoryName,description}=req.body;
+            const existingCategory=await Category.findOne({name:categoryName});
+    
+            if(existingCategory){
+                return res.status(400).json({error:"Category exists,Please choose another name"})
+            }
+            const updateCategory=await Category.findByIdAndUpdate(id,{
+                name:categoryName,
+                description:description,
+            },{new:true});
+    
+            if(updateCategory){
+                res.redirect("/admin/category");
+            }else{
+                res.status(404).json({error:"Category not found"})
+            }
+            
+        } catch (error) {
+            res.status(500).json({error:"Internal server error "})
+            
+        }
+    }
       
+    
 
 module.exports = {
     loadCategory,
     addCategory,
     addCategoryOffer,
     removeCategoryOffer,
-    listToggleStatus
+    listToggleStatus,
+    getEditCategory,
+    editCategory
 }
