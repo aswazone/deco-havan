@@ -40,8 +40,10 @@ router.post('/editCategory/:id',adminAuth,categoryController.editCategory);
 // //product-management
 router.get('/addProducts',adminAuth,productController.getAddProductPage);
 router.post('/addProducts',adminAuth,uploads.array('images',4),productController.addProducts)
-router.get('/listproducts',adminAuth,productController.getProductsList)
-
+router.get('/listProducts',adminAuth,productController.getProductsList)
+router.post('/addProductOffer',adminAuth,productController.addProductOffer);
+router.post('/removeProductOffer',adminAuth,productController.removeProductOffer);
+router.patch('/productToggleStatus',adminAuth,productController.productToggleStatus);
 
 
 

@@ -70,3 +70,12 @@ p, li {
     font-size: 0.75rem;
     display: none;
 }
+
+.offer-badge {
+    font-size: 12px;
+    background-color: #f1b44c;
+    color: #fff;
+    padding: 2px 5px;
+    border-radius: 5px;
+
+}

@@ -117,8 +117,94 @@ const getProductsList = async (req, res) => {
     }
 };
 
+const addProductOffer = async (req, res) => {
+    try {
+        console.log(req.body);
+        const productId = req.body.productId;
+        const percentage = parseInt(req.body.percentage);
+
+        const findProduct = await Product.findOne({ _id: productId });
+        console.log('FC',findProduct);
+        const findCategory = await Category.findOne({ _id:findProduct.category});
+        console.log('cata FC',findCategory);
+
+        if (!findCategory.categoryOffer > percentage) {
+            return res.status(400).json({ success: false, message: 'Product has already has a category offer!!' });
+        }
+
+        findProduct.salePrice = findProduct.salePrice - Math.floor(findProduct.regularPrice * (percentage/100))
+        findProduct.productOffer = percentage;
+        await findProduct.save()
+
+        findCategory.categoryOffer = 0;
+        await findCategory.save()
+
+        res.json({ success: true, message: `Offer added to ${findProduct.name} !!`});
+
+    } catch (error) {
+        console.log(error.message, 'Internal server error');
+        res.status(500).json({ success: false, message: 'Internal server error !!' });
+    }
+}
+
+const removeProductOffer = async (req,res)=>{
+    try {
+        const productId = req.body.productId;
+        const findProduct = await Product.findOne({_id:productId});
+        console.log('fP',findProduct);
+        
+        const percentage = findProduct.productOffer;
+        findProduct.salePrice = findProduct.salePrice + Math.floor( findProduct.regularPrice * (percentage/100))
+        findProduct.productOffer = 0;
+        await findProduct.save();
+
+        res.json({success:true})
+    } catch (error) {
+        console.log(error.message, 'Internal ser errrr');
+        res.redirect('/pageNotFound ')
+        
+    }
+}
+
+const productToggleStatus = async (req, res) => {
+    try {
+        console.log('product toggle',req.body);
+
+        const { id, condition } = req.body;
+
+        console.log(id, condition);
+
+        // Await the update operation
+        const product = await Product.findByIdAndUpdate(
+            id,
+            { isBlocked: condition },
+        );
+
+        console.log('pdt',product);
+        
+
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+
+        const statusMessage = condition ? 'blocked' : 'unblocked';
+
+        return res.json({
+            success: true,
+            message: `${product.productName} ${statusMessage}`,
+        });
+
+    } catch (error) {
+        console.error(error.message, 'Product blocking error');
+        return res.status(500).json({ success: false, message: 'Server error' });
+    }
+};
+
 module.exports = {
     getAddProductPage,
     addProducts,
-    getProductsList
+    getProductsList,
+    addProductOffer,
+    removeProductOffer,
+    productToggleStatus
 }
