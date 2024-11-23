@@ -1,5 +1,6 @@
 
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
 const path = require('path')
 const userRouter = require('./routes/userRouter')
@@ -11,7 +12,16 @@ const DB = require('./config/db');
 
 DB()
 
+app.use(bodyParser.json({ limit: '50mb' })); // Adjust the limit as needed
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
+app.use((err, req, res, next) => {
+    if (err.type === 'entity.too.large') {
+        res.status(413).send('Payload too large');
+    } else {
+        next(err);
+    }
+});
 app.use((express.json()));
 app.use((express.urlencoded({extended:true})));
 

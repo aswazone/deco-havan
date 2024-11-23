@@ -1,0 +1,85 @@
+<%- include("../../views/partials/admin/header")%>
+            <section class="content-main">
+                <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title">Products grid</h2>
+                        <p>Lorem ipsum dolor sit amet.</p>
+                    </div>
+                    <div>
+                        <a href="#" class="btn btn-light rounded font-md">Export</a>
+                        <a href="#" class="btn btn-light rounded font-md">Import</a>
+                        <a href="/admin/addProducts" class="btn btn-primary btn-sm rounded">Create new</a>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <header class="card-header">
+                        <div class="row gx-3">
+                            <div class="col-lg-4 col-md-6 me-auto">
+                                <input type="text" placeholder="Search..." class="form-control" />
+                            </div>
+                            <div class="col-lg-2 col-6 col-md-3">
+                                <select class="form-select">
+                                    <option value="">All categories</option>
+                                    <% cat.forEach(category => { %>
+                                        <option value="<%= category._id %>"><%= category.name %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                            <div class="col-lg-2 col-6 col-md-3">
+                                <select class="form-select">
+                                    <option>Latest added</option>
+                                    <option>Cheap first</option>
+                                    <option>Most viewed</option>
+                                </select>
+                            </div>
+                        </div>
+                    </header>
+                    <!-- card-header end// -->
+                    <div class="card-body">
+                        <div class="row gx-3 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 row-cols-xxl-5">
+            
+                            <!-- col.// -->
+
+                            <% data.forEach(product => { %>
+                                <div class="col">
+                                    <div class="card card-product-grid">
+                                        <a href="#" class="img-wrap">
+                                            <img src="<%= product.imageUrl || 'assets/imgs/items/1.jpg' %>" alt="Product" />
+                                        </a>
+                                        <div class="info-wrap">
+                                            <a href="#" class="title text-truncate"><%= product.productName %></a>
+                                            <div class="d-flex justify-content-between mt-1">
+                                                <span style="color: chocolate; font-size: x-small;">
+                                                    Category: <%= product.category?.name || 'Uncategorized' %>
+                                                </span>
+                                                <span class="mb-2 text-muted" style="font-size: x-small;">
+                                                    Quantity: <%= product.quantity || 0 %>
+                                                </span>
+                                            </div>
+                                            <div class="mb-2">Sale price: ₹<%= product.salePrice || 'N/A' %></div>
+                                            <div class="price mb-2">Offer price: ₹<%= product.offerPrice || 'N/A' %></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }) %>
+                            
+
+                        </div>
+                        <!-- row.// -->
+                    </div>
+                    <!-- card-body end// -->
+                </div>
+                <!-- card end// -->
+                <div class="pagination-area mt-30 mb-50">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-start">
+                            <% for (let i = 1; i <= totalPages; i++) { %>
+                                <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                    <a class="page-link" href="?page=<%= i %>&search=<%= searchQuery %>"><%= i %></a>
+                                </li>
+                            <% } %>
+                        </ul>
+                    </nav>
+                </div>
+            </section>
+            <%- include("../../views/partials/admin/footer")%>
