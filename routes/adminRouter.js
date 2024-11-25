@@ -41,9 +41,15 @@ router.post('/editCategory/:id',adminAuth,categoryController.editCategory);
 router.get('/addProducts',adminAuth,productController.getAddProductPage);
 router.post('/addProducts',adminAuth,uploads.array('images',4),productController.addProducts)
 router.get('/listProducts',adminAuth,productController.getProductsList)
+router.get('/listProductsStyle2',adminAuth,productController.getProductsListStyle2)
 router.post('/addProductOffer',adminAuth,productController.addProductOffer);
 router.post('/removeProductOffer',adminAuth,productController.removeProductOffer);
 router.patch('/productToggleStatus',adminAuth,productController.productToggleStatus);
+router.get("/editProduct",adminAuth,productController.getEditProduct);
+router.post("/editProduct/:id",adminAuth,uploads.array("images",4),productController.editProduct);
+router.post("/deleteImage",adminAuth,productController.deleteSingleImage)
+router.post('/deleteProduct/:id',adminAuth,productController.deleteProduct)
+
 
 
 

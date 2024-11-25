@@ -75,7 +75,7 @@
                           <input class="form-check-input" type="checkbox" value="" />
                         </div>
                       </td>
-                      <td>ID:#123</td>
+                      <td><%=index+1%></td>
                       <td><b>
                           <%=category.name%>
                         </b></td>
@@ -167,43 +167,29 @@
           </div>
           <!-- .col// -->
         </div>
+        <div class="pagination-container text-center">
+          <% if (currentPage > 1) { %>
+              <a href="/admin/users?page=<%= currentPage - 1 %>&search=<%= search %>" class="btn btn-outline-primary btn-sm">Previous</a>
+          <% } %>
+          <% if (currentPage < totalPages) { %>
+              <a href="/admin/users?page=<%= currentPage + 1 %>&search=<%= search %>" class="btn btn-outline-primary btn-sm ms-2">Next</a>
+          <% } %>
+      </div>
         <!-- .row // -->
       </div>
       <!-- card body .// -->
     </div>
     <!-- card .// -->
+
+    
   </section>
 
-  
   
 
   <!-- pagination -->
 
 
-<div class="pagination-container">
-  <!-- Previous Button -->
-  <% if (currentPage> 1) { %>
-    <a href="/admin/users?page=<%= currentPage - 1 %>&search=<%= search %>">&laquo; Previous</a>
-    <% } %>
 
-      <!-- Page Numbers -->
-      <% for (let i=1; i <=totalPages; i++) { %>
-        <% if (i===currentPage) { %>
-          <span class="current-page">
-            <%= i %>
-          </span>
-          <% } else { %>
-            <a href="/admin/users?page=<%= i %>&search=<%= search %>">
-              <%= i %>
-            </a>
-            <% } %>
-              <% } %>
-
-                <!-- Next Button -->
-                <% if (currentPage < totalPages) { %>
-                  <a href="/admin/users?page=<%= currentPage + 1 %>&search=<%= search %>">Next &raquo;</a>
-                  <% } %>
-  </div>
   <script>
     
     const categoryform = document.getElementById('categoryform');

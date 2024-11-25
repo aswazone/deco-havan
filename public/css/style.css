@@ -4,7 +4,7 @@
 * Author URI: https://untree.co/
 * License: https://creativecommons.org/licenses/by/3.0/
 */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
 body {
   overflow-x: hidden;
   position: relative; }
@@ -99,11 +99,11 @@ a {
   background: #3b5d50;
   padding: calc(4rem - 30px) 0 0rem 0; }
   @media (min-width: 768px) {
-    .hero {
-      padding: calc(4rem - 30px) 0 4rem 0; } }
+    /* .hero {
+      padding: calc(4rem - 30px) 0 4rem 0; } } */
   @media (min-width: 992px) {
-    .hero {
-      padding: calc(8rem - 30px) 0 8rem 0; } }
+    /* .hero {
+      padding: calc(8rem - 30px) 0 8rem 0; } } */
   .hero .intro-excerpt {
     position: relative;
     z-index: 4; }
@@ -119,7 +119,7 @@ a {
         font-size: 54px; } }
   .hero p {
     color: rgba(255, 255, 255, 0.5);
-    margin-botom: 30px; }
+    margin-bottom: 30px; }
   .hero .hero-img-wrap {
     position: relative; }
     .hero .hero-img-wrap img {
@@ -314,9 +314,7 @@ a {
 .we-help-section {
   padding: 7rem 0; }
   .we-help-section .imgs-grid {
-    display: -ms-grid;
     display: grid;
-    -ms-grid-columns: (1fr)[27];
     grid-template-columns: repeat(27, 1fr);
     position: relative; }
     .we-help-section .imgs-grid:before {
@@ -505,7 +503,7 @@ a {
         background-color: #3b5d50; }
 
 .before-footer-section {
-  padding: 7rem 0 12rem 0 !important; }
+  padding: 2rem 0 12rem 0 !important; }
 
 .blog-section {
   padding: 7rem 0 12rem 0; }
@@ -709,3 +707,4 @@ textarea {
     height: 50px;
     border-radius: 50%;
     background: rgba(59, 93, 80, 0.2); }
+  }}

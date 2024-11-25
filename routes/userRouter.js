@@ -28,6 +28,7 @@ router.get('/auth/google/callback',passport.authenticate('google',{failureRedire
     res.redirect('/')
 });
 
+router.get('/productDetail/:id',userController.productDetail)
 
 
 

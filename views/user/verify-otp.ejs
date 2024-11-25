@@ -154,6 +154,7 @@
             function startTimer() {
                 timeLeft = 60;
                 resendBtn.disabled = true;
+                otpInput.disabled = false;
                 
                 timerInterval = setInterval(() => {
                     timeLeft--;
@@ -164,6 +165,7 @@
                     if (timeLeft <= 0) {
                         clearInterval(timerInterval);
                         resendBtn.disabled = false;
+                        otpInput.disabled = true;
                         timerDisplay.textContent = "00:00";
                     }
                 }, 1000);

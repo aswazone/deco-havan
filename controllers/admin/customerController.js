@@ -7,6 +7,9 @@ const loadUser = async (req, res) => {
         const page = parseInt(req.query.page, 10) || 1; // Default to page 1
         const limit = 3; // Number of users per page
 
+        console.log('user load');
+        
+
         // Fetch users based on search and pagination
         const users = await User.find({
             isAdmin: false,
@@ -18,7 +21,7 @@ const loadUser = async (req, res) => {
             .limit(limit)
             .skip((page - 1) * limit)
             .exec();
-
+            console.log('user load 2');
         // Get the total number of matching users
         const count = await User.countDocuments({
             isAdmin: false,
@@ -27,10 +30,11 @@ const loadUser = async (req, res) => {
                 { email: { $regex: ".*" + search + ".*", $options: "i" } }
             ]
         });
+        console.log('user load 3');
 
         const totalPages = Math.ceil(count / limit); // Calculate total pages
 
-        res.render('userlist2', {
+        return res.render('userlist2', {
             data: users,         // List of users for the current page
             count,               // Total user count
             search,              // Search term

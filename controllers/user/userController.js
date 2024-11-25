@@ -1,6 +1,8 @@
 const User = require('../../models/userModel');
 const nodemailer = require('nodemailer')
 const env = require('dotenv').config()
+const Product = require('../../models/productModel');
+const Category = require('../../models/categoryModel');
 
 const bcrypt = require('bcrypt');
 
@@ -16,13 +18,19 @@ const loadHomepage = async (req, res) => {
     console.log('home');
 
     try {
-
+        console.log(req.session.user);
         if(req.session.user){
+            
             const userData = await User.findById(req.session.user);
+            const product = await Product.find()
+            console.log(product,'home try');
+            
 
-            return res.render('home',{user: userData})
+            return res.render('home',{user: userData, product: product})
         }else{
-            return res.render('home')
+            const product = await Product.find()
+            console.log(product,'homeelse');
+            return res.render('home',{product})
         }
 
 
@@ -172,8 +180,22 @@ const loadVerifyOtp = async (req, res) => {
 
 const loadShopping = async (req, res) => {
     try {
-        return res.render('shop')
+        
 
+        console.log(req.session.user);
+        if(req.session.user){
+            
+            const userData = await User.findById(req.session.user);
+            const product = await Product.find({isBlocked:false})
+            console.log(product,'shop try');
+            
+            return res.render('shop',{user: userData, product: product})
+        }
+        else{
+            const product = await Product.find({isBlocked:false})
+            console.log(product,'shop')
+            return res.render('shop',{product})
+        }
     } catch (error) {
         console.log(error.message, 'shopping page not found!!');
         res.status(500).send('server error');
@@ -350,6 +372,32 @@ const resendOtp = async (req, res) => {
     }
 }
 
+const productDetail=async(req,res)=>{
+    try {
+
+        if(req.session.user){
+            const userData = await User.findById(req.session.user);
+            const id = req.params.id
+            const product = await Product.findOne({_id:id})
+            const category=await Category.findOne({_id:product.category})
+
+            res.render('productDetails',{userData,product,category})
+        }else{
+            
+            const id = req.params.id
+            const product = await Product.findOne({_id:id})
+            const category=await Category.findOne({_id:product.category})
+            console.log("id is :",id)
+            console.log("product detaileedd")
+            res.render('productDetails',{product,category})
+        }
+        
+    } catch (error) {
+        res.render("pageerror")
+        
+    }
+}
+
 module.exports = {
     loadHomepage,
     pageNotFound,
@@ -363,5 +411,6 @@ module.exports = {
     logout,
     verifyOtp,
     loadVerifyOtp,
-    resendOtp
+    resendOtp,
+    productDetail
 }

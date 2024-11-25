@@ -78,7 +78,7 @@ const getProductsList = async (req, res) => {
     try {
         const search = req.query.search || ""; // Default search to empty string
         const page = parseInt(req.query.page) || 1; // Default page to 1
-        const limit = 4;
+        const limit = 5;
 
         
         // Fetch filtered products with pagination
@@ -116,6 +116,48 @@ const getProductsList = async (req, res) => {
         res.status(500).send("Internal server error in product");
     }
 };
+const getProductsListStyle2 = async (req, res) => {
+    try {
+        const search = req.query.search || ""; // Default search to empty string
+        const page = parseInt(req.query.page) || 1; // Default page to 1
+        const limit = 3;
+
+        
+        // Fetch filtered products with pagination
+        const productData = await Product.find({
+            productName: { $regex: ".*" + search + ".*", $options: "i" },
+        })
+            .limit(limit)
+            .skip((page - 1) * limit)
+            .populate("category") // Populate category details
+            .exec();
+        console.log('product from backend',productData);
+        
+        // Get total count of matching products
+        const count = await Product.find({
+            productName: { $regex: ".*" + search + ".*", $options: "i" },
+        }).countDocuments();
+
+        // Fetch all listed categories for dropdown
+        const category = await Category.find({ isListed: true });
+
+        // Ensure `category` and products data exist
+        if (category && productData) {
+            res.render("products-style2", {
+                data: productData, // Product data
+                currentPage: page, // Current page for pagination
+                totalPages: Math.ceil(count / limit), // Calculate total pages
+                cat: category, // Categories for dropdown
+                searchQuery: search, // Pass current search query for filtering
+            });
+        } else {
+            res.redirect("/pageNotFound");
+        }
+    } catch (error) {
+        console.log("get product list error:", error.message);
+        res.status(500).send("Internal server error in product");
+    }
+};
 
 const addProductOffer = async (req, res) => {
     try {
@@ -139,7 +181,7 @@ const addProductOffer = async (req, res) => {
         findCategory.categoryOffer = 0;
         await findCategory.save()
 
-        res.json({ success: true, message: `Offer added to ${findProduct.name} !!`});
+        res.json({ success: true, message: `Offer added to ${findProduct.productName} !!`});
 
     } catch (error) {
         console.log(error.message, 'Internal server error');
@@ -200,11 +242,115 @@ const productToggleStatus = async (req, res) => {
     }
 };
 
+const getEditProduct=async(req,res)=>{
+    try {
+        const id=req.query.id;
+        console.log(id)
+        const product=await Product.findOne({_id:id});
+        const category=await Category.find({});
+
+        console.log(product);
+       
+        res.render("edit-product",{
+            product:product,
+            cat:category,
+            // brand:brand,
+
+        })
+        
+    } catch (error) {
+        console.log("iam catched")
+        res.redirect("/pageerror")
+    }
+}
+
+const editProduct=async(req,res)=>{
+    try {
+        const id=req.params.id;
+        const product=await Product.findOne({_id:id});
+        const data=req.body;
+        const existingProduct=await Product.findOne({
+            productNae:data.productName,
+            _id:{$ne:id}
+        }) 
+        console.log("category is :",data)
+        console.log("product is :",product)
+        if(existingProduct){
+            return res.status(400).json({error:"product with these name already exists.Please try with another name"})
+        }
+        const images=[];
+
+        if(req.files&&req.files.length>0){
+            for(let i=0;i<req.files.length;i++){
+                images.push(req.files[i].filename);
+            }
+        }
+        const updateFields={
+            productName:data.productName,
+            description:data.description,
+            // brand:data.brand,
+            category:product.category,
+            regularPrice:data.regularPrice,
+            salePrice:data.salePrice,
+            quantity:data.quantity,
+            size:data.size,
+            color:data.color,
+        }
+        if(req.files.length>0){
+            updateFields.$push={productImage:{$each:images}};
+        }
+        await Product.findByIdAndUpdate(id,updateFields,{new:true});
+        res.redirect("/admin/listProducts")
+        
+    } catch (error) {
+        res.redirect("/pageerror")
+        
+    }
+}
+
+const deleteSingleImage=async(req,res)=>{
+    try {
+        
+        const{imageNameToServer,productIdToserver}=req.body;
+        const product =await Product.findByIdAndUpdate(productIdToserver,{$pull:{productImage:imageNameToServer}});
+        const imagePath=path.join("public","uploads","re-image",imageNameToServer);
+       ///image path pass and unlink 
+        if(fs.existsSync(imagePath)){
+            await fs.unlinkSync(imagePath)
+            console.log(`Image ${imageNameToServer} deleted successfully`)
+        }else{
+            console.log(`image ${imageNameToServer} not found`)
+        }
+        res.send({status:true});
+    } catch (error) {
+        res.redirect("/pageerror")
+        
+    }
+}
+
+const deleteProduct = async(req,res)=>{
+    const id = req.params.id;
+    try {
+        const update = await Product.findByIdAndUpdate({_id:id},{isDeleted:true},{new:true});
+        if(!update){
+            return res.status(404).json({message:'product not Found'});
+        }
+        res.status(200).json({message:`${Product} deleted successfully`})
+    } catch (error) {
+        res.status(500).json({message:'Error occured during Deleting product',error:error.message});
+    }
+}
+
 module.exports = {
     getAddProductPage,
     addProducts,
     getProductsList,
+    getProductsListStyle2,
     addProductOffer,
     removeProductOffer,
-    productToggleStatus
+    productToggleStatus,
+    getEditProduct,
+    editProduct,
+    deleteSingleImage,
+    deleteProduct
 }

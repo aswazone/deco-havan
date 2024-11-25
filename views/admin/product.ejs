@@ -27,11 +27,17 @@
                 </div>
                 <div class="col-lg-2 col-6 col-md-3">
                     <select class="form-select">
-                        <option>Latest added</option>
-                        <option>Cheap first</option>
+                      <option>Latest added</option>
+                      <option>Cheap first</option>
                         <option>Most viewed</option>
                     </select>
                 </div>
+                <div class="col-lg-2 col-6 col-md-3">
+                  <select class="form-select" onchange="this.value === 'grid' ? (window.location.href = '/admin/listProducts') : (window.location.href = '/admin/listProductsStyle2')">
+                    <option value="grid">Grid</option>
+                    <option value="list">List</option>
+                  </select>
+              </div>
             </div>
         </header>
         <!-- card-header end// -->
@@ -42,7 +48,7 @@
                     <div class="col">
                         <div class="card card-product-grid">
                             <a href="#" class="img-wrap">
-                                <img src="assets/imgs/items/1.jpg" alt="Product" />
+                                <img src="/uploads/re-image/<%= product.productImage[0]%>" alt="Product" />
                             </a>
                             <% if(product.productOffer > 0) { %>
                             <div class="badge rounded-pill text-white d-flex gap-1" style="position: absolute; top: 10px; right: 10px; font-size: 12px; background-color: #f1b44c; color: #fff; padding: 2px 5px; border-radius: 5px;">
@@ -68,7 +74,7 @@
                                         <a href="#" class="btn btn-outline-info btn-sm font-sm rounded " onclick="addOffer('<%=product._id%>')"> Add offer </a>
                                       <% } else { %>
                                           <a href="#" class="btn btn-sm font-sm rounded" onclick="removeOffer('<%=product._id%>')">
-                                              <i class="material-icons md-delete_forever" style="font-size: 1.2rem"></i> Remove offer
+                                              <i class="material-icons md-delete_forever" style="font-size: 1.2rem"></i> offer
                                           </a>
                                       <% } %>
                                     </div>
@@ -89,7 +95,7 @@
                                               </a>
                                               <div class="dropdown-menu">
                                                   <a class="dropdown-item" href="#">View detail</a>
-                                                  <a class="dropdown-item text-success" href="">Edit</a>
+                                                  <a class="dropdown-item text-success" href="/admin/editProduct?id=<%=product._id%>">Edit</a>
                                                   <a class="dropdown-item btn-danger text-danger">Delete</a>
                                               </div>
                                           </div>

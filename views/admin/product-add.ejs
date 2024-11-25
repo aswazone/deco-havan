@@ -1,0 +1,150 @@
+<%- include("../../views/partials/admin/header") %>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<section class="content-main">
+    <div class="p-6">
+     
+        <!-- Header Section -->
+        
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-semibold text-gray-800">Products</h1>
+            <a class="bg-emerald-500 text-gray-900 px-4 py-2 rounded-lg hover:bg-emerald-600 transition-colors duration-200" href="/admin/product">
+                + Add Product
+            </a>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="bg-white p-4 rounded-lg shadow-sm mb-6">
+            <div class="flex flex-wrap gap-4">
+                <input type="text" placeholder="Search products..." class="flex-1 min-w-[200px] px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-emerald-500">
+                <select class="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-emerald-500" id="productCategory" onchange="navigateToCategory()">
+                    <option value="/productList">All Category</option>
+                    <option value="/admin/productList">All Category</option>
+                   
+                   <% CTGRY.forEach(item=>{ %>
+                    <option value="/admin/productList?category=<%=encodeURIComponent(item.category) %>"><%=item.category %></option>
+                    <% }) %>
+                    
+                   
+                   
+                </select>
+                <select class="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-emerald-500" id="productStock" onchange="navigateToStock()" >
+                    <option value="/admin/productList?stock">Status</option>
+                    <option value="/admin/productList?stock=1000">Status All</option>
+                    <option value="/admin/productList?stock=11">In Stock</option>
+                    <option value="/admin/productList?stock=10">Low Stock</option>
+                    <option value="/admin/productList?stock=0">Out of Stock</option>
+                    <option value="/admin/productList?List=true">Listed</option>
+                    <option value="/admin/productList?List=false">Unlisted</option>
+                    <option value="/admin/productList?Offer=true">Offer</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Product List -->
+        <div class="bg-white rounded-lg shadow-sm">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+                <!-- Product Card -->
+                <% products.forEach(item => { %>
+                <div class="border border-gray-100 rounded-lg p-4 hover:shadow-md transition-shadow duration-200 relative"> 
+                    <% if (item.OfferPrice > 0 && item.RegulerPrice > 0) { %> 
+                        <% let offer = Math.round(((item.RegulerPrice - item.OfferPrice) / item.RegulerPrice) * 100); %>
+                        <div style="position: absolute; top: 2px; left: 2px; background-color: green; border-radius: 2px; padding: 3px; border-radius: 6px;">
+                            <span style="color: rgb(255, 255, 255); font-weight: 600;">
+                                <%= offer %>% OFF
+                            </span>
+                        </div>
+                    <% } %>
+            
+                    <div class="flex gap-4">
+                        <img src="http://localhost:4000/images/<%= item.primaryImage %>" alt="Product" class="w-24 h-24 rounded-lg object-cover">
+                        <div class="flex-1">
+                            <h3 class="font-medium text-gray-800"><%= item.productTitle %></h3>
+                            <p class="text-sm text-gray-500 mb-2"><%= item.Category %></p>
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-emerald-500 font-medium">₹<%= item.RegulerPrice %></span>
+                                <span class="text-sm text-gray-400 line-through"></span>
+                            </div>
+                            <% if (item.Stock > 10) { %>
+                                <span class="inline-block px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">
+                                    In Stock: <%= item.Stock %>
+                                </span>
+                            <% } else if (item.Stock > 0) { %> 
+                                <span class="inline-block px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full">
+                                    Low Stock: <%= item.Stock %>
+                                </span>
+                            <% } else { %> 
+                                <span class="inline-block px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full">
+                                    Out of Stock
+                                </span>
+                            <% } %> 
+                        </div>
+                    </div>
+            
+                    <div class="flex justify-end gap-2 mt-4">
+                        <button class="px-3 py-1 text-sm border border-gray-200 rounded hover:bg-gray-50 transition-colors duration-200">
+                            <a href="/admin/SingleImage/<%= item._id %>"> <i class="fas fa-edit mr-1"></i> Edit</a>
+                        </button>
+                        <% if (item.isList === true) { %> 
+                            <button onclick="toggleUserStatus('<%= item.id %>', false)" class="px-3 py-1 text-sm text-red-600 border border-red-200 rounded hover:bg-red-50 transition-colors duration-200">
+                                <i class="fas fa-trash-alt mr-1"></i> List
+                            </button>
+                        <% } else { %> 
+                            <button onclick="toggleUserStatus('<%= item.id %>', true)" class="px-3 py-1 text-sm text-green-600 border border-green-200 rounded hover:bg-green-50 transition-colors duration-200">
+                                <i class="fa-light fa-arrow-up" style="color: #00b80c;"> UnList</i>
+                            </button>
+                        <% } %>
+                    </div>
+                </div>
+                <% }) %>
+            </div>
+            
+
+            <!-- Pagination -->
+            <div class="border-t border-gray-100 p-4">
+                <div class="flex items-center justify-between">
+                    <p class="text-sm text-gray-500">
+                        Showing <%= (currentPage - 1) * 6 + 1 %> to <%= Math.min(currentPage * 6, totalProducts) %> of <%= totalProducts %> products
+                    </p>
+                    <div class="flex gap-2">
+                        <!-- Previous Button -->
+                        <% if (currentPage > 1) { %>
+                            <a href="/admin/productList?page=<%= currentPage - 1 %>" class="px-3 py-1 text-sm border border-gray-200 rounded hover:bg-gray-50 transition-colors duration-200">
+                                Previous
+                            </a>
+                        <% } %>
+            
+                        <!-- Page Numbers -->
+                        <% 
+                            const maxButtons = 3; // Maximum visible page buttons
+                            let startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
+                            let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+            
+                            // Adjust startPage if we are near the end
+                            if (endPage - startPage + 1 < maxButtons) {
+                                startPage = Math.max(1, endPage - maxButtons + 1);
+                            }
+                        %>
+            
+                        <% for (let i = startPage; i <= endPage; i++) { %>
+                            <a href="/admin/productList?page=<%= i %>" class="px-3 py-1 text-sm <%= i === currentPage ? 'bg-emerald-500 text-white' : 'border border-gray-200' %> rounded hover:bg-emerald-600 transition-colors duration-200">
+                                <%= i %>
+                            </a>
+                        <% } %>
+            
+                        <!-- Next Button -->
+                        <% if (currentPage < totalPages) { %>
+                            <a href="/admin/productList?page=<%= currentPage + 1 %>" class="px-3 py-1 text-sm border border-gray-200 rounded hover:bg-gray-50 transition-colors duration-200">
+                                Next
+                            </a>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</section>
+<%- include("../../views/partials/admin/footer") %>
