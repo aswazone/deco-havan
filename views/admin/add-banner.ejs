@@ -1,0 +1,355 @@
+<%- include("../../views/partials/admin/header") %>
+
+
+    <head>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.css">
+    </head>
+    <style>
+        .error-message {
+            color: red;
+        }
+
+
+        .thumbnails-container {
+            display: flex;
+            overflow-x: auto;
+        }
+
+
+        .thumbnail {
+            margin-right: 10px;
+
+
+        }
+    </style>
+    <section class="content-main">
+        <div class="row">
+            <div class="col-9">
+                <div class="content-header">
+                    <h2 class="content-title">Add New Banner</h2>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form id="bannerForm" enctype="multipart/form-data" onsubmit="submitForm(event)">
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Banner Name</label>
+                                <input type="text" placeholder="Type here" name="title" class="form-control border"
+                                    id="product_name">
+                                <div id="title-error" class="error-message"></div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label">Full description</label>
+                                <textarea placeholder="Type here" id="descriptionid" name="description"
+                                    class="form-control border" rows="4"></textarea>
+                                <div id="description-error" class="error-message"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label class="form-label">Start date</label>
+                                        <input placeholder="$" name="startDate" type="date" class="form-control border">
+                                        <div id="error-start-date" class="error-message"></div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label class="form-label">End date</label>
+                                        <input placeholder="$" name="endDate" type="date" class="form-control border">
+                                        <div id="error-end-date" class="error-message"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+
+                                <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label class="form-label">Link</label>
+                                        <input name="link" type="text" class="form-control border">
+                                    </div>
+                                    <div id="link-error" class="error-message"></div>
+                                </div>
+
+                            </div>
+
+                    </div>
+                    <div class="card mb-2">
+                        <div class="card-header">
+                            <h4>Choose images</h4>
+                        </div>
+                        <div class="border row">
+                            <div id="addedImagesContainer" class="thumbnails-container"></div>
+                        </div>
+                        <div class="row">
+                            <div class="card-body align-items-center" style="margin-bottom: 20px;">
+                                <img src="" alt="" id="imgView1">
+                                <input class="form-control" type="file" name="images" id="input1"
+                                    accept="image/png, image/jpeg, image/jpg"
+                                    onchange="viewImage1(event), viewImage(event, 1)">
+                                <div id="images-error" class="error-message"></div>
+                            </div>
+                            <div class="image-cropper d-flex align-items-center"
+                                style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
+                                <img src="" id="croppedImg1" alt="">
+                                <button type="button" id="saveButton1" class="btn-sm btn-primary">Save</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-md rounded font-sm hover-up" type="submit">Publish</button>
+                </div>
+                </form>
+            </div>
+        </div>
+        </div>
+        </div>
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.js"></script>
+    <script>
+
+        async function submitForm(event) {
+            event.preventDefault();
+
+            if (validateForm()) {
+                console.log('validated');/////////////////////////////////////
+
+
+                const formData = new FormData(document.getElementById('bannerForm'))
+
+                try {
+                    const response = await fetch('/admin/addBanner', {
+                        method: 'POST',
+                        body: formData,
+                    });
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: data.message,
+                            showConfirmButton: false,
+                            timer: 2000
+                        })
+                            .then(() => {
+                                window.location.href = '/admin/getBanner'
+                            })
+                    } else {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'Creation failed !!',
+                            text: data.message,
+                            showConfirmButton: false,
+                            timer: 2000
+                        })
+                            .then(() => {
+                                window.location.href = '/admin/addBanner'
+                            })
+                    }
+                } catch (error) {
+                    console.error("Request failed", error);
+                }
+            } else {
+                console.log("Form validation failed");
+            }
+        }
+
+
+
+
+        function viewImage1(event) {
+            document.getElementById('imgView1').src = URL.createObjectURL(event.target.files[0])
+            console.log('in  view image 1');////////////////////////////////////
+
+        }
+        // function viewImage2(event) {
+        //     document.getElementById('imgView2').src = URL.createObjectURL(event.target.files[0])
+        // }
+        // function viewImage3(event) {
+        //     document.getElementById('imgView3').src = URL.createObjectURL(event.target.files[0])
+        // }
+        // function viewImage4(event) {
+        //     document.getElementById('imgView4').src = URL.createObjectURL(event.target.files[0])
+        // }
+
+        function viewImage(event, index) {
+            console.log('in view image function');////////////////////////////////////
+            let input = event.target;
+            let reader = new FileReader();
+            reader.onload = function () {
+                let dataURL = reader.result;
+                let image = document.getElementById('imgView' + index);
+                image.src = dataURL;
+                let cropper = new Cropper(image, {
+
+                    aspectRatio: 1360 / 777,
+                    viewMode: 1,
+                    guides: true,
+                    background: false,
+                    autoCropArea: 0.8,
+                    zoomable: true
+                });
+                console.log('just before cropper parentNode');/////////////////////////////////
+                let cropperContainer = document.querySelector('#croppedImg' + index).parentNode;
+                cropperContainer.style.display = 'block';
+
+                let saveButton = document.querySelector('#saveButton' + index);
+                saveButton.addEventListener('click', async function () {
+                    let croppedCanvas = cropper.getCroppedCanvas();
+                    let croppedImage = document.getElementById('croppedImg' + index);
+                    croppedImage.src = croppedCanvas.toDataURL('image/jpeg', 0.8);
+
+
+
+                    await croppedCanvas.toBlob((blob) => {
+
+                        let timestamp = new Date().getTime();
+                        let fileName = `cropped-img-${timestamp}-${index}.png`;
+                        console.log(fileName);
+
+                        let input = document.getElementById('input' + index);
+                        let imgFile = new File([blob], fileName, blob)
+                        const fileList = new DataTransfer();
+                        fileList.items.add(imgFile);
+                        input.files = fileList.files;
+
+                    });
+
+                    cropperContainer.style.display = 'none';
+                    cropper.destroy();
+                });
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+
+        const selectedImages = [];
+
+
+        document.getElementById('input1').addEventListener('change', handleFileSelect);
+
+        function handleFileSelect(event) {
+
+            const addedImagesContainer = document.getElementById('addedImagesContainer');
+            addedImagesContainer.innerHTML = '';
+            const files = event.target.files;
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                selectedImages.push(file);
+                const thumbnail = document.createElement('div')
+                thumbnail.classList.add('thumbnail');
+
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                img.alt = 'thumbnail';
+                img.style.width = '50px';
+                img.style.height = 'auto';
+                const removeIcon = document.createElement('span');
+                removeIcon.classList.add('remove-icon');
+                removeIcon.innerHTML = '&times';
+                removeIcon.addEventListener('click', function () {
+                    const index = selectedImages.indexOf(file);
+                    if (index != -1) {
+                        selectedImages.splice(index, 1);
+
+                    }
+                    thumbnail.remove();
+                })
+                thumbnail.appendChild(img);
+                thumbnail.appendChild(removeIcon);
+                addedImagesContainer.appendChild(thumbnail);
+                console.log('after append child');////////////////////////////////
+            }
+        }
+
+        function validateForm() {
+            console.log('inside validate form');//////////////////////////
+            clearErrorMessages();
+            const title = document.getElementsByName('title')[0].value;
+            const description = document.getElementById('descriptionid').value;
+            // const brand = document.getElementsByName('brand')[0].value;
+
+            const link = document.getElementsByName('link')[0].value;
+            const images = document.getElementById('input1')
+            let isValid = true
+            if (title.trim() === "") {
+                displayErrorMessage('title-error', 'Please enter a Banner name.');
+                isValid = false;
+            }
+
+            if (description.trim() === "") {
+                displayErrorMessage('description-error', 'Please enter a Banner description.');
+                isValid = false;
+            }
+
+            const sDate = document.getElementsByName('startDate')[0].value;
+            const eDate = document.getElementsByName('endDate')[0].value;
+
+
+            if (!sDate) {
+                displayErrorMessage("error-start-date", 'Starting date is required');
+                isValid = false;
+            }
+
+
+            if (!eDate) {
+                displayErrorMessage("error-end-date", 'End date is required');
+                isValid = false;
+            }
+
+
+            const sDateObj = new Date(sDate);
+            const eDateObj = new Date(eDate);
+            const todayDateObj = new Date();
+            todayDateObj.setHours(0, 0, 0, 0);
+
+
+            if (sDateObj > eDateObj) {
+                document.getElementById('error-end-date').innerHTML = 'End date should be after the start date';
+                isValid = false;
+            }
+
+
+            if (link.trim() === "") {
+                displayErrorMessage('link-error', 'Please enter a link.');
+                isValid = false;
+            }
+
+            if (images.files.length === 0) {
+                displayErrorMessage("images-error", 'Please select an image.');
+                isValid = false;
+            }
+            return isValid;
+        }
+
+        function displayErrorMessage(elementId, message) {
+            console.log('inside display error msg');///////////////////////////
+            var errorElement = document.getElementById(elementId);
+            errorElement.innerText = message;
+            errorElement.style.display = "block";
+        }
+
+        function clearErrorMessages() {
+            console.log('inside clear wrror')/////////////////////////
+            const errorElements = document.getElementsByClassName('error-message');
+            Array.from(errorElements).forEach(element => {
+                element.innerText = '';
+            });
+            const errorMessage = document.getElementById('errorMessage');
+
+        }
+
+    </script>
+    <%- include("../../views/partials/admin/footer") %>

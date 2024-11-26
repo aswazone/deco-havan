@@ -1,0 +1,56 @@
+<%- include("../../views/partials/admin/header")%>
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Banners</h2>
+            <p>Manage Banners of your website</p>
+        </div>
+        <div>
+            <a href="/admin/addBanner" class="btn btn-primary"><i class="material-icons md-add"></i>Add Banner</a>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive-sm">
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if(locals.data) { %>
+                            <% for(let i = 0;i<data.length;i++) { %>
+                                <tr>
+                                    <td><img src="/uploads/banner/<%=data[i].image%>" width="50" height="50"></td>
+                                    <td><%=data[i].title%></td>
+                                    <td><%=data[i].description%></td>
+                                    <td>
+                                        <% if(data[i].startDate < Date.now() && data[i].endDate > Date.now()) { %>
+                                        <span class="badge rounded-pill alert-success">Active</span>
+                                        <% } else { %>
+                                        <span class="badge rounded-pill alert-danger">Inactive</span>
+                                        <% } %>
+                                    </td>
+                                    <td>
+                                        <a href="/admin/deleteBanner?id=<%=data[i]._id%>" class="btn btn-sm btn-danger"><i class="material-icons md-delete_forever"></i></a>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        <% } else { %> 
+                            No banners
+                        <% } %>
+                            
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include("../../views/partials/admin/footer")%>
+

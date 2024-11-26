@@ -1,0 +1,68 @@
+<%- include("../../views/partials/admin/header")%>
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Add Banner</h2>
+            <p>Add a banner to your website</p>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <form action="/admin/addBanner" method="post" enctype="multipart/form-data">
+                <div class="mb-4">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" name="title" id="title" class="form-control" placeholder="Enter title" required>
+                </div>
+                <div class="mb-4">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea name="description" id="description" class="form-control" placeholder="Enter description" required></textarea>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-4">
+                            <label for="startDate" class="form-label">Start Date</label>
+                            <input type="date" name="startDate" id="startDate" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-4">
+                            <label for="endDate" class="form-label">End Date</label>
+                            <input type="date" name="endDate" id="endDate" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="mb-4">
+                    <label for="image" class="form-label fw-bold fs-2">Choose Image</label>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <input type="file" name="image" id="image" class="form-control" placeholder="Choose image" required onchange="showImagePreview(event)">
+                        </div>
+                        <div class="col-md-2">
+                            <div id="imgPreview" style="width: 100px; height: 100px; border: 1px solid #ccc; border-radius: 10px; display: none; float: right;">
+                                <img src="" class="img-fluid" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">Publish</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<%- include("../../views/partials/admin/footer")%>
+
+<script>
+    function showImagePreview(event) {
+        var reader = new FileReader();
+        reader.onload = function(){
+            var output = document.getElementById('imgPreview');
+            output.src = reader.result;
+            document.getElementById('imgPreview').style.display = "block";
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
+

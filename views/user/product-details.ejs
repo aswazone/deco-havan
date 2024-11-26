@@ -1,0 +1,172 @@
+<%-include("../../views/partials/user/header")%>
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="/home" class="d-flex align-items-center"> Home </a>
+        </li>
+        <li
+          class="breadcrumb-item active"
+          aria-current="page"
+          style="color: rgb(27, 94, 27)"
+        >
+          Shop View
+        </li>
+      </ol>
+    </nav>
+
+    <div class="container mt-5 product-detail-container">
+      <div class="row">
+        <!-- Left: Main Product Image and Thumbnails -->
+        <div class="col-md-6 product-images">
+          <div class="main-image mb-3" id="mainImageContainer">
+            <img
+              id="mainImage"
+              src=""
+              class="img-fluid"
+              alt=""
+            />
+            <div class="zoom-circle" id="zoomCircle"></div>
+            <!-- Zoom circle -->
+          </div>
+          <div class="thumbnail-images d-flex">
+            <img
+              src=""
+              class="thumbnail img-thumbnail"
+              alt=""
+            />
+          </div>
+        </div>
+
+        <!-- Right: Product Details -->
+        <div class="col-md-6 product-info">
+          <h1 class="product-title">name</h1>
+          <p class="price">
+            <span class="offer-price">&#8377;</span
+            >
+            <span class="original-price">&#8377</span>
+            <span class="discount">
+              
+            </span>
+           
+          </p>
+          <p class="description">description</p>
+
+          <ul class="features">
+            <li>ftf</li>
+            <li>gfhfghfgfg</li>
+            <li>
+              gfddfh
+            </li>
+          </ul>
+
+          <!-- Color and Size Options -->
+          <div class="options mt-4">
+            <div class="color-options mb-3">
+              <label>Color:</label>
+             
+              <button
+                class="color-option"
+                style="background-color: black"></button>
+              
+            </div>
+            <div class="size-options mb-3">
+              <label>Size:</label>
+              
+              <label class="size-option"
+                ><input class="size-selection" type="radio" name="size" value="" /> size</label
+              >
+              
+            </div>
+          </div>
+          <div>
+            
+            <p style="color: green">In Stock: </p>
+            
+            <p style="color: red">Out of Stock</p>
+            
+          </div>
+
+          <div class="wrap-num-product flex-w m-r-20 m-tb-10">
+            <div
+              class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m"
+              onclick="decreaseQuantity()"
+            >
+              <i class="fs-16 zmdi zmdi-minus"></i>
+            </div>
+            <div style="display: flex">
+              <p style="margin-top: 8px; margin-right: 8px">Quantity</p>
+              <input
+                class="mtext-104 cl3 txt-center num-product"
+                style="width: 66px; height: 32px; margin-top: 4px"
+                type="number"
+                name="num-product"
+                value="1"
+                data-stock="<%= product.quantity %>"
+                id="quantityInput"
+                min="1"
+                max="<%= product.quantity %>"
+              />
+
+              <div
+                class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m"
+                oninput="validateQuantity()"
+                onclick="increaseQuantity()"
+              >
+                <i class="fs-16 zmdi zmdi-plus"></i>
+              </div>
+              <p id="QuantityError" style="color: red"></p>
+            </div>
+          </div>
+          <!-- Add to Cart and Buy Now -->
+          <div class="actions mt-3">
+
+            <button
+              class="btn btn-primary add-to-cart-btn"
+              data-id=""
+              data-name=""
+              data-price=""
+              data-image=""
+            >
+              Add to Cart
+            </button>
+
+            <button class="btn btn-warning">Buy Now</button>
+            <img
+              class="heart-icon"
+              src="/images/"
+              alt="pic"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Reviews and Related Products -->
+      <div class="row mt-5">
+        <div class="col-12">
+          <h3>Reviews</h3>
+
+          <!-- Add Reviews Section Here -->
+
+          <h3 class="mt-5">Related Products</h3>
+          <div class="related-products d-flex flex-wrap">
+            <div class="col-md-3 text-center related-product">
+              <img
+                src=""
+                class="img-fluid"
+                alt=""
+              />
+              <p></p>
+              <p class="price">&#8377;asdas</p>
+              <a
+                href="/productDetails/"
+                class="btn btn-outline-primary"
+                >View</a
+              >
+            </div>
+        
+          </div>
+        </div>
+      </div>
+      <p></p>
+    </div>
+    <%-include("../../views/partials/user/footer")%>

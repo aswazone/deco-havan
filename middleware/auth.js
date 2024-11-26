@@ -22,23 +22,23 @@ const userAuth = async (req,res,next)=>{
 const adminAuth = async (req,res,next)=>{
     try {
 
-        if(req.session.admin){
+        // if(req.session.admin){
 
-            const data = await User.findOne({isAdmin:true})
+        //     const data = await User.findOne({isAdmin:true})
             
-            console.log(data);
+        //     console.log(data);
                     
-            if(data){
-                next();
-            }else{
-                res.redirect('/admin/login');
-            }
-        }else{
-            res.redirect('/admin/login');
-        }
-        // console.log('auth');
+        //     if(data){
+        //         next();
+        //     }else{
+        //         res.redirect('/admin/login');
+        //     }
+        // }else{
+        //     res.redirect('/admin/login');
+        // }
+        console.log('auth');
         
-        // next()
+        next()
         
     } catch (error) {
         console.log(error.message,'adminAuth error');

@@ -29,7 +29,7 @@ router.get('/auth/google/callback',passport.authenticate('google',{failureRedire
 });
 
 router.get('/productDetail/:id',userController.productDetail)
-
+router.get('/profile',userController.profile)
 
 
 

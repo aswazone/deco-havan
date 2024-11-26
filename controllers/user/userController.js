@@ -398,6 +398,14 @@ const productDetail=async(req,res)=>{
     }
 }
 
+const profile = async (req,res)=>{
+    try {
+        const userData = await User.findById(req.session.user);
+        res.render('test',{userData})
+    } catch (error) {
+        res.render("pageerror")
+    }
+}
 module.exports = {
     loadHomepage,
     pageNotFound,
@@ -412,5 +420,6 @@ module.exports = {
     verifyOtp,
     loadVerifyOtp,
     resendOtp,
-    productDetail
+    productDetail,
+    profile
 }

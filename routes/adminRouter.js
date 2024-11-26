@@ -4,11 +4,13 @@ const adminController = require('../controllers/admin/adminController')
 const customerController = require('../controllers/admin/customerController')
 const categoryController = require('../controllers/admin/categoryController.js');
 const productController = require('../controllers/admin/productController.js');
+const bannerController = require('../controllers/admin/bannerController.js');
 const {userAuth,adminAuth} = require('../middleware/auth');
 
 const multer = require('multer');
 const storage = require('../helpers/multer');
 const uploads = multer({storage:storage});
+const upload = require('../helpers/multer-banner');
 
 
 //login-management
@@ -50,6 +52,10 @@ router.post("/editProduct/:id",adminAuth,uploads.array("images",4),productContro
 router.post("/deleteImage",adminAuth,productController.deleteSingleImage)
 router.post('/deleteProduct/:id',adminAuth,productController.deleteProduct)
 
+//banner-management
+router.get('/getBanner',adminAuth,bannerController.getBannerPage);
+router.get('/addBanner',adminAuth,bannerController.getAddBannerPage);
+router.post('/addBanner', adminAuth,upload.single('images'),bannerController.addBanner);
 
 
 

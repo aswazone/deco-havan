@@ -278,6 +278,8 @@
                         
                         let timestamp = new Date().getTime();
                         let fileName = `cropped-img-${timestamp}-${index}.png`;
+                        console.log(fileName);
+                        
                         let input = document.getElementById('input' + index);
                         let imgFile = new File([blob], fileName, blob)
                         const fileList = new DataTransfer();
