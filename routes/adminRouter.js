@@ -56,6 +56,8 @@ router.post('/deleteProduct/:id',adminAuth,productController.deleteProduct)
 router.get('/getBanner',adminAuth,bannerController.getBannerPage);
 router.get('/addBanner',adminAuth,bannerController.getAddBannerPage);
 router.post('/addBanner', adminAuth,upload.single('images'),bannerController.addBanner);
+router.delete('/deleteBanner/:id',adminAuth,bannerController.deleteBanner);
+
 
 
 

@@ -10,6 +10,8 @@ const passport = require('./config/passport')
 const env = require('dotenv').config();
 const DB = require('./config/db');
 
+const MongoStore = require('connect-mongo')
+
 DB()
 
 app.use(bodyParser.json({ limit: '50mb' })); // Adjust the limit as needed
@@ -33,7 +35,9 @@ app.use(session({
         secure:false,
         httpOnly:true,
         maxAge:72*60*60*1000 //72 hr
-    }
+    },
+    store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI })
+
 }))
 
 app.use(passport.initialize());

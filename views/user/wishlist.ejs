@@ -1,0 +1,258 @@
+<%-include("../../views/partials/user/header")%>
+    <title>Responsive User Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            height: 100vh;
+
+            background: linear-gradient(1deg, #3a6655, #9bb5ab, #3b5d50);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .profile-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .sidebar {
+            background-color: #d7ffd753;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 250px;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 10px 15px;
+            color: #333;
+            font-size: 18px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background-color: #3b5d50;
+            color: #d7ffd7a9;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            background-color: #d7ffd753;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-image-container {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            margin: auto;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #d7ffd753;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-control {
+            border: 1px solid #dfffe79c !important;
+            background-color:  #e2ffe94f !important;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .btn-primary {
+            background-color: #ff609e;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #d95886;
+        }
+
+        .address-card {
+            background-color: #dfffe79c;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                max-width: 100%;
+            }
+
+            .main-content {
+                width: 100%;
+            }
+        }
+        
+    </style>
+    <style>
+        /* body {
+            background: linear-gradient(to bottom right, #ffffff, #f2f2f2);
+            font-family: 'Poppins', sans-serif;
+        } */
+
+        /* .main-content {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            margin: 30px auto;
+            max-width: 900px;
+        } */
+
+        .wishlist-item {
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .wishlist-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .wishlist-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 20px;
+        }
+
+        .wishlist-item .item-details {
+            flex-grow: 1;
+        }
+
+        .wishlist-item h5 {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .wishlist-item p {
+            color: #6c757d;
+            margin: 0;
+        }
+
+        .wishlist-item .btn {
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        .btn-primary {
+            background-color: #ff609e;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #ff3d88;
+        }
+
+        .btn-danger {
+            background-color: #e74c3c;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        @media (max-width: 768px) {
+            .wishlist-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .wishlist-item img {
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-3">
+        <div class="profile-container">
+            <!-- Sidebar -->
+            <aside class="sidebar d-flex flex-column gap-2">
+                <h4 class="text-center mb-4">My Account</h4>
+                <a href="#profile" class="sidebar-link "><i class="bi bi-person-circle"></i> Profile</a>
+                <a href="#orders" class="sidebar-link "><i class="bi bi-cart"></i> Orders</a>
+                <a href="#wishlist" class="sidebar-link active"><i class="bi bi-heart"></i> Wishlist</a>
+                <a href="#wallet" class="sidebar-link"><i class="bi bi-wallet2"></i> Wallet</a>
+            </aside>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <h3 class="mb-4">My Wishlist</h3>
+        
+                <!-- Wishlist Item -->
+                <div class="wishlist-item mb-4">
+                    <img src="https://via.placeholder.com/100" alt="Product Image">
+                    <div class="item-details">
+                        <h5>Product Name 1</h5>
+                        <p>₹ 49.99</p>
+                    </div>
+                    <div class="d-flex">
+                        <button class="btn btn-primary me-2"><i class="bi bi-cart-plus"></i> Add to Cart</button>
+                        <button class="btn btn-danger"><i class="bi bi-trash"></i> Remove</button>
+                    </div>
+                </div>
+        
+                <!-- Another Wishlist Item -->
+                <div class="wishlist-item mb-4">
+                    <img src="https://via.placeholder.com/100" alt="Product Image">
+                    <div class="item-details">
+                        <h5>Product Name 2</h5>
+                        <p>₹ 79.99</p>
+                    </div>
+                    <div class="d-flex">
+                        <button class="btn btn-primary me-2"><i class="bi bi-cart-plus"></i> Add to Cart</button>
+                        <button class="btn btn-danger"><i class="bi bi-trash"></i> Remove</button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <script>
+        // JavaScript to toggle 'active' class on click
+        const links = document.querySelectorAll('.sidebar-link');
+    
+        links.forEach(link => {
+            link.addEventListener('click', function () {
+                // Remove active class from all links
+                links.forEach(l => l.classList.remove('active'));
+                // Add active class to the clicked link
+                this.classList.add('active');
+            });
+        });
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,7 +1,8 @@
 const express = require('express');
 const app = express();
 const userController = require('../controllers/user/userController')
-
+const profileController = require('../controllers/user/profileController')
+const {userAuth,adminAuth} = require('../middleware/auth');
 const passport = require('passport');
 const router = express.Router();
 
@@ -29,8 +30,18 @@ router.get('/auth/google/callback',passport.authenticate('google',{failureRedire
 });
 
 router.get('/productDetail/:id',userController.productDetail)
-router.get('/profile',userController.profile)
 
+//profile-management
+router.get('/profile',userAuth,profileController.profile)
+router.post('/verify-email',userAuth,profileController.verifyEmail)
+router.post('/email-otp',userAuth,profileController.verifyOtp)
+router.get('/reset-password',userAuth,profileController.resetPassword)
+router.patch('/reset-password',userAuth,profileController.passwordChanged)
+
+//address-management
+router.post('/addAddress',userAuth,profileController.addAddress)
+router.get('/editAddress',userAuth,profileController.editAddress)
+router.post('/editAddress',userAuth,profileController.postEditAddress)
 
 
 

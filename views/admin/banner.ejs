@@ -37,7 +37,7 @@
                                         <% } %>
                                     </td>
                                     <td>
-                                        <a href="/admin/deleteBanner?id=<%=data[i]._id%>" class="btn btn-sm btn-danger"><i class="material-icons md-delete_forever"></i></a>
+                                        <a href="" class="btn btn-sm btn-danger" onclick="deleteBanner('<%=data[i]._id%>')"><i class="material-icons md-delete_forever"></i></a>
                                     </td>
                                 </tr>
                             <% } %>
@@ -50,7 +50,63 @@
             </div>
         </div>
     </div>
+
 </section>
+<script>
+async function deleteBanner(bannerId) {
+    try {
+        const response = await fetch(`/admin/deleteBanner/${bannerId}`, {
+        method: 'DELETE',
+        });
+
+        // Check if response is OK
+        if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Network response was not ok');
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+        // Success Alert
+        await Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: data.message,
+            showConfirmButton: false,
+            timer: 2000,
+        });
+
+        // Reload the page after successful deletion
+        window.location.href = '/admin/getBanner';
+        } else {
+        // Failure Alert
+        await Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'Deletion failed !!',
+            text: data.message,
+            showConfirmButton: false,
+            timer: 2000,
+        });
+        }
+    } catch (error) {
+        console.error('Request failed', error);
+        await Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'error',
+        title: 'Server Error',
+        text: error.message || 'An unexpected error occurred',
+        showConfirmButton: false,
+        timer: 3000,
+        });
+    }
+}
+
+</script>
 
 <%- include("../../views/partials/admin/footer")%>
 

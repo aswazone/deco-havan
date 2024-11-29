@@ -1,0 +1,315 @@
+<%-include("../../views/partials/user/header")%>
+    <title>Responsive User Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            height: 100vh;
+            background: linear-gradient(1deg, #3a6655, #9bb5ab, #3b5d50);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .profile-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .sidebar {
+            background-color: #fff09417;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 250px;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 10px 15px;
+            color: #333;
+            font-size: 18px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background-color: #3b5d50;
+            color: #d7ffd7a9;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            background-color: #7ccfb930;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-image-container {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            margin: auto;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #d7ffd753;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-control {
+            border: 1px solid #dfffe79c !important;
+            background-color:  #e2ffe94f !important;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .btn-primary {
+            background-color: #ff609e;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #d95886;
+        }
+
+        .address-card {
+            background-color: #dfffe79c;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .bg-div {
+            background-color: #fff09417;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        div {
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .order-item {
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .order-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .order-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 20px;
+        }
+
+        .order-item .order-details {
+            flex-grow: 1;
+        }
+
+        .order-item h5 {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .order-item p {
+            color: #6c757d;
+            margin: 0;
+        }
+
+        .order-item .status {
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .order-item .order-actions {
+            text-align: right;
+        }
+
+        .order-item .btn {
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                max-width: 100%;
+            }
+
+            .main-content {
+                width: 100%;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+
+
+    <div class="main-content d-flex gap-3 m-4 ">
+        <aside class="sidebar d-flex flex-column gap-2">
+            <h4 class="text-center mb-4">My Account</h4>
+            <a class="sidebar-link" data-bs-toggle="tab" href="#profile"><i class="bi bi-person-circle"></i> Profile</a>
+            <a class="sidebar-link" data-bs-toggle="tab" href="#orders"><i class="bi bi-cart"></i> Orders</a>
+            <a class="sidebar-link" data-bs-toggle="tab" href="#wishlist"><i class="bi bi-heart"></i> Wishlist</a>
+            <a class="sidebar-link" data-bs-toggle="tab" href="#wallet"><i class="bi bi-wallet2"></i> Wallet</a>
+            <a class="sidebar-link active" data-bs-toggle="tab" href="#address"><i class="bi bi-geo-alt"></i> Address</a>
+        </aside>
+        
+        <!-- Main Content with Tabs -->
+        <div class="main-content">
+            <div class="tab-content">
+                
+                <div class="tab-pane fade show active" id="editAddress">
+                    <!-- Address input form here -->
+                    <div class="address-card mb-3">
+                        <h5 class="mb-4"><strong>Edit Address</strong></h5>
+                        <form id="editAddressForm">
+                            <div class="mb-3">
+                                <label for="addressType" class="form-label">Address Type</label>
+                                <input type="text" id="addressType" class="form-control" value="<%= address.addressType %>" name="addressType" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" id="name" class="form-control" value="<%= address.name %>" name="name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="city" class="form-label">City</label>
+                                <input type="text" id="city" class="form-control" value="<%= address.city %>" name="city" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="landmark" class="form-label">Landmark</label>
+                                <input type="text" id="landmark" class="form-control" value="<%= address.landMark%>" name="landmark">
+                            </div>
+                            <div class="mb-3">
+                                <label for="state" class="form-label">State</label>
+                                <input type="text" id="state" class="form-control" value="<%= address.state %>" name="state" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="pincode" class="form-label">Pincode</label>
+                                <input type="number" id="pincode" class="form-control" value="<%= address.pincode %>" name="pincode" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone</label>
+                                <input type="number" id="phone" class="form-control" value="<%= address.phone %>" name="phone" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="altPhone" class="form-label">Alternate Phone</label>
+                                <input type="number" id="altPhone" class="form-control" value="<%= address.altPhone %>" name="altPhone">
+                            </div>
+                            <button type="submit" class="btn btn-success" onclick="submitForm('<%= address._id %>')">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+
+        const editForm = document.getElementById('editAddressForm');
+        const addressType = document.getElementById('addressType');
+        const name = document.getElementById('name');
+        const city = document.getElementById('city');
+        const landMark = document.getElementById('landmark');
+        const state = document.getElementById('state');
+        const pincode = document.getElementById('pincode');
+        const phone = document.getElementById('phone');
+        const altPhone = document.getElementById('altPhone');
+
+        async function submitForm(addressId) {
+
+                event.preventDefault();
+
+              await fetch(`/editAddress?id=${addressId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        addressType: addressType.value,
+                        name: name.value,
+                        city: city.value,
+                        landMark: landMark.value,
+                        state: state.value,
+                        pincode: pincode.value,
+                        phone: phone.value,
+                        altPhone: altPhone.value
+                    })
+                }).then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    if(data.success){
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Address Updated !!',
+                            showConfirmButton: false,
+                            timer: 2000
+                        })
+                        .then(() => {
+                            window.location.href = '/profile';
+                        })
+                    }else{
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'error',
+                            title: data.message,
+                            showConfirmButton: false,
+                            timer: 2000
+                        })
+                    }
+                })
+                .catch(error => {
+                    console.log(error.message, 'blocking problem');
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'An error occurred',
+                        text: error.message,
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                });
+                
+            
+
+        }
+
+        
+
+    
+        
+    </script>
+
+<%-include("../../views/partials/user/footer")%>

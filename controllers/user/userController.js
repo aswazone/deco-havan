@@ -3,6 +3,7 @@ const nodemailer = require('nodemailer')
 const env = require('dotenv').config()
 const Product = require('../../models/productModel');
 const Category = require('../../models/categoryModel');
+const Banner = require('../../models/bannerModel');
 
 const bcrypt = require('bcrypt');
 
@@ -19,6 +20,10 @@ const loadHomepage = async (req, res) => {
 
     try {
         console.log(req.session.user);
+        const today = new Date().toISOString();
+        const findBanner = await Banner.find({
+            startDate: { $lt: new Date(today) }, endDate: { $gt: new Date(today) },
+        })
         if(req.session.user){
             
             const userData = await User.findById(req.session.user);
@@ -26,11 +31,11 @@ const loadHomepage = async (req, res) => {
             console.log(product,'home try');
             
 
-            return res.render('home',{user: userData, product: product})
+            return res.render('home',{user: userData, product: product ,banner: findBanner || []})
         }else{
             const product = await Product.find()
             console.log(product,'homeelse');
-            return res.render('home',{product})
+            return res.render('home',{product: product, banner: findBanner || []})
         }
 
 
@@ -220,6 +225,8 @@ function generateOtp() {
 
 async function sendVerificationEmail(email, otp) {
     try {
+        console.log('----------------------------------------------1');
+        
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             port: 587,
@@ -230,6 +237,7 @@ async function sendVerificationEmail(email, otp) {
                 pass: process.env.NODEMAILER_PASSWORD
             }
         });
+        console.log('----------------------------------------------2');
 
         const mailOptions = {
             from: {
@@ -247,6 +255,7 @@ async function sendVerificationEmail(email, otp) {
                 <p>Best regards,<br>The DecoHavan Team</p>
             `,
         };
+        console.log('----------------------------------------------3');
 
         const info = await transporter.sendMail(mailOptions);
         console.log(info.accepted);
@@ -398,14 +407,7 @@ const productDetail=async(req,res)=>{
     }
 }
 
-const profile = async (req,res)=>{
-    try {
-        const userData = await User.findById(req.session.user);
-        res.render('test',{userData})
-    } catch (error) {
-        res.render("pageerror")
-    }
-}
+
 module.exports = {
     loadHomepage,
     pageNotFound,
@@ -421,5 +423,4 @@ module.exports = {
     loadVerifyOtp,
     resendOtp,
     productDetail,
-    profile
 }

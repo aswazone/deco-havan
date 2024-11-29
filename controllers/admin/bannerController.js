@@ -53,12 +53,28 @@ const addBanner = async (req, res) => {
   }
 };
 
-
+const deleteBanner = async (req, res) =>{
+    try {
+        const bannerId = req.params.id;
+        const banner = await Banner.findByIdAndDelete(bannerId);
+        console.log('banner deleted');
+        
+        if (!banner) {
+          return res.status(404).json({ success: false, message: 'Banner not found' });
+        }
+    
+        res.json({ success: true, message: 'Banner deleted successfully' });
+      } catch (error) {
+        console.error(error.message, 'banner deletion error');
+        res.status(500).json({ success: false, message: 'Server error' });
+      }
+}
 
 
 module.exports = {
     getBannerPage,
     getAddBannerPage,
-    addBanner
+    addBanner,
+    deleteBanner
 
 };

@@ -1,10 +1,4 @@
-<!-- /*
-* Bootstrap 5
-* Template Name: Furni
-* Template Author: Untree.co
-* Template URI: https://untree.co/
-* License: https://creativecommons.org/licenses/by/3.0/
-*/ -->
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -16,18 +10,53 @@
   <meta name="keywords" content="bootstrap, bootstrap4" />
 
 		<!-- Bootstrap CSS -->
-		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 		<link href="css/tiny-slider.css" rel="stylesheet">
 		<link href="css/style.css" rel="stylesheet">
 		<title>Deco-Havan</title>
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+		<style>
+			@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+			h1  {
+        font-family: 'Nunito', sans-serif;
+			}
+			
+			h2  {
+        font-family: 'Nunito', sans-serif;
+			}
+			h3  {
+				font-family: 'Nunito', sans-serif;
+			}
+			h4    {
+				font-family: 'Nunito', sans-serif;
+			}
+			h5   {
+				font-family: 'Nunito', sans-serif;
+			}
+			h6   {
+				font-family: 'Nunito', sans-serif;
+			}
+
+			button {
+				font-family: 'Nunito', sans-serif;
+			}
+			a {
+				font-family: 'Nunito', sans-serif;
+				font-weight: bold;
+			}
+			label {
+				font-family: 'Nunito', sans-serif;
+			}
+		</style>
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.4/dist/sweetalert2.all.min.js"></script>
 	</head>
 
 	<body>
 
 		<!-- Start Header/Navigation -->
-		<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
+		<nav class="custom-navbar navbar navbar navbar-expand-md" arial-label="Furni navigation bar">
 
 			<div class="container">
 				<div class="text-start">
@@ -53,9 +82,9 @@
 
 					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
 						<li class="nav-item dropdown">
-							<a class="nav-link pe-1 dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<a class="nav-link pe-1 dropdown-toggle profile" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 								<% if (locals.user) { %>
-									<span class="me-2"><%= locals.user.name %></span>
+									<span class="me-2 "><%= locals.user.name %></span>
 								<% } %>
 								<i class="fa-regular fa-user"></i>
 							</a>

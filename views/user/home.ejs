@@ -1,23 +1,64 @@
 <%- include("../../views/partials/user/header")%>
+<head>
+	<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+	
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+		/* Customize navigation buttons */
+.swiper-button-next,
+.swiper-button-prev {
+  color: #ffffff;
+  width: 50px;
+  height: 50px;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  color: #f9bf29;
+}
+
+/* Customize pagination dots */
+.swiper-pagination-bullet {
+  background: rgba(255, 255, 255, 0.5);
+  width: 12px;
+  height: 12px;
+}
+
+.swiper-pagination-bullet-active {
+  background: #ffffff;
+}
+
+	</style>
+</head>
 		<!-- Start Hero Section -->
-			<div class="hero">
-				<div class="container">
-					<div class="row justify-content-between">
-						<div class="col-lg-5">
-							<div class="intro-excerpt">
-								<h1>Modern Interior<span clsas="d-block">Design Studio Offering Unique Perspectives</span></h1>
-								<p class="mb-4">Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique.</p>
-								<p><a href="/shop" class="btn btn-secondary me-2">Shop Now</a><a href="#" class="btn btn-white-outline">Explore</a></p>
-							</div>
+		<div id="heroCarousel" class="swiper">
+			<div class="swiper-wrapper">
+			  <% banner.slice(0, 3).forEach(bannerItem => { %>
+				<div class="swiper-slide">
+				  <img src="uploads/banner/<%= bannerItem.image %>" class="d-block w-100 img-fluid" alt="Hero Image">
+				  <div class="carousel-caption d-none d-md-block">
+					<a href="/shop" style="color: #fce3a5;">
+						<div class="intro-excerpt" style="margin-bottom: 100px;">
+						<h1 class="display-4" style="text-shadow: -5px 4px 12px rgb(0 0 0 / 65%); font-weight: 600; font-size: 3.5rem; font-family: 'Nunito', sans-serif;"><%= bannerItem.title %></h1>
+						<p class="lead mb-4" style="text-shadow: 0px 4px 16px 0px #313131;"><%= bannerItem.description %></p>
+						<p>
+							<a href="/shop" class="btn btn-secondary me-2" style="box-shadow: 0px 4px 16px 0px #313131;">Shop Now</a>
+							<a href="/shop" class="btn btn-white-outline" style="box-shadow: 0px 4px 16px 0px #313131;">Explore</a>
+						</p>
 						</div>
-						<div class="col-lg-7">
-							<div class="hero-img-wrap">
-								<img src="images/couch.png" class="img-fluid">
-							</div>
-						</div>
-					</div>
+					</a>
+				  </div>
 				</div>
+			  <% }); %>
 			</div>
+		  
+			<!-- Navigation buttons -->
+			<div class="swiper-button-next"></div>
+			<div class="swiper-button-prev"></div>
+			<div class="swiper-pagination"></div>
+		  </div>
+		  
 		<!-- End Hero Section -->
 
 		<!-- Start Product Section -->
@@ -319,4 +360,39 @@
 			</div>
 		</div>
 		<!-- End Blog Section -->	
+
+		<script>
+			document.addEventListener("scroll", function() {
+				const navbar = document.querySelector(".custom-navbar");
+				if (window.scrollY > 50) {
+					document.body.classList.add("scrolled");
+				} else {
+					document.body.classList.remove("scrolled");
+				}
+				});
+
+				document.addEventListener("DOMContentLoaded", function () {
+			const swiper = new Swiper('#heroCarousel', {
+				loop: true, // Allows infinite loop
+				autoplay: {
+				delay: 5000, // Auto slide every 5 seconds
+				disableOnInteraction: false, // Keeps autoplay on after manual interaction
+				},
+				navigation: {
+				nextEl: '.swiper-button-next',
+				prevEl: '.swiper-button-prev',
+				},
+				pagination: {
+				el: '.swiper-pagination',
+				clickable: true,
+				},
+				effect: 'fade', // Smooth fade effect
+				fadeEffect: {
+				crossFade: true,
+				},
+				speed: 800, // Transition speed in ms
+			});
+			});
+
+		</script>
          <%- include('../../views/partials/user/footer')%>
