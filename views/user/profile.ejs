@@ -223,21 +223,49 @@
                 <!-- Orders Section -->
                 <div class="tab-pane fade" id="orders">
                     <h3 class="mb-4 bg-div">My Orders</h3>
-                    <!-- Orders details here -->
-                    <div class="order-item">
-                        <div class="order-details">
-                            <h5>Order #123456</h5>
-                            <p><strong>Product:</strong> Product Name 1</p>
-                            <p><strong>Date:</strong> November 24, 2024</p>
-                            <p><strong>Total:</strong> $79.99</p>
-                            <p class="status"><i class="bi bi-check-circle-fill"></i> Delivered</p>
-                        </div>
-                        <div class="order-actions">
-                            <button class="btn btn-primary me-2"><i class="bi bi-eye"></i> View Order</button>
-                            <button class="btn btn-secondary"><i class="bi bi-download"></i> Download Invoice</button>
-                        </div>
-                    </div>
+                
+                    <!-- Loop through each order and display order details dynamically -->
+                    <% if (orders && orders.length > 0) { %>
+                        <% orders.forEach(order => { %>
+                            <div class="order-item">
+                                <div class="order-details">
+                                    <h5>Order #<%= order.orderId %></h5>
+                                    <p><strong>Product:</strong> 
+                                        <% order.orderItems.forEach(item => { %>
+                                            <span><%= item.product.productName %></span>, <!-- Display product name -->
+                                        <% }) %>
+                                    </p>
+                                    <p><strong>Date:</strong> <%= new Date(order.invoiceDate).toLocaleDateString() %></p>
+                                    <p><strong>Total:</strong> ₹ <%= order.finalAmount.toFixed(2) %></p>
+                                    <p class="status">
+                                        <% if (order.status === 'Delivered') { %>
+                                            <i class="bi bi-check-circle-fill"></i> Delivered
+                                        <% } else if (order.status === 'Pending') { %>
+                                            <i class="bi bi-clock"></i> Pending
+                                        <% } else if (order.status === 'Canceled') { %>
+                                            <i class="bi bi-x-circle-fill"></i> Canceled
+                                        <% } else { %>
+                                            <i class="bi bi-arrow-repeat"></i> <%= order.status %>
+                                        <% } %>
+                                    </p>
+                                </div>
+                                <div class="order-actions">
+                                    <% if (order.status !== 'Canceled') { %>  <!-- Only show cancel button if the order is not already canceled -->
+                                        <button id="cancel-order-<%= order.orderId %>" class="btn btn-danger me-2" onclick="cancelOrder('<%= order.orderId %>')">
+                                            <i class="bi bi-x-circle-fill"></i> Cancel Order
+                                        </button>
+                                    <% } %>
+                                    <!-- <button class="btn btn-secondary">
+                                        <i class="bi bi-download"></i> Download Invoice
+                                    </button> -->
+                                </div>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <p>No orders found.</p>
+                    <% } %>
                 </div>
+                
         
                 <!-- Wishlist Section -->
                 <div class="tab-pane fade" id="wishlist">
@@ -324,7 +352,7 @@
                     <div class="address-card mb-3 d-flex justify-content-between align-items-center">
                         <h5 class="mb-4"><strong>Manage Addresses</strong></h5><a class="btn btn-success sidebar-link" data-bs-toggle="tab" href="#addAddress"><i class="bi bi-plus"></i>Address</a>
                     </div>
-                    <% if (userAddress) { %>
+                    <% if (userAddress && userAddress.address) { %>
                         <% userAddress.address.forEach(address => { %>
                             <div class="address-card mb-3">
                                 <div class="d-flex justify-content-between">
@@ -339,7 +367,7 @@
                                     </div>
                                     <div>
                                         <a class="btn btn-outline-success btn-sm me-2 shadow-sm" href="/editAddress?id=<%= address._id %>"><i class="bi bi-pencil"></i> Edit</a>
-                                        <a class="btn btn-outline-danger btn-sm shadow-sm" href="/deleteAddress?id=<%= address._id %>"><i class="bi bi-trash"></i> Delete</a>
+                                        <a class="btn btn-outline-danger btn-sm shadow-sm" href="/deleteAddress?id=<%= address._id %>" onclick="return confirm('Are you sure ? do you wanna delete..')"><i class="bi bi-trash"></i> Delete</a>
                                     </div>
                                 </div>
                                 
@@ -428,11 +456,11 @@
                             </div>
                             <div class="mb-3">
                                 <label for="phone" class="form-label">Phone</label>
-                                <input type="number" id="phone" class="form-control" placeholder="Phone" name="phone" required>
+                                <input type="text" id="phone" class="form-control" placeholder="Phone" name="phone" required>
                             </div>
                             <div class="mb-3">
                                 <label for="altPhone" class="form-label">Alternate Phone</label>
-                                <input type="number" id="altPhone" class="form-control" placeholder="Alternate Phone" name="altPhone">
+                                <input type="text" id="altPhone" class="form-control" placeholder="Alternate Phone" name="altPhone">
                             </div>
                             <button type="submit" class="btn btn-success">Submit</button>
                         </form>
@@ -696,7 +724,41 @@
         });
 
 
-        // JavaScript to toggle 'active' class on click
+    // Function to handle order cancellation
+    // Function to handle order cancellation
+    async function cancelOrder(orderId) {
+        try {
+            const response = await fetch(`/cancel/${orderId}`, { method: 'PUT' });
+
+            const data = await response.json();
+            if (data.success) {
+                // Disable the Cancel Order button and change its appearance
+                const cancelButton = document.getElementById(`cancel-order-${orderId}`);
+                if (cancelButton) {
+                    cancelButton.disabled = true;  // Disable the button
+                    cancelButton.innerHTML = '<i class="bi bi-check-circle-fill"></i> Canceled';  // Change button text
+                    cancelButton.classList.remove('btn-danger');
+                    cancelButton.classList.add('btn-secondary');  // Optionally change the button color
+                }
+
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: data.message,
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+                
+                
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            alert('Error canceling order. Please try again later.');
+            console.error(error);
+        }
+    }
         
     </script>
 

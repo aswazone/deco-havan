@@ -4,6 +4,7 @@ const env = require('dotenv').config()
 const Product = require('../../models/productModel');
 const Category = require('../../models/categoryModel');
 const Banner = require('../../models/bannerModel');
+const mongoose = require('mongoose');
 
 const bcrypt = require('bcrypt');
 
@@ -188,19 +189,51 @@ const loadShopping = async (req, res) => {
         
 
         console.log(req.session.user);
-        if(req.session.user){
+     
             
             const userData = await User.findById(req.session.user);
-            const product = await Product.find({isBlocked:false})
-            console.log(product,'shop try');
+            const categories = await Category.find({isListed:true});
+            const categoryIds = categories.map(category => category._id.toString());
+
+            const page = parseInt(req.query.page) || 1;
+            const limit = 8;
+
+            const skip = (page - 1) * limit;
+
+            const products = await Product.find({
+                isBlocked:false,
+                category: {$in: categoryIds},
+                quantity: {$gt: 0}
+            }).sort({ createdAt: -1 }).skip(skip).limit(limit);
+
+            console.log(products,'products');
             
-            return res.render('shop',{user: userData, product: product})
-        }
-        else{
-            const product = await Product.find({isBlocked:false})
-            console.log(product,'shop')
-            return res.render('shop',{product})
-        }
+
+            const totalProducts = await Product.find({
+                isBlocked:false,
+                category: {$in: categoryIds},
+                quantity: {$gt: 0}
+            }).countDocuments();
+
+            const totalPages = Math.ceil(totalProducts / limit);
+
+            const categoriesWithIds = categories.map(category => ({
+                _id: category._id,
+                name: category.name 
+            }))
+
+            
+            console.log(categoriesWithIds,'categoriesWithIds');
+            
+            res.render('shop',{
+                user: userData,
+                product: products,
+                totalProducts: totalProducts,
+                category: categoriesWithIds,
+                currentPage: page,
+                totalPages: totalPages
+            })
+        
     } catch (error) {
         console.log(error.message, 'shopping page not found!!');
         res.status(500).send('server error');
@@ -209,7 +242,7 @@ const loadShopping = async (req, res) => {
 }
 const loadCart = async (req, res) => {
     try {
-        return res.render('cart')
+        return res.render('cart2')
 
     } catch (error) {
         console.log(error.message, 'cart page not found!!');
@@ -407,6 +440,178 @@ const productDetail=async(req,res)=>{
     }
 }
 
+// const sortProducts = async (req, res) => {
+//     const sort = req.query.sort || '';
+//     const category = req.query.category || ''; // Get the category filter
+//     const page = parseInt(req.query.page) || 1;  // Default page 1
+//     const limit = parseInt(req.query.limit) || 8; // Default limit 8 items per page
+//     const skip = (page - 1) * limit;              // Calculate skip value
+
+//     try {
+//         let query = { isBlocked: false }; // Only fetch unblocked products
+
+//         // If category is provided, filter by category
+//         if (category) {
+//             query.category = category;
+//         }
+
+//         // Create a sorting object
+//         let sortQuery = {};
+//         switch (sort) {
+//             case 'popularity':
+//                 sortQuery.popularity = -1; // Descending
+//                 break;
+//             case 'price-asc':
+//                 sortQuery.salePrice = 1; // Ascending
+//                 break;
+//             case 'price-desc':
+//                 sortQuery.salePrice = -1; // Descending
+//                 break;
+//             case 'ratings':
+//                 sortQuery.ratings = -1; // Descending
+//                 break;
+//             case 'new-arrivals':
+//                 sortQuery.createdAt = -1; // Descending
+//                 break;
+//             case 'az':
+//                 sortQuery.productName = 1; // Ascending
+//                 break;
+//             case 'za':
+//                 sortQuery.productName = -1; // Descending
+//                 break;
+//             default:
+//                 sortQuery = {}; // No sorting
+//         }
+
+//         // Fetch paginated and sorted products
+//         const products = await Product.find(query)
+//             .sort(sortQuery)
+//             .skip(skip)
+//             .limit(limit);
+
+//         // Calculate the total number of items
+//         const totalItems = await Product.countDocuments(query);
+
+//         // Send response with paginated products and total item count
+//         res.json({
+//             products,
+//             totalItems, // Total number of products (for pagination)
+//         });
+//     } catch (error) {
+//         console.error('Error fetching products:', error);
+//         res.status(500).json({ message: 'Internal server error' });
+//     }
+// };
+
+const searchProduct = async (req, res) => {
+    const { query, category, sort, priceRange, page = 1, limit = 8 } = req.query;
+
+    console.log(`Query: ${query}`);
+    console.log(`Category: ${category}`);
+    console.log(`Sort: ${sort}`);
+    console.log(`Price Range: ${priceRange}`);
+    console.log(`Page: ${page}`);
+    console.log(`Limit: ${limit}`);
+    console.log('-----------------------------------------');
+
+    // MongoDB Aggregation Pipeline
+    const pipeline = [];
+
+    // 1. Text search if query exists
+    if (query) {
+        pipeline.push({
+            $match: {
+                $text: { $search: query },
+            },
+        });
+    }
+
+    // 2. Category filter
+    if (category) {
+        pipeline.push({
+            $match: { category: new mongoose.Types.ObjectId(category) },
+        });
+    }
+
+    // 3. Price range filter
+    if (priceRange) {
+        const priceFilter = getPriceFilter(priceRange);
+        if (priceFilter) {
+            pipeline.push({ $match: priceFilter });
+        }
+    }
+
+    // 4. Sort logic
+    pipeline.push({
+        $sort: getSortCriteria(sort),
+    });
+
+    // 5. Pagination (skip and limit)
+    const skip = (page - 1) * limit;
+    const limitStage = { $limit: parseInt(limit) };
+
+    // 6. Count total items for pagination (without applying skip and limit)
+    const countPipeline = [...pipeline, { $count: 'totalItems' }];
+    
+    try {
+        // Fetch both products and total count
+        const [products, totalItemsCount] = await Promise.all([
+            Product.aggregate([...pipeline, { $skip: skip }, limitStage]),
+            Product.aggregate(countPipeline),
+        ]);
+
+        const totalItems = totalItemsCount[0]?.totalItems || 0;
+
+        res.json({
+            products,
+            totalItems, // Return the correct total count
+        });
+    } catch (error) {
+        console.error('Error fetching products:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+// Helper: Get Price Filter
+function getPriceFilter(priceRange) {
+    switch (priceRange) {
+        case 'under-5000':
+            return { salePrice: { $lte: 5000 } };
+        case '5000-10000':
+            return { salePrice: { $gte: 5000, $lte: 10000 } };
+        case '10000-15000':
+            return { salePrice: { $gte: 10000, $lte: 15000 } };
+        case 'above-15000':
+            return { salePrice: { $gt: 15000 } };
+        default:
+            return null;
+    }
+}
+
+// Helper: Get Sort Criteria
+function getSortCriteria(sort) {
+    switch (sort) {
+        case 'price-asc':
+            return { salePrice: 1 }; // Ascending price
+        case 'price-desc':
+            return { salePrice: -1 }; // Descending price
+        case 'ratings':
+            return { ratings: -1 }; // Highest ratings first
+        case 'new-arrivals':
+            return { createdAt: -1 }; // Newest products first
+        case 'az':
+            return { productName: 1 }; // Alphabetical A-Z
+        case 'za':
+            return { productName: -1 }; // Alphabetical Z-A
+        default:
+            return { popularity: -1 }; // Default to popularity
+    }
+}
+
+
+
+
 
 module.exports = {
     loadHomepage,
@@ -423,4 +628,7 @@ module.exports = {
     loadVerifyOtp,
     resendOtp,
     productDetail,
+    searchProduct
+
+    // sortProducts
 }

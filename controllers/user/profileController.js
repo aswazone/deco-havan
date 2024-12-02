@@ -1,5 +1,7 @@
 const User = require('../../models/userModel');
 const Address = require('../../models/addressModel');
+const Product = require('../../models/productModel');
+const Order = require('../../models/orderModel');
 const nodemailer = require('nodemailer')
 const bcrypt = require('bcrypt');
 const env = require('dotenv').config()
@@ -50,20 +52,33 @@ async function sendVerificationEmail(email, otp) {
     }
 }
 
-const profile = async (req,res)=>{
+const profile = async (req, res) => {
     try {
-        console.log('profile',req.session.user);
+        console.log('profile', req.session.user);
+        
+        // Fetch user data, address, and orders with populated product details
         const userData = await User.findById(req.session.user);
-        const addressData = await Address.findOne({userId: req.session.user});
-        console.log(userData,addressData);
-        
-        res.render('profile',{user:userData,userData,userAddress:addressData})
-    } catch (error) {
-        console.log(error.message,'profile load error');
-        
+        const addressData = await Address.findOne({ userId: req.session.user });
+        const orders = await Order.find({ userId: req.session.user })
+            .populate({
+                path: 'orderItems.product',  // Populate the product field inside orderItems
+                model: 'Products'              // Specify the model (optional if 'Product' is already referenced in schema)
+            });
 
+        console.log(userData, addressData, orders);
+
+        // Render the profile view with the necessary data
+        res.render('profile', {
+            user: userData,
+            userData,  
+            userAddress: addressData,
+            orders
+        });
+    } catch (error) {
+        console.log(error.message, 'profile load error');
+        res.status(500).send('Error loading profile');
     }
-}
+};
 
 const verifyEmail = async (req,res) =>{
     try {
@@ -247,6 +262,70 @@ const postEditAddress = async (req,res)=>{
     }
 }
 
+const deleteAddress = async (req,res) =>{
+    try {
+        const addressId = req.query.id;
+        const findAddress = await Address.findOne({"address._id":addressId})
+
+        if(!findAddress){
+            return res.status(404).send("Address not found")
+        }
+
+        await Address.updateOne({"address._id":addressId},{$pull:{address:{_id:addressId}}})
+        
+        res.redirect('/profile')
+
+    } catch (error) {
+        console.log(error.message,"delete eroor");
+        res.status(500).send("internal server error")
+    }
+}
+
+const cancelOrder = async (req, res) => {
+    try {
+        const { orderId } = req.params;  // Get the order ID (UUID) from the request params
+        
+        // Find the order by orderId (UUID) instead of _id
+        const order = await Order.findOne({ orderId })
+            .populate({
+                path: 'orderItems.product',  // Populate the product field inside orderItems
+                model: 'Products'              // Specify the model (optional if 'Product' is already referenced in schema)
+            });
+        
+        if (!order) {
+            return res.json({ success: false, message: 'Order not found.' });
+        }
+
+        // Check if the order status is not already canceled
+        if (order.status === 'Canceled') {
+            return res.json({ success: false, message: 'Order already canceled.' });
+        }
+
+        // Loop through the order items to restore the product quantities
+        for (const item of order.orderItems) {
+            const product = item.product;
+
+            // If product is found, restore the stock
+            if (product) {
+                product.quantity += item.quantity;  // Restore the quantity
+                await product.save();  // Save the updated product
+            }
+        }
+
+        // Update the order status to 'Canceled'
+        order.status = 'Canceled';
+        await order.save();  // Save the updated order status
+
+        // Send a success response
+        res.json({ success: true, message: 'Order canceled successfully and product stock restored.' });
+    } catch (error) {
+        console.error('Error canceling order:', error);
+        res.json({ success: false, message: 'Error canceling order. Please try again later.' });
+    }
+};
+
+
+
 module.exports = {
     profile,
     verifyEmail,
@@ -255,5 +334,7 @@ module.exports = {
     passwordChanged,
     addAddress,
     editAddress,
-    postEditAddress
+    postEditAddress,
+    deleteAddress,
+    cancelOrder
 }

@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const userController = require('../controllers/user/userController')
 const profileController = require('../controllers/user/profileController')
+const cartController = require('../controllers/user/cartController')
 const {userAuth,adminAuth} = require('../middleware/auth');
 const passport = require('passport');
 const router = express.Router();
@@ -19,13 +20,12 @@ router.post('/verify-otp',userController.verifyOtp);
 router.post('/resend-otp',userController.resendOtp);
 
 router.get('/shop',userController.loadShopping);
-router.get('/cart',userController.loadCart);
+// router.get('/cart',userController.loadCart);
 router.get('/pageNotFound',userController.pageNotFound);
 
 router.get('/auth/google',passport.authenticate('google',{scope:['profile','email']}));
 router.get('/auth/google/callback',passport.authenticate('google',{failureRedirect:'/login'}),(req,res)=> {
     console.log('call goo');
-    
     res.redirect('/')
 });
 
@@ -42,8 +42,43 @@ router.patch('/reset-password',userAuth,profileController.passwordChanged)
 router.post('/addAddress',userAuth,profileController.addAddress)
 router.get('/editAddress',userAuth,profileController.editAddress)
 router.post('/editAddress',userAuth,profileController.postEditAddress)
+router.get('/deleteAddress',userAuth,profileController.deleteAddress)
+
+//product-sorting
+// router.get('/sortProducts',userController.sortProducts)
+
+//cart-management
+router.get('/cart', userAuth, cartController.getCart);
+
+// // Add an item to the cart or update the quantity if it exists
+router.post('/cart/add', userAuth, cartController.addToCart);
+
+// Update item quantity in the cart
+router.post('/cart/update', userAuth, cartController.updateCart);
+
+// Remove an item from the cart
+router.post('/cart/remove', userAuth, cartController.removeFromCart);
+
+router.get('/checkout', userAuth, cartController.checkout);
+
+router.get('/user/addresses', userAuth, cartController.getAddresses);
+
+router.post('/user/saveNewAddress', userAuth, cartController.saveAddress);
+
+router.post('/order/place', userAuth, cartController.placeOrder);
+
+router.put('/cancel/:orderId', userAuth, profileController.cancelOrder);
+
+router.get('/cart/items', userAuth, cartController.getCartItems);
+
+// router.get('/confirmation', userAuth ,cartController.cofirmation )
 
 
 
+
+
+
+//search implementation
+router.get('/searchAndFilter',userController.searchProduct);
 
 module.exports = router;

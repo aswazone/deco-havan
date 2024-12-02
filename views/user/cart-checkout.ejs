@@ -1,0 +1,449 @@
+<%- include("../../views/partials/user/header") %>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proceed to Checkout</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Lato', sans-serif;
+        }
+
+        h1 {
+            color: #333;
+            font-weight: bold;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .accordion-button::after {
+            transform: rotate(90deg);
+        }
+
+        .order-summary {
+            position: sticky;
+            top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container py-5">
+        <h1 class="text-center mb-4">Proceed to Checkout</h1>
+
+        <div class="row">
+            <!-- Left Section: Shipping Address and Payment -->
+            <div class="col-lg-8">
+                <div class="accordion" id="checkoutAccordion">
+                    <!-- Shipping Address Section -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingAddress">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAddress" aria-expanded="true" aria-controls="collapseAddress">
+                                Shipping Address
+                            </button>
+                        </h2>
+                        <div id="collapseAddress" class="accordion-collapse collapse show" aria-labelledby="headingAddress" data-bs-parent="#checkoutAccordion">
+                            <div class="accordion-body">
+                                <form id="checkoutForm">
+                                    <div class="mb-3">
+                                        <label for="addressType" class="form-label">Address Type</label>
+                                        <input type="text" id="addressType" class="form-control" placeholder="Home/Office" name="addressType" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Name</label>
+                                        <input type="text" id="name" class="form-control" placeholder="Full Name" name="name" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="city" class="form-label">City</label>
+                                        <input type="text" id="city" class="form-control" placeholder="City" name="city" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="landmark" class="form-label">Landmark</label>
+                                        <input type="text" id="landmark" class="form-control" placeholder="Landmark" name="landmark">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="state" class="form-label">State</label>
+                                        <input type="text" id="state" class="form-control" placeholder="State" name="state" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="pincode" class="form-label">Pincode</label>
+                                        <input type="number" id="pincode" class="form-control" placeholder="Pincode" name="pincode" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="phone" class="form-label">Phone</label>
+                                        <input type="text" id="phone" class="form-control" placeholder="Phone" name="phone" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="altPhone" class="form-label">Alternate Phone</label>
+                                        <input type="text" id="altPhone" class="form-control" placeholder="Alternate Phone" name="altPhone">
+                                    </div>
+                                    <div id="savedAddresses" class="saved-addresses">
+                                        <h6>Select a saved address:</h6>
+                                        <div id="addressList" class="address-list">
+                                            <!-- Saved addresses will be rendered here -->
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method Section -->
+                    <div class="accordion-item mt-4">
+                        <h2 class="accordion-header" id="headingPayment">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePayment" aria-expanded="false" aria-controls="collapsePayment">
+                                Payment Method
+                            </button>
+                        </h2>
+                        <div id="collapsePayment" class="accordion-collapse collapse" aria-labelledby="headingPayment" data-bs-parent="#checkoutAccordion">
+                            <div class="accordion-body">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="cod" checked>
+                                    <label class="form-check-label" for="cod">Cash on Delivery (COD)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="card" value="card">
+                                    <label class="form-check-label" for="card">Credit/Debit Card</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Section: Order Summary -->
+            <div class="col-lg-4">
+                <div class="card order-summary">
+                    <div class="card-body">
+                        <h5 class="card-title">Order Summary</h5>
+                        <hr>
+                        <div class="d-flex justify-content-between">
+                            <span>Subtotal</span>
+                            <span id="subtotal">Rs. <%= subtotal %></span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Shipping</span>
+                            <span id="shipping">Rs. <%= shipping %></span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>CGST (2.5%)</span>
+                            <span id="cgst">Rs. <%= cgst %></span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>SGST (2.5%)</span>
+                            <span id="sgst">Rs. <%= sgst %></span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between fw-bold">
+                            <span>Total</span>
+                            <span id="total">Rs. <%= total %></span>
+                        </div>
+                        <button type="submit" form="checkoutForm" class="btn btn-primary w-100 mt-3">Place Order</button>
+                        <a href="/" class="btn btn-outline-secondary w-100 mt-2">Continue Shopping</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+const addressFields = [
+        document.getElementById('addressType'),
+        document.getElementById('name'),
+        document.getElementById('city'),
+        document.getElementById('landmark'),
+        document.getElementById('state'),
+        document.getElementById('pincode'),
+        document.getElementById('phone'),
+        document.getElementById('altPhone')
+    ];
+
+    const addressContainer = document.getElementById('addressList');
+    const switchToSavedAddressBtn = document.createElement('button');
+    const switchToNewAddressBtn = document.createElement('button');
+
+    switchToSavedAddressBtn.textContent = "Switch to Saved Address";
+    switchToSavedAddressBtn.className = "btn btn-outline-secondary btn-sm mt-2";
+
+    switchToNewAddressBtn.textContent = "Switch to New Address";
+    switchToNewAddressBtn.className = "btn btn-outline-secondary btn-sm mt-2";
+
+    // Disable/Enable Address Fields
+    function toggleAddressFields(disabled) {
+        addressFields.forEach(field => field.disabled = disabled);
+    }
+
+    // Disable/Enable Saved Address Selection
+    function toggleSavedAddressSelection(disabled) {
+        const savedAddressInputs = document.querySelectorAll('input[name="savedAddress"]');
+        savedAddressInputs.forEach(input => input.disabled = disabled);
+    }
+
+    // Add Switch Buttons dynamically
+    function addSwitchButton(currentMode) {
+        if (currentMode === 'new') {
+            document.querySelector('.saved-addresses').appendChild(switchToSavedAddressBtn);
+            switchToNewAddressBtn.remove();
+        } else if (currentMode === 'saved') {
+            document.querySelector('.saved-addresses').appendChild(switchToNewAddressBtn);
+            switchToSavedAddressBtn.remove();
+        }
+    }
+
+    // Listen for changes in the saved address radio buttons
+    addressContainer.addEventListener('change', (event) => {
+        if (event.target.name === 'savedAddress') {
+            toggleAddressFields(true); // Disable new address fields
+            addSwitchButton('saved');
+        }
+    });
+
+    // Listen for changes in the new address input fields
+    addressFields.forEach(field => {
+        field.addEventListener('input', () => {
+            toggleSavedAddressSelection(true); // Disable saved address selection
+            addSwitchButton('new');
+        });
+
+        field.addEventListener('focus', () => {
+            toggleSavedAddressSelection(true);
+            addSwitchButton('new');
+        });
+    });
+
+    // Switch to Saved Address Mode
+    switchToSavedAddressBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleAddressFields(true); // Disable new address fields
+        toggleSavedAddressSelection(false); // Enable saved addresses
+        addSwitchButton('saved');
+        clearNewAddressFields();
+    });
+
+    // Switch to New Address Mode
+    switchToNewAddressBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleAddressFields(false); // Enable new address fields
+        toggleSavedAddressSelection(true); // Disable saved addresses
+        addSwitchButton('new');
+
+        // Clear saved address selection
+        const selectedSavedAddress = document.querySelector('input[name="savedAddress"]:checked');
+        if (selectedSavedAddress) {
+            selectedSavedAddress.checked = false;
+        }
+    });
+
+    // Clear all new address input fields
+    function clearNewAddressFields() {
+        addressFields.forEach(field => field.value = '');
+    }
+
+    // Fetch saved addresses on page load
+    fetchSavedAddresses();
+
+    // Initial button setup
+    addSwitchButton('new');
+
+
+        
+        const addressType = document.getElementById('addressType');
+        const name = document.getElementById('name');
+        const city = document.getElementById('city');
+        const landMark = document.getElementById('landmark');
+        const state = document.getElementById('state');
+        const pincode = document.getElementById('pincode');
+        const phone = document.getElementById('phone');
+        const altPhone = document.getElementById('altPhone');
+
+        document.getElementById('checkoutForm').addEventListener('submit', async function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            try {
+                let addressId = null; // To store the address _id
+                const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+
+                // Check if a saved address is selected
+                const selectedSavedAddress = document.querySelector('input[name="savedAddress"]:checked');
+
+                if (selectedSavedAddress) {
+                    // If a saved address is selected, use its ID
+                    addressId = selectedSavedAddress.value;
+                } else {
+                    // If no saved address is selected, use the address fields (validate and save it)
+                    if (validateNewAddressFields()) {
+                        // Send the address data to the server to save the new address
+                        const response = await fetch('/user/saveNewAddress', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                addressType: addressType.value,
+                                name: name.value,
+                                city: city.value,
+                                landMark: landMark.value,
+                                state: state.value,
+                                pincode: pincode.value,
+                                phone: phone.value,
+                                altPhone: altPhone.value
+                            })
+                        });
+
+                        const addressData = await response.json();
+
+                        if (addressData.success) {
+                            addressId = addressData.addressId; // Get the new address _id
+                        } else {
+                            alert('Failed to save new address.');
+                            return;
+                        }
+                    } else {
+                        alert('Please fill all required address fields.');
+                        return;
+                    }
+                }
+
+                // Fetch cart items from the server
+                const cartResponse = await fetch('/cart/items');
+                const cartData = await cartResponse.json();
+
+                if (!cartData.success) {
+                    alert('Failed to fetch cart items.');
+                    return;
+                }
+
+                console.log(cartData,'cart data above order');
+                
+
+                // Prepare the order items
+                const orderItems = cartData.items.map(item => ({
+                    product: item.productId,
+                    quantity: item.quantity,
+                    price: item.price
+                }));
+
+                // Calculate total price and final amount
+                const totalPrice = orderItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+                const discount = 0; // Set discount if applicable
+                const finalAmount = totalPrice - discount;
+
+                console.log(addressId,'above order');
+                
+                // Proceed with placing the order using the selected addressId and cart data
+                if (addressId) {
+                    const orderResponse = await fetch('/order/place', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            address: addressId, // Send only one address (_id)
+                            paymentMethod: paymentMethod, // Include the selected payment method
+                            orderItems: orderItems, // Send cart items
+                            totalPrice: totalPrice, // Send total price
+                            discount: discount, // Send discount if applicable
+                            finalAmount: finalAmount, // Send final amount after discount
+                            couponApplied: false, // Set to true if a coupon is applied
+                        })
+                    });
+
+                    const orderData = await orderResponse.json();
+
+                    if (orderData.success) {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Order placed successfully!',
+                            showConfirmButton: false,
+                            timer: 2000
+                        })
+                        .then(() => {
+                            window.location.href = '/order/confirmation';
+                        });
+                    } else {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'Failed to place order.',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again later.');
+            }
+        });
+
+        function validateNewAddressFields() {
+            return (
+                addressType.value &&
+                name.value &&
+                city.value &&
+                state.value &&
+                pincode.value &&
+                phone.value
+            );
+        }
+
+
+        // Fetch saved addresses from the server
+        async function fetchSavedAddresses() {
+            try {
+                const response = await fetch('/user/addresses');
+                const data = await response.json();
+
+                if (data.success) {
+                    const addressList = data.addresses;
+                    console.log(addressList[0].address);
+                    
+                    const addressContainer = document.getElementById('addressList');
+                    
+                    // Clear the list before adding new addresses
+                    addressContainer.innerHTML = '';
+
+                    // Render saved addresses
+                    if (addressList.length > 0) {
+                        addressList[0].address.forEach((address) => {
+                            const addressDiv = document.createElement('div');
+                            addressDiv.classList.add('form-check', 'mt-2');
+                            addressDiv.innerHTML = `
+                                <input class="form-check-input" type="radio" name="savedAddress" id="address${address._id}" value="${address._id}">
+                                <label class="form-check-label" for="address${address._id}">
+                                    <strong>${address.name}</strong> <br>
+                                    ${address.addressType}, ${address.city}, ${address.state}, ${address.pincode} <br>
+                                    ${address.phone}
+                                </label>
+                            `;
+                            addressContainer.appendChild(addressDiv);
+                        });
+                    } else {
+                        addressContainer.innerHTML = '<p class="text-muted">No saved addresses found.</p>';
+                    }
+                } else {
+                    console.log(data.message);
+                }
+            } catch (error) {
+                console.error('Error fetching saved addresses:', error.message);
+            }
+        }
+
+        // Fetch saved addresses on page load
+        fetchSavedAddresses();
+    </script>
+</body>
+
+<%- include("../../views/partials/user/footer") %>
+//add address in checkout

@@ -55,6 +55,14 @@ const productSchema = new Schema({
     },
 }, { timestamps: true });
 
+// Create a text index on `productName` and `description` for search
+productSchema.index({ productName: 'text', description: 'text' });
+
+// Create other indexes for sorting and filtering
+productSchema.index({ category: 1 });
+productSchema.index({ salePrice: 1 });
+productSchema.index({ createdAt: -1 });
+
 
 const Product = mongoose.model("Products",productSchema);
 

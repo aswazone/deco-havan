@@ -1,80 +1,277 @@
 <%- include("../../views/partials/user/header")%>
-<!-- Start Hero Section -->
- <head>
-    <style>
-        .breadcrumb {
-            background-color: #f8f9fa;
-            padding: 10px 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
+    <!-- Start Hero Section -->
 
-        .breadcrumb a {
-            text-decoration: none;
-            color: #007bff;
-        }
+    <head>
+        <style>
+            .breadcrumb {
+                background-color: #f8f9fa;
+                padding: 10px 15px;
+                border-radius: 5px;
+                margin-bottom: 20px;
+            }
 
-        .breadcrumb a:hover {
-            text-decoration: underline;
-        }
+            .breadcrumb a {
+                text-decoration: none;
+                color: #007bff;
+            }
 
-        .margin-shift {
-            margin-top: 80px;
-        }
-    </style>
- </head>
-<div class="hero">
-    <div class="container">
-        <div class="row justify-content-between margin-shift">
-            <div class="col-lg-5">
-                <div class="intro-excerpt">
-                    <h1>Shop</h1>
+            .breadcrumb a:hover {
+                text-decoration: underline;
+            }
+
+            .margin-shift {
+                margin-top: 80px;
+            }
+
+            .product-card {
+                transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            }
+
+            .product-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+
+            .wishlist-btn {
+                cursor: pointer;
+                font-size: 1rem;
+            }
+
+            .pagination .active a {
+                background-color: #007bff;
+                color: rgba(255, 255, 255, 0.751);
+            }
+        </style>
+    </head>
+    <div class="hero">
+        <div class="container">
+            <div class="row justify-content-between margin-shift">
+                <div class="col-lg-5">
+                    <div class="intro-excerpt">
+                        <h1>Shop</h1>
+                    </div>
+                </div>
+                <div class="col-lg-7">
                 </div>
             </div>
-            <div class="col-lg-7">
+        </div>
+    </div>
+    <!-- End Hero Section -->
+
+    <div class="untree_co-section product-section before-footer-section">
+
+        <div class="container ">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/shop">Shop</a></li>
+                    <li class="breadcrumb-item " aria-current="page">
+                        <%= product.productName %>
+                    </li>
+                </ol>
+            </nav>
+            <div class="row">
+                <div class="container">
+
+
+                    <div class="row d-flex justify-content-between mb-4">
+                        <div class="col-4 d-flex">
+                            <select id="categorySelect" class="form-select mb-2" aria-label="Categories">
+                                <option value="" selected>All Categories</option>
+                                <% for(let i=0; i<category.length; i++) { %>
+                                    <option value="<%=category[i]._id%>">
+                                        <%=category[i].name%>
+                                    </option>
+                                    <% } %>
+                            </select>
+
+                            <select id="sortSelect" class="form-select mb-2" aria-label="Sort By">
+                                <option value="popularity" selected>Popularity</option>
+                                <option value="price-asc">Price: Low to High</option>
+                                <option value="price-desc">Price: High to Low</option>
+                                <option value="ratings">Average Ratings</option>
+                                <option value="new-arrivals">New Arrivals</option>
+                                <option value="az">A-Z</option>
+                                <option value="za">Z-A</option>
+                            </select>
+
+                            <select id="price-filter" class="form-select mb-2 w-100" aria-label="Filter by Price">
+                                <option selected>Filter by Price</option>
+                                <option value="under-5000">Under ₹5000</option>
+                                <option value="5000-10000">₹5000 - ₹10000</option>
+                                <option value="10000-15000">₹10000 - ₹15000</option>
+                                <option value="above-15000">Above ₹15000</option>
+                            </select>
+                        </div>
+                        <div class="col-4 d-flex justify-content-end">
+                            <form action="/search" method="GET"
+                                class="search-form d-flex ms-2 gap-2 align-items-center">
+                                <input type="text" name="query" placeholder="Search items..."
+                                    class="search-input form-control" />
+                                <button type="submit" class="search-button btn btn-secondary btn-sm"><i
+                                        class="fa fa-search"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                <div id="loadingIndicator" class="text-center my-4" style="display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+
+                <div id="errorMessage" class="alert alert-danger text-center" style="display: none;">
+                    Failed to load products. Please try again later.
+                </div>
+                    <!-- Container to Render the Sorted Data -->
+                <div id="productList" class="product-grid row g-4">
+
+                <!-- data -->
+                <% for(var i=0; i < product.length; i++) {%>
+
+                    <div class="col-12 col-md-4 col-lg-3 mb-5 position-relative">
+                        <a class="product-item rounded" href="/productDetail/<%=product[i]._id%>">
+                            <img src="/uploads/product-images/<%=product[i].productImage[0]%>"
+                                class="img-fluid product-thumbnail rounded">
+                            <h3 class="product-title">
+                                <%=product[i].productName%>
+                            </h3>
+                            <strong class="product-price">₹ <%=product[i].salePrice%></strong>
+
+                            <span
+                                class="wishlist-btn position-absolute top-0 end-0 m-2 bg-white text-dark rounded-circle p-2"
+                                onclick="">❤️</span>
+                        </a>
+
+                    </div>
+                    <% } %>
+                </div>
+                        
+
+                <div id="pagination" class="pagination justify-content-center mt-4"></div>
+
             </div>
         </div>
     </div>
-</div>
-<!-- End Hero Section -->
 
-<div class="untree_co-section product-section before-footer-section">
-<div class="container ">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item"><a href="/shop">Shop</a></li>
-            <li class="breadcrumb-item " aria-current="page"><%= product.productName %></li>
-        </ol>
-    </nav>
-    <div class="row">
-        <% for(var i = 0; i < product.length; i++) {%>
+    
+    <script>
+        // Debounce function to limit the rate of API calls
+        function debounce(func, delay) {
+            let debounceTimer;
+            return function (...args) {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => func.apply(this, args), delay);
+            };
+        }
+    
+        // Event listeners for search, category filter, and sort selection
+        document.querySelector('.search-input').addEventListener('input', debounce(function (e) {
+            const query = e.target.value;
+            console.log('Query:', query);
+            fetchFilteredData(query, document.getElementById('categorySelect').value, document.getElementById('sortSelect').value, document.getElementById('price-filter').value, 1);
+        }, 300));
+    
+        document.getElementById('categorySelect').addEventListener('change', function () {
+            const category = this.value;
+            fetchFilteredData(document.querySelector('.search-input').value, category, document.getElementById('sortSelect').value, document.getElementById('price-filter').value, 1);
+        });
+    
+        document.getElementById('sortSelect').addEventListener('change', function () {
+            const sortBy = this.value;
+            fetchFilteredData(document.querySelector('.search-input').value, document.getElementById('categorySelect').value, sortBy, document.getElementById('price-filter').value, 1);
+        });
+    
+        document.getElementById('price-filter').addEventListener('change', function () {
+            const priceRange = this.value;
+            fetchFilteredData(document.querySelector('.search-input').value, document.getElementById('categorySelect').value, document.getElementById('sortSelect').value, priceRange, 1);
+        });
+    
+        // Fetch filtered data from the backend
+        async function fetchFilteredData(query = '', category = '', sortBy = 'popularity', priceRange = '', page = 1) {
+            showLoading(true);
+            hideErrorMessage();
+    
+            try {
+                const response = await fetch(`/searchAndFilter?query=${encodeURIComponent(query)}&category=${category}&sort=${sortBy}&priceRange=${priceRange}&page=${page}&limit=8`);
+                if (!response.ok) throw new Error('Failed to fetch data');
+    
+                const data = await response.json();
+                console.log('Total Items:', data.totalItems);
+                renderProducts(data.products);
+                renderPagination(data.totalItems, page);
+            } catch (error) {
+                console.error('Error fetching filtered data:', error);
+                showErrorMessage();
+            } finally {
+                showLoading(false);
+            }
+        }
+    
+        // Render the products on the page
+        function renderProducts(products) {
+            const productList = document.getElementById('productList');
+            productList.innerHTML = ''; // Clear the existing products
+    
+            products.forEach(product => {
+                const productCard = `
+                    <div class="col-12 col-md-4 col-lg-3 mb-5 position-relative">
+                        <a class="product-item rounded" href="/productDetail/${product._id}">
+                            <img src="/uploads/product-images/${product.productImage[0]}"
+                                class="img-fluid product-thumbnail rounded">
+                            <h3 class="product-title">${product.productName}</h3>
+                            <strong class="product-price">₹ ${product.salePrice}</strong>
+                            <span class="wishlist-btn position-absolute top-0 end-0 m-2 bg-white text-dark rounded-circle p-2" onclick="toggleWishlist('${product._id}')">❤️</span>
+                        </a>
+                    </div>
+                `;
+                productList.innerHTML += productCard;
+            });
+        }
+    
+        // Render pagination dynamically
+        function renderPagination(totalItems, currentPage) {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = ''; // Clear existing pagination
 
-        <div class="col-12 col-md-4 col-lg-3 mb-5 ">
-            <a class="product-item rounded" href="/productDetail/<%=product[i]._id%>">
-                <img src="/uploads/product-images/<%=product[i].productImage[0]%>" class="img-fluid product-thumbnail rounded">
-                <h3 class="product-title"><%=product[i].productName%></h3>
-                <strong class="product-price">₹ <%=product[i].salePrice%></strong>
+            const totalPages = Math.ceil(totalItems / 8); // Assuming 8 items per page
+            for (let i = 1; i <= totalPages; i++) {
+                const activeClass = i === currentPage ? 'active' : '';
+                pagination.innerHTML += `
+                    <li class="page-item ${activeClass}">
+                        <a class="page-link" href="#" onclick="fetchFilteredData(
+                            document.querySelector('.search-input').value,
+                            document.getElementById('categorySelect').value,
+                            document.getElementById('sortSelect').value,
+                            document.getElementById('price-filter').value,
+                            ${i})">${i}</a>
+                    </li>`;
+            }
+        }
 
-                <span class="icon-cross">
-                    <img src="images/cross.svg" class="img-fluid">
-                </span>
-            </a>
-        </div> 
-        <% } %>
-        <div class="pagination-area mt-30 mb-50">
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-start">
-                        <li class="">
-                            <a class="page-link" href="">1</a>
-                        </li>
-                </ul>
-            </nav>
-        </div>
-            
-        
-
-    </div>
-</div>
-</div>
-<%-include("../../views/partials/user/footer")%>
+    
+        function toggleWishlist(productId) {
+            console.log(`Toggling wishlist for product ID: ${productId}`);
+            // Add logic for wishlist functionality
+        }
+    
+        function showLoading(show) {
+            document.getElementById('loadingIndicator').style.display = show ? 'block' : 'none';
+        }
+    
+        function showErrorMessage() {
+            document.getElementById('errorMessage').style.display = 'block';
+        }
+    
+        function hideErrorMessage() {
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+    
+        // Initial load of products on page load
+        fetchFilteredData('', '', 'popularity', '', 1);
+    </script>
+    
+    <%-include("../../views/partials/user/footer")%>
