@@ -41,6 +41,20 @@
                 background-color: #007bff;
                 color: rgba(255, 255, 255, 0.751);
             }
+            .badge {
+                font-size: 12px;
+                padding: 5px 8px;
+                background-color: #f1b44c;
+                color: white;
+                position: absolute;
+                top: 10px;
+                left: 10px;
+                z-index: 10;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
         </style>
     </head>
     <div class="hero">
@@ -133,21 +147,26 @@
                 <% for(var i=0; i < product.length; i++) {%>
 
                     <div class="col-12 col-md-4 col-lg-3 mb-5 position-relative">
-                        <a class="product-item rounded" href="/productDetail/<%=product[i]._id%>">
+                        <a class="product-item rounded" href="#">
+                            <% if (product[i].productOffer > 0) { %>
+                                <div class="badge rounded-pill text-white d-flex gap-1" 
+                                    style="position: absolute; top: 10px; left: 10px; font-size: 12px; background-color: #f1b44c; padding: 2px 5px;">
+                                    <span class="mt-0 p-1"><%= product[i].productOffer %>% OFF</span>
+                                    <i class="fa-solid fa-tag mt-1"></i>
+                                </div>
+                            <% } %>
+                
                             <img src="/uploads/product-images/<%=product[i].productImage[0]%>"
                                 class="img-fluid product-thumbnail rounded">
                             <h3 class="product-title">
                                 <%=product[i].productName%>
                             </h3>
                             <strong class="product-price">₹ <%=product[i].salePrice%></strong>
-
-                            <span
-                                class="wishlist-btn position-absolute top-0 end-0 m-2 bg-white text-dark rounded-circle p-2"
-                                onclick="">❤️</span>
                         </a>
-
+                        <span class="wishlist-btn position-absolute top-0 end-0 m-2 bg-white text-white rounded-circle p-2" value="<%=product[i]._id%>" onclick="toggleWishlist('<%=product[i]._id%>')">🤍</span>
                     </div>
-                    <% } %>
+                <% } %>
+                
                 </div>
                         
 
@@ -159,6 +178,60 @@
 
     
     <script>
+
+async function toggleWishlist(productId) {
+    console.log(`Toggling wishlist for product ID: ${productId}`);
+    try {
+        const response = await fetch('/toggleWishlist', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                productId: productId,
+            }),
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            fetchFilteredData('', '', 'popularity', '', 1);
+
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: data.message,
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+            });
+        } else {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: data.message,
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+            });
+        }
+    } catch (error) {
+        console.log('Error:', error.message);
+
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'Error updating wishlist. Please try again later.',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+        });
+    }
+}
+
+
         // Debounce function to limit the rate of API calls
         function debounce(func, delay) {
             let debounceTimer;
@@ -201,10 +274,10 @@
     
                 const data = await response.json();
                 console.log('Total Items:', data.totalItems);
-                renderProducts(data.products);
+                renderProducts(data.products,data.wishlistProducts);
                 renderPagination(data.totalItems, page);
             } catch (error) {
-                console.error('Error fetching filtered data:', error);
+                console.error('Error fetching filtered data:', error.message);
                 showErrorMessage();
             } finally {
                 showLoading(false);
@@ -212,25 +285,52 @@
         }
     
         // Render the products on the page
-        function renderProducts(products) {
-            const productList = document.getElementById('productList');
-            productList.innerHTML = ''; // Clear the existing products
-    
-            products.forEach(product => {
-                const productCard = `
-                    <div class="col-12 col-md-4 col-lg-3 mb-5 position-relative">
-                        <a class="product-item rounded" href="/productDetail/${product._id}">
-                            <img src="/uploads/product-images/${product.productImage[0]}"
-                                class="img-fluid product-thumbnail rounded">
-                            <h3 class="product-title">${product.productName}</h3>
-                            <strong class="product-price">₹ ${product.salePrice}</strong>
-                            <span class="wishlist-btn position-absolute top-0 end-0 m-2 bg-white text-dark rounded-circle p-2" onclick="toggleWishlist('${product._id}')">❤️</span>
-                        </a>
-                    </div>
-                `;
-                productList.innerHTML += productCard;
-            });
-        }
+        function renderProducts(products, wishlistProducts) {
+    console.log(products, 'products');
+    console.log(wishlistProducts, 'wishlistProducts');
+
+    // Extract product IDs if wishlistProducts is an array of objects
+    const wishlistProductIds = wishlistProducts.map(item => item.productId.toString());
+
+    const productList = document.getElementById('productList');
+    productList.innerHTML = ''; // Clear the existing products
+
+    products.forEach(product => {
+        const offerBadge = product.productOffer > 0 ? `
+            <div class="badge rounded-pill text-white d-flex gap-1" 
+                style="position: absolute; top: 10px; left: 10px; font-size: 12px; background-color: #f1b44c; padding: 2px 5px;">
+                <span class="mt-0 p-1">${product.productOffer}% OFF</span>
+                <i class="fa-solid fa-tag mt-1"></i>
+            </div>` : '';
+
+        // Check if the product is in the wishlist
+        const isInWishlist = wishlistProductIds.includes(product._id.toString());
+        console.log(isInWishlist);
+        
+
+        const wishlistIcon = isInWishlist ? '❤️' : '🤍'; // Red heart if in wishlist, white heart otherwise
+
+        const productCard = `
+            <div class="col-12 col-md-4 col-lg-3 mb-5 position-relative">
+                <a class="product-item rounded" href="/productDetail/${product._id}">
+                    ${offerBadge}
+                    <img src="/uploads/product-images/${product.productImage[0]}"
+                        class="img-fluid product-thumbnail rounded">
+                    <h3 class="product-title">${product.productName}</h3>
+                    <strong class="product-price">₹ ${product.salePrice}</strong>
+                </a>
+                    <span class="wishlist-btn position-absolute top-0 end-0 m-2 bg-white text-dark rounded-circle p-2" 
+                          onclick="toggleWishlist('${product._id}')" id="wishlist-${product._id}" >
+                          ${wishlistIcon}
+                    </span>
+            </div>
+        `;
+        productList.innerHTML += productCard;
+    });
+}
+
+
+
     
         // Render pagination dynamically
         function renderPagination(totalItems, currentPage) {
@@ -253,10 +353,7 @@
         }
 
     
-        function toggleWishlist(productId) {
-            console.log(`Toggling wishlist for product ID: ${productId}`);
-            // Add logic for wishlist functionality
-        }
+        
     
         function showLoading(show) {
             document.getElementById('loadingIndicator').style.display = show ? 'block' : 'none';

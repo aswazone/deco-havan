@@ -1,5 +1,6 @@
 <%-include("../../views/partials/user/header")%>
     <title>Responsive User Profile</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -227,37 +228,51 @@
                     <!-- Loop through each order and display order details dynamically -->
                     <% if (orders && orders.length > 0) { %>
                         <% orders.forEach(order => { %>
-                            <div class="order-item">
-                                <div class="order-details">
-                                    <h5>Order #<%= order.orderId %></h5>
-                                    <p><strong>Product:</strong> 
+                            <div class="order-item d-flex justify-content-between align-items-center p-2 mb-2 shadow-sm bg-white rounded">
+                                <div>
+                                    <h5 class="mb-1 text-dark">Order #<%= order.orderId %></h5>
+                                    
+                                    <p class="mb-0"><strong>Product:</strong> 
                                         <% order.orderItems.forEach(item => { %>
-                                            <span><%= item.product.productName %></span>, <!-- Display product name -->
+                                            <span><%= item.product.productName %></span><% if(order.orderItems.indexOf(item) !== order.orderItems.length - 1) { %>, <% } %>
                                         <% }) %>
                                     </p>
-                                    <p><strong>Date:</strong> <%= new Date(order.invoiceDate).toLocaleDateString() %></p>
-                                    <p><strong>Total:</strong> ₹ <%= order.finalAmount.toFixed(2) %></p>
-                                    <p class="status">
+                                    <p class="mb-0"><strong>Date:</strong> <%= new Date(order.invoiceDate).toLocaleDateString() %></p>
+                                    <p class="mb-1 text-success"><strong>Total:</strong> ₹ <%= order.finalAmount.toFixed(2) %></p>
+                                </div>
+                                <div class="d-flex flex-column align-content-end">
+                                    <p class="mb-1 status text-dark">Order Status: 
                                         <% if (order.status === 'Delivered') { %>
-                                            <i class="bi bi-check-circle-fill"></i> Delivered
+                                            <i class="bi bi-check-circle-fill text-success"></i> <span class="text-success">Delivered</span>
                                         <% } else if (order.status === 'Pending') { %>
-                                            <i class="bi bi-clock"></i> Pending
+                                            <i class="bi bi-clock text-warning"></i> <span class="text-warning">Pending</span>
                                         <% } else if (order.status === 'Canceled') { %>
-                                            <i class="bi bi-x-circle-fill"></i> Canceled
+                                            <i class="bi bi-x-circle-fill text-danger"></i> <span class="text-danger">Canceled</span>
+                                        <% } else if (order.status === 'Returned') { %>
+                                            <i class="bi bi-check-circle-fill text-success"></i> <span class="text-success">Returned</span>
                                         <% } else { %>
-                                            <i class="bi bi-arrow-repeat"></i> <%= order.status %>
+                                            <i class="bi bi-arrow-repeat"></i> <span class="text-primary"><%= order.status %></span>
                                         <% } %>
                                     </p>
+                                    <p class="mb-1"><strong>Payment:</strong> <%= order.paymentMethod %> - 
+                                        <span class="badge bg-<%= order.paymentStatus === 'Completed' ? 'success' : 'danger' %>">
+                                            <%= order.paymentStatus %>
+                                        </span>
+                                    </p>
                                 </div>
-                                <div class="order-actions">
-                                    <% if (order.status !== 'Canceled') { %>  <!-- Only show cancel button if the order is not already canceled -->
-                                        <button id="cancel-order-<%= order.orderId %>" class="btn btn-danger me-2" onclick="cancelOrder('<%= order.orderId %>')">
-                                            <i class="bi bi-x-circle-fill"></i> Cancel Order
+                                <div class="order-actions d-flex">
+                                    <button class="btn btn-sm btn-primary me-1" onclick="location.href='/<%= order.orderId %>'">
+                                        <i class="bi bi-eye"></i> view
+                                    </button>
+                                    <% if (order.status === 'Delivered') { %>
+                                        <button id="return-order-<%= order.orderId %>" class="btn btn-sm btn-warning me-1" onclick="requestReturn('<%= order.orderId %>')">
+                                            <i class="bi bi-arrow-repeat"></i>
+                                        </button>
+                                    <% } else if (order.status === 'Pending' || order.status === 'Processing' || order.status === 'Shipped') { %>
+                                        <button id="cancel-order-<%= order.orderId %>" class="btn btn-sm btn-danger" onclick="cancelOrder('<%= order.orderId %>')">
+                                            <i class="bi bi-x-circle-fill"></i> Cancel
                                         </button>
                                     <% } %>
-                                    <!-- <button class="btn btn-secondary">
-                                        <i class="bi bi-download"></i> Download Invoice
-                                    </button> -->
                                 </div>
                             </div>
                         <% }) %>
@@ -271,33 +286,29 @@
                 <div class="tab-pane fade" id="wishlist">
                     <h3 class="mb-4 bg-div">My Wishlist</h3>
                     <!-- Wishlist details here -->
-                    <ul class="list-group wishlist-container">
-                        <li class="list-group-item wishlist-item d-flex justify-content-between">
-                            <div class="product-image">
-                                <img src="https://via.placeholder.com/100" alt="Product Image">
-                            </div>
-                            <div class="product-details">
-                                <h5>Product Name 1</h5>
-                                <p>₹ 49.99</p>
-                            </div>
-                            <div class="d-flex gap-2">
-                                <button class="btn btn-primary"><i class="bi bi-cart-plus"></i> Add to Cart</button>
-                                <button class="btn btn-danger"><i class="bi bi-trash"></i> Remove</button>
-                            </div>
-                        </li>
-                        <li class="list-group-item wishlist-item d-flex justify-content-between">
-                            <div class="product-image">
-                                <img src="https://via.placeholder.com/100" alt="Product Image">
-                            </div>
-                            <div class="product-details">
-                                <h5>Product Name 2</h5>
-                                <p>₹ 79.99</p>
-                            </div>
-                            <div class="d-flex gap-2">
-                                <button class="btn btn-primary"><i class="bi bi-cart-plus"></i> Add to Cart</button>
-                                <button class="btn btn-danger"><i class="bi bi-trash"></i> Remove</button>
-                            </div>
-                        </li>
+                    <ul class="list-group wishlist-container gap-1">
+                        <!-- Loop through each product in the wishlist and display it dynamically -->
+                        <% if (wishlistProducts && wishlistProducts.length > 0) { %>
+                            <% wishlistProducts.forEach(product => { %>
+                            
+                            <li class="list-group-item wishlist-item d-flex justify-content-between align-items-center" style="background-color: #a6dac6d2;">
+                                <div class="product-image rounded overflow-hidden">
+                                    <img src="/uploads/product-images/<%= product.productId.productImage[0]%>" alt="Product Image" class="img-fluid" style="width: 80px; height: auto;">
+                                </div>
+                                <div class="product-details flex-grow-1 ms-3">
+                                    <h5 class="mb-1"><%= product.productId.productName %></h5>
+                                    <p class="mb-1 text-muted">Price: ₹ <%= product.productId.salePrice %></p>
+                                    <p class="mb-0 text-muted">Stock: <%= product.productId.quantity %> available</p>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <a href="/cart/add" class="btn btn-primary"><i class="bi bi-cart-plus"></i> Add to Cart</a>
+                                    <a href="/cart/add" class="btn btn-danger"><i class="bi bi-trash"></i> Remove</a>
+                                </div>
+                            </li>
+                            <% }) %>
+                        <% } else { %>
+                            <p>No products found in the wishlist.</p>
+                        <% } %>
                     </ul>
                 </div>
         
@@ -305,46 +316,43 @@
                 <div class="tab-pane fade" id="wallet">
                     <h3 class="mb-4 bg-div">My Wallet</h3>
                     <!-- Wallet details here -->
-    
-                            <div class="wallet-summary mb-3">
-                                <div class="d-flex justify-content-between">
-                                    <span>Total Balance:</span>
-                                    <span class="balance-amount">₹ 5,000.00</span>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    <span>Available Credit:</span>
-                                    <span class="balance-amount">₹ 1,500.00</span>
-                                </div>
-                            </div>
-
-                            <div class="transaction-history">
-                                <h5 class="section-title">Recent Transactions</h5>
-                                <ul class="list-group">
+                
+                    <div class="wallet-summary mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span>Total Balance:</span>
+                            <span class="balance-amount">₹ 
+                                <%= wallet && wallet.balance ? wallet.balance.toFixed(2) : '0.00' %>
+                            </span>
+                        </div>
+                    </div>
+                
+                    <div class="transaction-history">
+                        <h5 class="section-title">Recent Transactions</h5>
+                        <ul class="list-group">
+                            <% if (wallet && wallet.transactions && wallet.transactions.length > 0) { %>
+                                <% wallet.transactions.slice(-5).reverse().forEach(transaction => { %>
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
                                         <div>
-                                            <span class="transaction-title">Consulting Fee</span><br>
-                                            <small class="text-muted">2 days ago</small>
+                                            <span class="transaction-title"><%= transaction.description || 'Transaction' %></span><br>
+                                            <small class="text-muted">
+                                                <%= new Date(transaction.date).toLocaleDateString('en-GB', {
+                                                    day: 'numeric', month: 'short', year: 'numeric'
+                                                }) %>
+                                            </small>
                                         </div>
-                                        <span class="amount positive">+ ₹ 1,000.00</span>
+                                        <span class="amount <%= transaction.type === 'Credit' ? 'positive' : 'negative' %>">
+                                            <%= transaction.type === 'Credit' ? '+' : '-' %> ₹ <%= transaction.amount.toFixed(2) %>
+                                        </span>
                                     </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <span class="transaction-title">Office Supplies</span><br>
-                                            <small class="text-muted">5 days ago</small>
-                                        </div>
-                                        <span class="amount negative">- ₹ 150.00</span>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <span class="transaction-title">Client Reimbursement</span><br>
-                                            <small class="text-muted">1 week ago</small>
-                                        </div>
-                                        <span class="amount positive">+ ₹ 200.00</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        
+                                <% }); %>
+                            <% } else { %>
+                                <li class="list-group-item">No transactions yet.</li>
+                            <% } %>
+                        </ul>
+                    </div>
                 </div>
+                
+                
         
                 <!-- Address Section -->
                 <div class="tab-pane fade" id="address">
@@ -353,7 +361,7 @@
                         <h5 class="mb-4"><strong>Manage Addresses</strong></h5><a class="btn btn-success sidebar-link" data-bs-toggle="tab" href="#addAddress"><i class="bi bi-plus"></i>Address</a>
                     </div>
                     <% if (userAddress && userAddress.address) { %>
-                        <% userAddress.address.forEach(address => { %>
+                        <% userAddress.address.filter(address => !address.isDeleted).forEach(address => { %> <!-- Filter out deleted addresses -->
                             <div class="address-card mb-3">
                                 <div class="d-flex justify-content-between">
                                     <div class="text-success d-flex flex-column mb-0">
@@ -370,8 +378,7 @@
                                         <a class="btn btn-outline-danger btn-sm shadow-sm" href="/deleteAddress?id=<%= address._id %>" onclick="return confirm('Are you sure ? do you wanna delete..')"><i class="bi bi-trash"></i> Delete</a>
                                     </div>
                                 </div>
-                                
-                            </div> 
+                            </div>
                         <% }) %>
                     <% } else { %>
                         <div class="address-card mb-3">
@@ -383,6 +390,7 @@
                         </div> 
                     <% } %>
                 </div>
+                
 
                 <div class="tab-pane fade" id="addAddress">
                     <!-- Address input form here -->
@@ -723,6 +731,55 @@
             });
         });
 
+
+
+    function requestReturn(orderId) {
+        // Show SweetAlert for return reason
+        Swal.fire({
+            title: 'Return Reason',
+            input: 'textarea',
+            inputLabel: 'Please enter the reason for returning the order',
+            inputPlaceholder: 'Write your reason here...',
+            showCancelButton: true,
+            confirmButtonText: 'Send',
+            cancelButtonText: 'Cancel',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'You must provide a reason!';
+                }
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const reason = result.value;
+
+                // Call the backend to update the order status to 'Return Request'
+                fetch(`/order/${orderId}/request-return`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ reason: reason })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Change the "Return" button to "Requested" on the frontend
+                        const returnButton = document.getElementById(`return-order-${orderId}`);
+                        returnButton.textContent = 'Requested';
+                        returnButton.classList.remove('btn-warning');
+                        returnButton.classList.add('btn-secondary');
+                        returnButton.disabled = true;
+                    } else {
+                        Swal.fire('Error', 'There was an error processing your return request.', 'error');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    Swal.fire('Error', 'There was an error processing your return request.', 'error');
+                });
+            }
+        });
+    }
 
     // Function to handle order cancellation
     // Function to handle order cancellation

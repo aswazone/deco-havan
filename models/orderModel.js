@@ -43,7 +43,7 @@ const orderSchema = new Schema({
     },
     address:{
         type:Schema.Types.ObjectId,
-        ref:'User',
+        ref:'Address',
         required:true,
     },
     invoiceDate:{
@@ -62,6 +62,15 @@ const orderSchema = new Schema({
     couponApplied:{
         type:Boolean,
         default:false
+    },
+    returnReason: {
+        type: String,
+        default: ''
+    },
+    paymentStatus: {
+        type: String,
+        enum: ['Pending', 'Completed', 'Failed'],
+        default: 'pending'
     }
 },{timestamps:true})
 

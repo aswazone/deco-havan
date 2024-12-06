@@ -53,6 +53,10 @@ const productSchema = new Schema({
         required: true,
         default: "Available"
     },
+    isWishlist: {
+        type: Boolean, 
+        default: false 
+    }
 }, { timestamps: true });
 
 // Create a text index on `productName` and `description` for search

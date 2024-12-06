@@ -1,37 +1,73 @@
 const Category = require('../../models/categoryModel');
 const Product = require('../../models/productModel');
 
-    const loadCategory = async (req, res)=>{
+    const loadCategory = async (req, res) => {
         try {
-            console.log(req.session.admin, 'category',req.query.page,req.query.limit);
-
+            const search = req.query.search || '';  // Get the search query from the request
             const page = parseInt(req.query.page) || 1;
-            const limit = 4;
-            const skip = (page - 1) * limit;
-
-            const categoryData = await Category.find({})
-                .sort({ createdAt: -1 })
-                .skip(skip)
-                .limit(limit);
-
-            const totalCategories = await Category.find({}).countDocuments();
-
-            const totalPages = Math.ceil(totalCategories.length / limit);
-
-            res.render('category', {
-                cat: categoryData,
-                totalCategories: totalCategories,
-                totalPages: totalPages,
-                currentPage: page,
+            const categories = await Category.find({
+              name: { $regex: search, $options: 'i' },
             })
-            console.log(page, limit, skip);
+              .skip((page - 1) * 5)
+              .limit(5);
+        
+            const totalCategories = await Category.countDocuments({
+              name: { $regex: search, $options: 'i' },
+            });
+        
+            const totalPages = Math.ceil(totalCategories / 5);
+        
+            res.render('category', {
+              cat: categories,
+              currentPage: page,
+              totalPages: totalPages,
+              search: search, // Pass the search value to the template
+              
+            });
+            console.log('Categories fetched successfully');
             
-        } catch (error) {
-            console.log(error.message, 'category page not found!!');
-            res.redirect('/pageNotFound');
             
-        }
+          } catch (error) {
+            console.error('Error fetching categories:', error);
+            res.render('category', { error: 'Failed to load categories' });
+          }
+    };
+
+    const searchCategory = async (req, res) => {
+        try {
+            console.log('Fetching categories...');
+            const search = req.query.search || '';  // Get the search query from the request
+            const page = parseInt(req.query.page) || 1;
+            console.log(search, page);
+            
+            const categories = await Category.find({
+              name: { $regex: search, $options: 'i' },
+            })
+              .skip((page - 1) * 5)
+              .limit(5);
+        
+            const totalCategories = await Category.countDocuments({
+              name: { $regex: search, $options: 'i' },
+            });
+        
+            const totalPages = Math.ceil(totalCategories / 5);
+        
+            res.json({
+              categories,
+              currentPage: page,
+              totalPages: totalPages,
+              search: search, // Pass the search value to the template
+              
+            });
+            console.log('Categories fetched successfully');
+            
+            
+          } catch (error) {
+            console.error('Error fetching categories:', error);
+            res.status(500).json({ error: 'Failed to load categories' });
+          }
     }
+
 
     const addCategory = async (req,res) =>{
 
@@ -181,8 +217,10 @@ const Product = require('../../models/productModel');
             const {categoryName,description}=req.body;
             const existingCategory=await Category.findOne({name:categoryName});
     
+            console.log(existingCategory,'existing');
+            
             if(existingCategory){
-                return res.status(400).json({error:"Category exists,Please choose another name"})
+                return res.status(400).json({success:false,message:"Category exists,Please choose another name"})
             }
             const updateCategory=await Category.findByIdAndUpdate(id,{
                 name:categoryName,
@@ -190,13 +228,14 @@ const Product = require('../../models/productModel');
             },{new:true});
     
             if(updateCategory){
-                res.redirect("/admin/category");
+                res.status(200).json({success:true,message:"Category updated successfully"})
             }else{
-                res.status(404).json({error:"Category not found"})
+                res.status(404).json({success:false,message:"Category not found"})
             }
             
         } catch (error) {
-            res.status(500).json({error:"Internal server error "})
+            console.log(error.message,'Internal server error');
+            res.status(500).json({success:false,message:"Internal server error "})
             
         }
     }
@@ -210,5 +249,6 @@ module.exports = {
     removeCategoryOffer,
     listToggleStatus,
     getEditCategory,
-    editCategory
+    editCategory,
+    searchCategory
 }

@@ -1,0 +1,226 @@
+<%- include("../../views/partials/admin/header")%>
+
+<div class="col-md-9 col-lg-10 p-4">
+    <!-- Header Section -->
+    <div class="bg-white rounded-3 p-4 shadow-sm mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <a href="/admin/orders" class="text-decoration-none text-muted mb-2 d-inline-block">
+                    <i class="bi bi-arrow-left"></i> Back to Orders
+                </a>
+                <h2 class="mb-0">Order #<%= order.orderId %></h2>
+                <p class="text-muted mb-0">Placed on <%= new Date(order.createdAt).toLocaleDateString() %></p>
+            </div>
+            <!-- Order Status Update Button -->
+            <div class="d-flex align-items-center">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateStatusModal">
+                    Update Status
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Items -->
+    <div class="bg-white rounded-3 shadow-sm p-4 mb-4">
+        <h4 class="mb-4">Order Items</h4>
+        <% order.orderItems && order.orderItems.length > 0 && order.orderItems.forEach(item => { %>
+            <div class="card mb-3 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-2">
+                            <img src="/uploads/product-images/<%= item.product.productImage[0]%>" 
+                                class="img-fluid rounded" 
+                                style="width: 100%; height: 100%; object-fit: contain;" 
+                                alt="<%= item.product.productName %>">
+                        </div>
+                        <div class="col-md-4">
+                            <h5><%= item.product.productName %></h5>
+
+                            <p class="text-muted mb-0">Qty: <%= item.product.quantity %></p>
+                        </div>
+                        <div class="col-md-3">
+                            <p class="fw-bold mb-0">₹ <%= item.product.salePrice.toFixed(2) %></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+
+    <!-- Shipping Details -->
+    <div class="bg-white rounded-3 shadow-sm p-4 mb-4">
+        <h4 class="mb-4">Shipping Details</h4>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card bg-light border-0">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-3 text-muted">Delivery Address</h6>
+                        <h5 class="mb-2"><%= address.name %></h5>
+                        <p class="mb-1"><%= address.pincode %></p>
+                        <p class="mb-1"><%= address.state %>, <%= address.city%>, <%= address.landMark %></p>
+                        <p class="mb-0">Phone: <%= address.phone %></p>
+                        <p class="mb-0">Alt Phone: <%= address.altPhone %></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card bg-light border-0">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-3 text-muted">Payment Details</h6>
+                        <% if (order.paymentMethod === 'cod') { %>
+                            <p class="mb-2">Method: Cash on Delivery <i class="fas fa-money-bill-wave ms-2"></i></p>
+                        <% } else if (order.paymentMethod === 'card') { %>
+                            <p class="mb-2">Method: Credit/Debit Card <i class="fas fa-credit-card ms-2"></i></p>
+                        <% } else if (order.paymentMethod === 'razorpay') { %>
+                            <p class="mb-2">Method: Razorpay <i class="fab fa-cc-paypal ms-2"></i></p>
+                        <% } else { %>
+                            <p class="mb-2">Method: Wallet <i class="fas fa-wallet ms-2"></i></p>
+                        <% } %>
+                        <h4 class="mb-2">Order Status:
+                            <span class="badge rounded-pill bg-<%= order.status === 'Pending' ? 'warning' 
+                            : order.status === 'Processing' ? 'info' 
+                            : order.status === 'Shipped' ? 'primary' 
+                            : order.status === 'Delivered' ? 'success' 
+                            : order.status === 'Cancelled' ? 'danger' 
+                            : order.status === 'Return Request' ? 'secondary' 
+                            : 'dark' %> p-2">
+                                <%= order.status %>
+                            </span>
+                        </h4>
+                        <p class="mb-2">Payment Status: <span class="<%= order.paymentStatus === 'Completed' ? 'text-success' : 'text-danger' %>">
+                            <%= order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1) %>
+                        </span></p>
+                        <p>Total Amount: <strong>₹ <%= order.finalAmount.toFixed(2) %></strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Return Request Section -->
+    <% if (order.status === 'Return Request') { %>
+        <div class="bg-white rounded-3 shadow-sm p-4 mb-4">
+            <h4 class="mb-4">Return Request</h4>
+            <p><strong>Reason:</strong> <%= order.returnReason || 'No reason provided yet' %></p>
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-success me-2" onclick="updateReturnStatus('<%= order._id %>', 'approved')">Approve</button>
+                <button class="btn btn-danger" onclick="updateReturnStatus('<%= order._id %>', 'rejected')">Reject</button>
+            </div>
+        </div>
+    <% } %>
+</div>
+
+<!-- Update Status Modal -->
+<div class="modal fade" id="updateStatusModal" tabindex="-1" aria-labelledby="updateStatusModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateStatusModalLabel">Update Order Status</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="statusForm">
+                    <div class="mb-3">
+                        <label for="orderStatus" class="form-label">Order Status</label>
+                        <select class="form-select" id="orderStatus" name="orderStatus" required>
+                            <option value="Pending" <%= order.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                            <option value="Processing" <%= order.status === 'Processing' ? 'selected' : '' %>>Processing</option>
+                            <option value="Shipped" <%= order.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                            <option value="Delivered" <%= order.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                            <option value="Cancelled" <%= order.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                            <option value="Return Request" <%= order.status === 'Return Request' ? 'selected' : '' %>>Return Request</option>
+                            <option value="Returned" <%= order.status === 'Returned' ? 'selected' : '' %>>Returned</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function updateReturnStatus(orderId, status) {
+        try {
+            const response = await fetch(`/admin/orders/${orderId}/return-status`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ status }),
+            });
+            const result = await response.json();
+
+            if (result.success) {
+                alert(`Return request ${status === 'approved' ? 'approved' : 'rejected'}`);
+                location.reload(); // Reload the page to reflect changes
+            } else {
+                alert('Failed to update return request. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error:', error.message);
+            alert('An error occurred while updating the return request.');
+        }
+    }
+
+    //change order status when submit on statusForm
+    document.getElementById('statusForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const orderId = '<%= order._id %>';
+        const status = document.getElementById('orderStatus').value;
+        try {
+            const response = await fetch(`/admin/orders/${orderId}/update-status`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ orderStatus: status }),
+            });
+            
+            const data = await response.json();
+
+            if (data.success) {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: data.message,
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true,
+                })
+                .then(() => {
+                    window.location.reload();
+                })
+            } else {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: data.message,
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true,
+                })
+            }
+        } catch (error) {
+            console.log('Error:', error.message);
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: 'An error occurred',
+                text: error.message,
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+    });
+
+
+</script>
+
+<%- include("../../views/partials/admin/footer")%>

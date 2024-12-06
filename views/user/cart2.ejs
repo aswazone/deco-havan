@@ -87,9 +87,11 @@
                         <div class="card mb-4 cart-item" data-id="<%= item.product._id %>">
                             <div class="row g-0">
                                 <div class="col-md-4">
-                                    <img src="/uploads/product-images/<%= item.product.productImage[0] %>"
-                                         class="img-fluid rounded-start"
-                                         alt="<%= item.product.productName %>">
+                                    <a href="/productDetail/<%= item.product._id %>">
+                                        <img src="/uploads/product-images/<%= item.product.productImage[0] %>"
+                                             class="img-fluid rounded-start"
+                                             alt="<%= item.product.productName %>">
+                                    </a>
                                 </div>
                                 <div class="col-md-8">
                                     <div class="card-body">

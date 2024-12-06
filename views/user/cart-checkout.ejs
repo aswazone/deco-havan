@@ -53,6 +53,15 @@
                         <div id="collapseAddress" class="accordion-collapse collapse show" aria-labelledby="headingAddress" data-bs-parent="#checkoutAccordion">
                             <div class="accordion-body">
                                 <form id="checkoutForm">
+                                    <div id="savedAddresses" class="saved-addresses">
+                                        <h6>Select a saved address:</h6>
+                                        <div id="addressList" class="address-list">
+                                            <!-- Saved addresses will be rendered here -->
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <button class="btn btn-outline-success btn-sm shadow-sm" id="toggleNewAddressBtn">+ Address</button>
+                                    <div id="addNewAddress" style="display: none;">
                                     <div class="mb-3">
                                         <label for="addressType" class="form-label">Address Type</label>
                                         <input type="text" id="addressType" class="form-control" placeholder="Home/Office" name="addressType" required>
@@ -85,12 +94,7 @@
                                         <label for="altPhone" class="form-label">Alternate Phone</label>
                                         <input type="text" id="altPhone" class="form-control" placeholder="Alternate Phone" name="altPhone">
                                     </div>
-                                    <div id="savedAddresses" class="saved-addresses">
-                                        <h6>Select a saved address:</h6>
-                                        <div id="addressList" class="address-list">
-                                            <!-- Saved addresses will be rendered here -->
-                                        </div>
-                                    </div>
+                                </div>
                                 </form>
                             </div>
                         </div>
@@ -112,6 +116,14 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="paymentMethod" id="card" value="card">
                                     <label class="form-check-label" for="card">Credit/Debit Card</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="razorpay" value="razorpay">
+                                    <label class="form-check-label" for="razorpay">Razorpay</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="wallet" value="wallet">
+                                    <label class="form-check-label" for="wallet">Wallet</label>
                                 </div>
                             </div>
                         </div>
@@ -144,7 +156,7 @@
                         <hr>
                         <div class="d-flex justify-content-between fw-bold">
                             <span>Total</span>
-                            <span id="total">Rs. <%= total %></span>
+                            <span>Rs. <span id="total"><%= total %></span></span>
                         </div>
                         <button type="submit" form="checkoutForm" class="btn btn-primary w-100 mt-3">Place Order</button>
                         <a href="/" class="btn btn-outline-secondary w-100 mt-2">Continue Shopping</a>
@@ -153,8 +165,29 @@
             </div>
         </div>
     </div>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+
+
+
+
+        console.log(document.getElementById('total').textContent,'total')
+        const toggleNewAddressBtn = document.getElementById('toggleNewAddressBtn');
+
+        toggleNewAddressBtn.addEventListener('click', () => {
+            const addNewAddress = document.getElementById('addNewAddress');
+            if (addNewAddress.style.display === 'none') {
+                addNewAddress.style.display = 'block';
+                toggleNewAddressBtn.innerHTML = 'Close';
+                toggleNewAddressBtn.classList.replace('btn-outline-success', 'btn-danger');
+            } else {
+                addNewAddress.style.display = 'none';
+                toggleNewAddressBtn.innerHTML = '+ Address';
+                toggleNewAddressBtn.classList.replace('btn-danger', 'btn-outline-success');
+            }
+        });
+
 const addressFields = [
         document.getElementById('addressType'),
         document.getElementById('name'),
@@ -334,9 +367,13 @@ const addressFields = [
                 // Calculate total price and final amount
                 const totalPrice = orderItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
                 const discount = 0; // Set discount if applicable
-                const finalAmount = totalPrice - discount;
+                // const finalAmount = totalPrice - discount;
+                const finalAmount = parseInt(document.getElementById('total').textContent);
+                console.log(finalAmount, typeof finalAmount,'final amount');
+                
 
-                console.log(addressId,'above order');
+
+                console.log(addressId,paymentMethod,orderItems,totalPrice,discount,finalAmount,'above order');
                 
                 // Proceed with placing the order using the selected addressId and cart data
                 if (addressId) {
@@ -359,17 +396,81 @@ const addressFields = [
                     const orderData = await orderResponse.json();
 
                     if (orderData.success) {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'success',
-                            title: 'Order placed successfully!',
-                            showConfirmButton: false,
-                            timer: 2000
-                        })
-                        .then(() => {
-                            window.location.href = '/order/confirmation';
-                        });
+
+                        if(orderData.method === 'razorpay' && orderData.razorpayOrderId){
+
+                            const razorpayOrderId = orderData.razorpayOrderId;
+                            console.log(razorpayOrderId,'razorpayOrderId');
+                            
+                            const options = {
+                                key: "rzp_test_Q8Waie1ecHFvXQ",
+                                amount: orderData.amount * 100, // Amount in paise
+                                currency: "INR",
+                                name: "Deco Havan store",
+                                description: "Order Payment",
+                                order_id: razorpayOrderId,
+                                handler: async function (response) {
+                                    console.log('Payment response:', response);
+
+                                    const confirmResponse = await fetch('/order/confirm-order', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({
+                                            razorpayOrderId: response.razorpay_order_id,
+                                            razorpayPaymentId: response.razorpay_payment_id,
+                                            razorpaySignature: response.razorpay_signature,
+                                            orderItems,
+                                            totalPrice,
+                                            discount,
+                                            finalAmount,
+                                            address:addressId,
+                                            paymentMethod
+                                        })
+                                    });
+
+                                    const result = await confirmResponse.json();
+
+                                    if (result.success) {
+                                        Swal.fire({
+                                            toast: true,
+                                            position: 'top-end',
+                                            icon: 'success',
+                                            title: data.message,
+                                            showConfirmButton: false,
+                                            timer: 2000
+                                        })
+                                        .then(() => {
+                                            window.location.href = '/';
+                                        })
+                                    } else {
+                                        alert('Order confirmation failed: ' + result.message);
+                                    }
+                                }
+                            };
+
+                            const razorpay = new Razorpay(options);
+                            razorpay.open()
+                            console.log('razorpay opened')
+                            
+                                
+                            
+
+                            
+                        }else{
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'success',
+                                title: orderData.message,
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
+                            .then(() => {
+                                window.location.href = '/';
+                            })
+                        }
+                        
+
                     } else {
                         Swal.fire({
                             toast: true,
@@ -382,8 +483,8 @@ const addressFields = [
                     }
                 }
             } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again later.');
+                console.log('Error:', error.message);
+                // alert('An error occurred. Please try again later.');
             }
         });
 
@@ -441,7 +542,47 @@ const addressFields = [
         }
 
         // Fetch saved addresses on page load
-        fetchSavedAddresses();
+        fetchSavedAddresses(); 
+
+
+        const options = {
+            key: "YOUR_RAZORPAY_KEY_ID",
+            amount: finalAmount * 100, // Amount in paise
+            currency: "INR",
+            name: "Your Store Name",
+            description: "Order Payment",
+            order_id: razorpayOrderId, // Razorpay order ID from /place-order response
+            handler: async function (response) {
+                // After payment is successful, confirm the order
+                const confirmResponse = await fetch('/api/orders/confirm-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        razorpayOrderId: response.razorpay_order_id,
+                        razorpayPaymentId: response.razorpay_payment_id,
+                        razorpaySignature: response.razorpay_signature,
+                        orderItems, // Send the original order details
+                        totalPrice,
+                        discount,
+                        finalAmount,
+                        address,
+                        paymentMethod: 'ONLINE'
+                    })
+                });
+
+                const result = await confirmResponse.json();
+
+                if (result.success) {
+                    alert('Order placed successfully!');
+                } else {
+                    alert('Order confirmation failed: ' + result.message);
+                }
+            }
+        };
+
+        const razorpay = new Razorpay(options);
+        razorpay.open();
+
     </script>
 </body>
 

@@ -5,6 +5,7 @@ const customerController = require('../controllers/admin/customerController')
 const categoryController = require('../controllers/admin/categoryController.js');
 const productController = require('../controllers/admin/productController.js');
 const bannerController = require('../controllers/admin/bannerController.js');
+const orderController = require('../controllers/admin/orderController.js');
 const {userAuth,adminAuth} = require('../middleware/auth');
 
 const multer = require('multer');
@@ -33,6 +34,7 @@ router.patch('/toggleStatus',adminAuth,customerController.usertoggleStatus);
 //category-management
 router.get('/category',adminAuth,categoryController.loadCategory);
 router.post('/category',adminAuth,categoryController.addCategory);
+router.get('/searchCategory',adminAuth,categoryController.searchCategory);
 router.post('/addCategoryOffer',adminAuth,categoryController.addCategoryOffer);
 router.post('/removeCategoryOffer',adminAuth,categoryController.removeCategoryOffer);
 router.patch('/listToggleStatus',adminAuth,categoryController.listToggleStatus);
@@ -58,10 +60,11 @@ router.get('/addBanner',adminAuth,bannerController.getAddBannerPage);
 router.post('/addBanner', adminAuth,upload.single('images'),bannerController.addBanner);
 router.delete('/deleteBanner/:id',adminAuth,bannerController.deleteBanner);
 
-
-
-
-
+//order-management
+router.get('/orders',adminAuth,orderController.loadOrder);
+router.get('/:orderId',adminAuth,orderController.getOrderDetails);
+router.post('/orders/:id/update-status', adminAuth,orderController.updateStatus);
+router.post('/orders/:orderId/return-status', userAuth, orderController.returnStatus);
 
 
 

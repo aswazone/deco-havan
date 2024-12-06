@@ -3,6 +3,7 @@ const Product = require('../../models/productModel');
 const User = require('../../models/userModel');
 const Address = require('../../models/addressModel');
 const Order = require('../../models/orderModel');
+require('dotenv').config();
 const mongoose = require('mongoose');
 
 const getCart = async (req, res) => {
@@ -67,6 +68,10 @@ const addToCart = async (req, res) => {
         
         if (!product) {
             return res.status(404).json({success:false, message: 'Product not found' });
+        }
+
+        if (product.quantity < quantity) {
+            return res.status(400).json({success:false, message: 'Insufficient stock' });
         }
 
         let cart = await Cart.findOne({ userId });
@@ -188,7 +193,7 @@ const checkout = async (req, res) => {
             addresses
         });
     } catch (error) {
-        console.error(error);
+        console.error(error.message, 'Error fetching cart items');
         res.status(500).send('Server Error');
     }
 }
@@ -270,19 +275,121 @@ const getCartItems = async (req, res) => {
     }
 }
 
+const Razorpay = require('razorpay');
+
+
+// Initialize Razorpay instance
+const razorpayInstance = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET
+});
+
 const placeOrder = async (req, res) => {
     console.log('place order');
-    
+
     try {
-        // Destructure order details from request body
         const { orderItems, totalPrice, discount, finalAmount, address, paymentMethod, couponApplied } = req.body;
+        console.log('Order details:', orderItems, totalPrice, discount, finalAmount, address, paymentMethod, couponApplied);
 
         // Ensure user is authenticated
         if (!req.session.user) {
             throw new Error('User not authenticated');
         }
 
-        // Create a new order object
+        // Handle COD Orders
+        if (paymentMethod === 'cod') {
+            // Save order directly with 'Pending' status for COD
+            const newOrder = new Order({
+                orderItems,
+                totalPrice,
+                discount,
+                finalAmount,
+                address,
+                paymentMethod,
+                couponApplied,
+                paymentStatus: 'Pending',
+                status: 'Pending',
+                userId: req.session.user,
+                invoiceDate: new Date()
+            });
+
+            const savedOrder = await newOrder.save();
+            console.log('Order saved:', savedOrder);
+
+            // Update product quantities
+            await updateProductQuantities(orderItems, req.session.user);
+
+            return res.json({ success: true, message: 'Order placed successfully', orderId: savedOrder._id , method:'cod'});
+        }
+
+        // Handle Online Payments
+        if (paymentMethod === 'razorpay') {
+            console.log('razorpay');
+            
+            // Create Razorpay order
+            const razorpayOrder = await razorpayInstance.orders.create({
+                amount: finalAmount * 100, // Amount in paise
+                currency: 'INR',
+                receipt: `receipt_${Date.now()}`,
+                payment_capture: 1 // Auto-capture after successful payment
+            });
+
+            console.log(razorpayOrder);
+            
+            // Return the Razorpay order ID to the client
+            return res.json({
+                success: true,
+                message: 'Razorpay order created',
+                razorpayOrderId: razorpayOrder.id,
+                amount: finalAmount,
+                method: 'razorpay'
+            });
+        }
+
+    } catch (error) {
+        console.error('Error placing order:', error.message);
+        return res.json({ success: false, message: error.message || 'Error placing order. Please try again later.' });
+    }
+};
+
+// Helper function to update product quantities
+const updateProductQuantities = async (orderItems, userId) => {
+    for (const item of orderItems) {
+        const product = await Product.findById(item.product);
+
+        if (!product) {
+            throw new Error(`Product not found for ID ${item.product}`);
+        }
+
+        if (product.quantity < item.quantity) {
+            throw new Error(`Not enough stock for ${product.productName}`);
+        }
+
+        product.quantity -= item.quantity;
+        await product.save();
+        console.log(`Updated stock for ${product.productName}: ${product.quantity}`);
+    }
+
+    await Cart.findOneAndUpdate({ userId }, { $set: { items: [] } });
+};
+
+const confirmOrder = async (req, res) => {
+    const { razorpayOrderId, razorpayPaymentId, razorpaySignature, orderItems, totalPrice, discount, finalAmount, address, paymentMethod } = req.body;
+    
+    try {
+        // Verify Razorpay Signature (Optional but recommended)
+        console.log('verify-----------------------------------');
+        
+        const crypto = require('crypto');
+        const generatedSignature = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
+            .update(razorpayOrderId + "|" + razorpayPaymentId)
+            .digest('hex');
+
+        if (generatedSignature !== razorpaySignature) {
+            throw new Error('Invalid payment signature');
+        }
+
+        // Save the order after successful payment
         const newOrder = new Order({
             orderItems,
             totalPrice,
@@ -290,50 +397,26 @@ const placeOrder = async (req, res) => {
             finalAmount,
             address,
             paymentMethod,
-            couponApplied,
-            status: 'Pending', // Initial status is 'Pending'
-            userId: req.session.user, // Use authenticated user's ID
+            couponApplied: false,
+            status: 'Processing',
+            paymentStatus: 'Completed',
+            userId: req.session.user,
             invoiceDate: new Date()
         });
 
-        // Save the new order to the database
         const savedOrder = await newOrder.save();
         console.log('Order saved:', savedOrder);
 
-        // Loop through the order items to check stock and update product quantities
-        for (const item of orderItems) {
-            // Fetch the product by ID
-            const product = await Product.findById(item.product);
+        // Update product quantities
+        await updateProductQuantities(orderItems, req.session.user);
 
-            if (!product) {
-                throw new Error(`Product not found for ID ${item.product}`);
-            }
-
-            // Check if the product has enough quantity
-            if (product.quantity < item.quantity) {
-                throw new Error(`Not enough stock for ${product.name}`);
-            }
-
-            // Decrease the product quantity by the ordered quantity
-            product.quantity -= item.quantity;
-            await product.save();
-
-            console.log(`Updated stock for ${product.name}: ${product.quantity}`);
-        }
-
-        // Optionally, clear the user's cart after placing the order
-        await Cart.findOneAndUpdate({ userId: req.session.user }, { $set: { items: [] } });
-
-        // Successfully placed the order
-        return res.json({ success: true, message: 'Order placed successfully.' });
+        return res.json({ success: true, message: 'Order placed successfully (Online Payment)', orderId: savedOrder._id });
 
     } catch (error) {
-        // Handle errors and send failure response
-        console.error('Error placing order:', error);
-        return res.json({ success: false, message: error.message || 'Error placing order. Please try again later.' });
+        console.error('Error confirming order:', error.message);
+        return res.json({ success: false, message: 'Payment verification failed or error confirming order.' });
     }
 };
-
 
 // const cancelOrder = async (req, res) => {
 //     try {
@@ -386,6 +469,7 @@ module.exports = {
     getAddresses,
     saveAddress,
     placeOrder,
+    confirmOrder,
     getCartItems,
   
 }

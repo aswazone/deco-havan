@@ -6,7 +6,7 @@
         <p>Add, edit or delete a category</p>
       </div>
       <div>
-        <input type="text" placeholder="Search Categories" class="form-control bg-white" />
+        <input id="search" type="text" placeholder="Search Categories" class="form-control bg-white" />
       </div>
     </div>
     <div class="card">
@@ -52,12 +52,8 @@
               <table class="table table-hover">
                 <thead>
                   <tr>
-                    <th class="text-center">
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" />
-                      </div>
-                    </th>
-                    <th>ID</th>
+                    
+                    <th>#</th>
                     <th>Name</th>
                     <th>Description</th>
                     <th>Offers price</th>
@@ -70,12 +66,8 @@
                 <tbody>
                   <% cat.reverse().forEach((category,index)=>{ %>
                     <tr>
-                      <td class="text-center">
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="" />
-                        </div>
-                      </td>
-                      <td><%=index+1%></td>
+                      
+                      <td><%=(currentPage-1)*5+index+1%></td>
                       <td><b>
                           <%=category.name%>
                         </b></td>
@@ -169,10 +161,10 @@
         </div>
         <div class="pagination-container text-center">
           <% if (currentPage > 1) { %>
-              <a href="/admin/users?page=<%= currentPage - 1 %>&search=<%= search %>" class="btn btn-outline-primary btn-sm">Previous</a>
+              <a href="/admin/category?page=<%= currentPage - 1 %>&search=<%= search %>" class="btn btn-outline-primary btn-sm">Previous</a>
           <% } %>
           <% if (currentPage < totalPages) { %>
-              <a href="/admin/users?page=<%= currentPage + 1 %>&search=<%= search %>" class="btn btn-outline-primary btn-sm ms-2">Next</a>
+            <a href="/admin/category?page=<%= currentPage + 1 %>&search=<%= search %>" class="btn btn-outline-primary btn-sm ms-2">Next</a>
           <% } %>
       </div>
         <!-- .row // -->
@@ -298,6 +290,8 @@
       } catch (error) {
         // Handle error
         console.log('catch 1');
+        console.log(error.message);
+        
 
         Swal.fire({
           title: 'An error occurred',
@@ -559,7 +553,60 @@
     })
 
 
+    //search catogery by fetch
 
+    const search = document.getElementById('search');
+    
+    search.addEventListener('input', () => {
+      const query = search.value;
+      console.log(query);
+      
+      fetch(`/admin/searchCategory?search=${query}`)
+        .then(response => response.json())
+        .then(data => {
+          const tableBody = document.querySelector('tbody');
+          tableBody.innerHTML = '';
+          data.categories.forEach(category => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td><div class="form-check"><input class="form-check-input" type="checkbox" value="" /></div></td>
+              <td>${data.categories.indexOf(category) + 1}</td>
+              <td><b>${category.name}</b></td>
+              <td>${category.description}</td>
+              <td>${category.categoryOffer ? category.categoryOffer + '%' : '<span class="text-muted">No offer</span>'}</td>
+              <td class="text-center">
+                ${category.categoryOffer === 0 ? `
+                  <button type="button" class="btn btn-outline-primary btn-sm font-sm" onclick="addOffer('${category._id}')">Add offer</button>
+                ` : `
+                  <button type="button" class="btn btn-outline-danger btn-sm font-sm" onclick="removeOffer('${category._id}')"><i class="material-icons md-delete_forever" style="font-size: 1.2rem"></i></button>
+                `}
+              </td>
+              <td>${category.isListed ? '<span class="badge rounded-pill bg-success">Listed</span>' : '<span class="badge rounded-pill bg-danger">Unlisted</span>'}</td>
+              <td>
+                <div class="btn-group" role="group" aria-label="Basic example" data-category-id="${category._id}">
+                  <button type="button" class="btn btn-sm font-sm btn-list ${category.isListed ? 'active' : ''}" onclick="toggleButton('${category._id}', true)">List</button>
+                  <button type="button" class="btn btn-sm font-sm btn-unlist ${!category.isListed ? 'active' : ''}" onclick="toggleButton('${category._id}', false)">Unlist</button>
+                </div>
+              </td>
+              <td class="text-end">
+                <div class="dropdown">
+                  <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"><i class="material-icons md-more_horiz"></i></a>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#">View detail</a>
+                    <a class="dropdown-item text-success" href="/admin/editCategory?id=${category._id}">Edit</a>
+                    <a class="dropdown-item text-danger" href="#" onclick="deleteCategory('${category._id}')">Delete</a>
+                  </div>
+                </div>
+              </td>
+            `;
+            tableBody.appendChild(row);
+          });
+        })
+        .catch(error => {
+          console.log('Error fetching categories:', error.message);
+        });
+    });
+  
 
 
 

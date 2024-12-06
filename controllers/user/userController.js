@@ -4,6 +4,7 @@ const env = require('dotenv').config()
 const Product = require('../../models/productModel');
 const Category = require('../../models/categoryModel');
 const Banner = require('../../models/bannerModel');
+const Wishlist = require('../../models/wishlistModel');
 const mongoose = require('mongoose');
 
 const bcrypt = require('bcrypt');
@@ -514,6 +515,12 @@ const searchProduct = async (req, res) => {
     console.log(`Limit: ${limit}`);
     console.log('-----------------------------------------');
 
+    const wishlist = await Wishlist.findOne({ userId : req.session.user }).select('products.productId');
+        const wishlistProducts = wishlist ? wishlist.products : [];
+    console.log(wishlistProducts,'wishlistProducts');
+
+    
+
     // MongoDB Aggregation Pipeline
     const pipeline = [];
 
@@ -565,6 +572,7 @@ const searchProduct = async (req, res) => {
         res.json({
             products,
             totalItems, // Return the correct total count
+            wishlistProducts
         });
     } catch (error) {
         console.error('Error fetching products:', error.message);

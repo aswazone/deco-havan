@@ -230,11 +230,24 @@
 
         <!-- Product Details -->
         <div class="col-md-6">
-            <div class="product-details">
+            <div class="product-details position-relative">
+                <% if (product.productOffer > 0) { %>
+                <div class="badge rounded-pill text-white d-flex gap-1" style="position: absolute; top: 10px; right: 10px; font-size: 12px; background-color: #f1b44c; color: #fff; padding: 2px 5px; border-radius: 5px;">
+                    <span class="mt-0 p-1"><%= product.productOffer %>%</span><i class="fa-solid fa-tag mt-1"></i>
+                </div>
+                <% } %>
+
+
                 <h1 class="product-title"><%= product.productName %></h1>
                 <p class="product-category">Category: <%= category.name %></p>
                 <div class="d-flex gap-3 align-items-center">
-                    <h3 class="product-price" style="font-size: xx-large;">₹<%= product.salePrice %></h3><span class="product-price text-muted" style="font-size: medium;" ><strike>₹ <%= product.regularPrice %></strike></span>
+                    <h3 class="product-price" style="font-size: xx-large;">₹<%= product.salePrice %></h3>
+                    <span class="product-price text-muted" style="font-size: medium;" >
+                        <strike>₹ <%= product.regularPrice %></strike>
+                        <% if (product.productOffer > 0) { %>
+                        <span class="badge rounded-pill bg-danger ms-2 ">Best Offer</span>
+                        <% } %>
+                    </span>
                 </div>
                 <p class="product-quantity text-muted" style="font-size: smaller;">Stock: <%= product.quantity %></p>
                 <div class="mb-2">
@@ -250,7 +263,7 @@
                 <p class="description"><%= product.description %></p>
                 <div class="action-buttons">
                     <button class="btn btn-primary" onclick="addToCart('<%= product._id %>')">Add to Cart</button>
-                    <button class="btn btn-outline-danger">Add to Wishlist</button>
+                    <button class="btn btn-outline-danger" onclick="toggleWishlist('<%=product._id%>')">Add to Wishlist</button>
                 </div>
             </div>
         </div>
@@ -278,6 +291,57 @@
 </div>
 
 <script>
+    async function toggleWishlist(productId) {
+    console.log(`Toggling wishlist for product ID: ${productId}`);
+    try {
+        const response = await fetch('/toggleWishlist', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                productId: productId,
+            }),
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            
+
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: data.message,
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+            });
+        } else {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: data.message,
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+            });
+        }
+    } catch (error) {
+        console.error('Error:', error.message);
+
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'Error updating wishlist. Please try again later.',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+        });
+    }
+}
     // Change Main Image
     function changeMainImage(img) {
         const mainImage = document.getElementById('mainProductImage');
@@ -310,25 +374,25 @@
         button.classList.toggle('liked');
     }
 
-    const imageZoom = document.getElementById('imageZoom');
-        imageZoom.addEventListener('mousemove', (event) => {
-            imageZoom.style.setProperty('--display', 'block');
+        // const imageZoom = document.getElementById('imageZoom');
+        // imageZoom.addEventListener('mousemove', (event) => {
+        //     imageZoom.style.setProperty('--display', 'block');
 
-            // Calculate pointer position as a percentage of the image dimensions
-            const rect = imageZoom.getBoundingClientRect();
-            const pointer = {
-                x: ((event.clientX - rect.left) / rect.width) * 100,
-                y: ((event.clientY - rect.top) / rect.height) * 100,
-            };
+        //     // Calculate pointer position as a percentage of the image dimensions
+        //     const rect = imageZoom.getBoundingClientRect();
+        //     const pointer = {
+        //         x: ((event.clientX - rect.left) / rect.width) * 100,
+        //         y: ((event.clientY - rect.top) / rect.height) * 100,
+        //     };
 
-            // Update the zoom position
-            imageZoom.style.setProperty('--zoom-x', `${pointer.x}%`);
-            imageZoom.style.setProperty('--zoom-y', `${pointer.y}%`);
-        });
+        //     // Update the zoom position
+        //     imageZoom.style.setProperty('--zoom-x', `${pointer.x}%`);
+        //     imageZoom.style.setProperty('--zoom-y', `${pointer.y}%`);
+        // });
 
-        imageZoom.addEventListener('mouseout', () => {
-            imageZoom.style.setProperty('--display', 'none');
-        });
+        // imageZoom.addEventListener('mouseout', () => {
+        //     imageZoom.style.setProperty('--display', 'none');
+        // });
 
         async function addToCart(productId) {
             console.log(productId,'productID');

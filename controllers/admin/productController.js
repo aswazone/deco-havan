@@ -59,6 +59,7 @@ const addProducts = async (req, res) => {
                 size: products.size,
                 color: products.color,
                 productImage: images,
+                isWishlisted: false,
                 isBlocked: false,
                 status: 'Available',
             });

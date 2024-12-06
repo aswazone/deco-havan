@@ -2,7 +2,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6 mt-60">
-            <form method="post" action="/admin/editCategory/<%=category._id%>">
+            <form id="editCategoryForm">
                 <div class="d-grid text-end mt-30 col-md-5">
                     <button class="btn btn-primary" type="submit">Update category</button>
                 </div>
@@ -19,4 +19,58 @@
         </div>
     </div>
 </div>
+<script>
+    document.getElementById('editCategoryForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData);
+
+        try {
+            const response = await fetch('/admin/editCategory/<%=category._id%>', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+
+            const responseData = await response.json();
+            console.log(responseData);
+            
+
+            if (responseData.success) {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: responseData.message,
+                    showConfirmButton: false,
+                    timer: 2000
+                }).then(() => {
+                    window.location.href = '/admin/category';
+                });
+            } else {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: responseData.message,
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
+        } catch (error) {
+            Swal.fire({
+                title: 'An error occurred',
+                text: error.message,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+    })
+        
+</script>
+
 <%- include("../../views/partials/admin/footer") %>
