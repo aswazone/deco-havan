@@ -1,5 +1,15 @@
 
 <%- include("../../views/partials/admin/header")%>
+<style>
+     th {
+        font-family: 'Nunito', sans-serif;
+        font-weight: 800;
+    }
+    td{
+        font-family: 'Nunito', sans-serif;
+        font-weight: 700;
+    }
+</style>
         
 
         <!-- Orders Section -->
@@ -17,11 +27,11 @@
                                 <tr>
                                     <th>Order ID</th>
                                     <th>Customer</th>
-                                    <th>OrderStatus</th>
+                                    <th>Order-Status</th>
                                     <th>Total</th>
                                     <th>Placed On</th>
-                                    <th>paymentStatus</th>
-                                    <th>paymentMethod</th>
+                                    <th>Payment-Status</th>
+                                    <th>Payment-Method</th>
                                     <th class="text-end">Action</th>
                                 </tr>
                             </thead>
@@ -50,7 +60,7 @@
                                         <td>₹<%= order.finalAmount.toFixed(2) %></td>
                                         <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
                                         <td><%= order.paymentStatus  || "Unpaid"%></td>
-                                        <td><%= (order.paymentMethod).toUpperCase() %></td>
+                                        <td ><%= (order.paymentMethod).toUpperCase() %></td>
                                         <td class="text-end">
                                             <a href="/admin/<%= order._id %>" class="btn btn-sm btn-outline-primary">View</a>
                                         </td>

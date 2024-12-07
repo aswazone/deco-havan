@@ -1,0 +1,86 @@
+<%- include("../../views/partials/admin/header") %>
+<div class="container mt-4 p-4 ">
+    
+    <!-- Add New Coupon Form -->
+    <form id="editCouponForm">
+        <div class="d-flex justify-content-between">
+            <h2>Edit Coupons</h2>
+            <button type="submit" class="btn btn-primary">Save</button>
+
+        </div>
+        <div class="form-group">
+            <label for="code">Coupon Code</label>
+            <input type="text" class="form-control" id="code" name="code" value="<%=coupon.code%>" required>
+        </div>
+        <div class="form-group">
+            <label for="discountType">Discount Type</label>
+            <select class="form-control" id="discountType" name="discountType" value="<%=coupon.discountType%>" required>
+                <option value="Flat">Flat</option>
+                <option value="Percentage">Percentage</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="discountValue">Discount Value</label>
+            <input type="number" class="form-control" id="discountValue" name="discountValue" value="<%=coupon.discountValue%>" required>
+        </div>
+        <div class="form-group">
+            <label for="minOrderValue">Minimum Order Value</label>
+            <input type="number" class="form-control" value="<%=coupon.minOrderValue%>" id="minOrderValue" name="minOrderValue">
+        </div>
+        <div class="form-group">
+            <label for="maxDiscount">Maximum Discount (for Percentage)</label>
+            <input type="number" class="form-control" value="<%=coupon.maxDiscount%>" id="maxDiscount" name="maxDiscount">
+        </div>
+        <div class="form-group">
+            <label for="expiryDate">Expiry Date</label>
+            <input type="date" class="form-control" value="<%=new Date(coupon.expiryDate).toISOString().split('T')[0]%>" id="expiryDate" name="expiryDate" required>
+        </div>
+        <div class="form-group">
+            <label for="usageLimit">Usage Limit</label>
+            <input type="number" class="form-control" value="<%=coupon.usageLimit%>" id="usageLimit" name="usageLimit">
+        </div>
+    </form>
+
+    
+</div>
+
+<script>
+    document.getElementById('editCouponForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+
+        const response = await fetch('/admin/edit-coupon?id=<%=coupon._id%>', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'Coupon Updated successfully!',
+                showConfirmButton: false,
+                timer: 2000
+            }).then(() => {
+                location.reload();
+            });
+        } else {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: 'Error',
+                text: result.message,
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+    });
+</script>
+
+<%- include("../../views/partials/admin/footer") %>

@@ -6,6 +6,7 @@ const categoryController = require('../controllers/admin/categoryController.js')
 const productController = require('../controllers/admin/productController.js');
 const bannerController = require('../controllers/admin/bannerController.js');
 const orderController = require('../controllers/admin/orderController.js');
+const couponController = require('../controllers/admin/couponController.js');
 const {userAuth,adminAuth} = require('../middleware/auth');
 
 const multer = require('multer');
@@ -60,11 +61,22 @@ router.get('/addBanner',adminAuth,bannerController.getAddBannerPage);
 router.post('/addBanner', adminAuth,upload.single('images'),bannerController.addBanner);
 router.delete('/deleteBanner/:id',adminAuth,bannerController.deleteBanner);
 
+//coupon-management
+router.get('/add-coupon', adminAuth, couponController.loadAddCoupon);
+router.post('/add-coupon', adminAuth, couponController.addCoupon);
+router.get('/edit-coupon', adminAuth, couponController.loadEditCoupon);
+router.put('/edit-coupon', adminAuth, couponController.editCoupon); // Edit coupon details
+router.get('/list-coupon', adminAuth, couponController.loadCoupon); // List all coupons
+router.delete('/delete-coupon', adminAuth, couponController.deleteCoupon);
+router.get('/filter-coupon', adminAuth, couponController.loadCouponlist); // List all coupons
+// router.put('/toggle-coupon-status/:id', toggleCouponStatus); // Activate/Deactivate coupon
+
 //order-management
 router.get('/orders',adminAuth,orderController.loadOrder);
 router.get('/:orderId',adminAuth,orderController.getOrderDetails);
 router.post('/orders/:id/update-status', adminAuth,orderController.updateStatus);
 router.post('/orders/:orderId/return-status', userAuth, orderController.returnStatus);
+
 
 
 

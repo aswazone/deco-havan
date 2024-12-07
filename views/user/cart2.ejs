@@ -230,7 +230,10 @@
                             title: data.message,
                             showConfirmButton: false,
                             timer: 2000
-                        });
+                        })
+                        .then(() => {
+                            location.reload();
+                        })
                     } else {
                         Swal.fire({
                             toast: true,

@@ -97,12 +97,18 @@
             padding: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+        .bg-div2 {
+            background-color: #edeeea52;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
         div {
             font-family: 'Nunito', sans-serif;
         }
 
         .order-item {
-            background-color: #f8f9fa;
+            background-color: #f8f9fa9b;
             border-radius: 12px;
             padding: 20px;
             display: flex;
@@ -176,9 +182,9 @@
     <div class="main-content d-flex gap-3 m-4 ">
         <aside class="sidebar d-flex flex-column gap-2">
             <h4 class="text-center mb-4">My Account</h4>
-            <a class="sidebar-link active" data-bs-toggle="tab" href="#profile"><i class="bi bi-person-circle"></i> Profile</a>
+            <a class="sidebar-link profile active" data-bs-toggle="tab" href="#profile"><i class="bi bi-person-circle"></i> Profile</a>
             <a class="sidebar-link" data-bs-toggle="tab" href="#orders"><i class="bi bi-cart"></i> Orders</a>
-            <a class="sidebar-link" data-bs-toggle="tab" href="#wishlist"><i class="bi bi-heart"></i> Wishlist</a>
+            <a class="sidebar-link wishlist" data-bs-toggle="tab" href="#wishlist"><i class="bi bi-heart"></i> Wishlist</a>
             <a class="sidebar-link" data-bs-toggle="tab" href="#wallet"><i class="bi bi-wallet2"></i> Wallet</a>
             <a class="sidebar-link" data-bs-toggle="tab" href="#address"><i class="bi bi-geo-alt"></i> Address</a>
         </aside>
@@ -228,7 +234,7 @@
                     <!-- Loop through each order and display order details dynamically -->
                     <% if (orders && orders.length > 0) { %>
                         <% orders.forEach(order => { %>
-                            <div class="order-item d-flex justify-content-between align-items-center p-2 mb-2 shadow-sm bg-white rounded">
+                            <div class="order-item d-flex justify-content-between align-items-center p-2 mb-2 shadow-sm bg-div2 rounded">
                                 <div>
                                     <h5 class="mb-1 text-dark">Order #<%= order.orderId %></h5>
                                     
@@ -254,9 +260,17 @@
                                             <i class="bi bi-arrow-repeat"></i> <span class="text-primary"><%= order.status %></span>
                                         <% } %>
                                     </p>
-                                    <p class="mb-1"><strong>Payment:</strong> <%= order.paymentMethod %> - 
-                                        <span class="badge bg-<%= order.paymentStatus === 'Completed' ? 'success' : 'danger' %>">
+                                    <p class="mb-1"><strong>Payment:</strong> 
+                                        <% if (order.paymentMethod === 'razorpay'  && order.paymentStatus === 'Refunded') { %>
+                                        <% }else if (order.paymentMethod === 'wallet'  && order.paymentStatus === 'Refunded') { %>
+                                        <% } else { %>
+                                            <%= order.paymentMethod %> 
+                                        <% } %>
+                                        
+                                        <span class="badge bg-<%= (order.paymentStatus === 'Completed' ? 'success' : (order.paymentStatus === 'Refunded' ? 'primary' : 'danger')) %>">
                                             <%= order.paymentStatus %>
+                                            <% if (order.paymentMethod === 'razorpay' && order.paymentStatus === 'Refunded') { %> to Wallet <%  %>
+                                            <% }else if (order.paymentMethod === 'wallet' && order.paymentStatus === 'Refunded') { %> to Wallet <% } %>
                                         </span>
                                     </p>
                                 </div>
@@ -284,25 +298,25 @@
         
                 <!-- Wishlist Section -->
                 <div class="tab-pane fade" id="wishlist">
-                    <h3 class="mb-4 bg-div">My Wishlist</h3>
+                    <h3 class="mb-4 bg-div fw-bold">My Wishlist</h3>
                     <!-- Wishlist details here -->
                     <ul class="list-group wishlist-container gap-1">
                         <!-- Loop through each product in the wishlist and display it dynamically -->
                         <% if (wishlistProducts && wishlistProducts.length > 0) { %>
                             <% wishlistProducts.forEach(product => { %>
                             
-                            <li class="list-group-item wishlist-item d-flex justify-content-between align-items-center" style="background-color: #a6dac6d2;">
+                            <li id="wishlist-item-<%= product.productId._id %>" class="list-group-item wishlist-item d-flex justify-content-between align-items-center bg-div2 p-1 pe-2 ">
                                 <div class="product-image rounded overflow-hidden">
                                     <img src="/uploads/product-images/<%= product.productId.productImage[0]%>" alt="Product Image" class="img-fluid" style="width: 80px; height: auto;">
                                 </div>
                                 <div class="product-details flex-grow-1 ms-3">
-                                    <h5 class="mb-1"><%= product.productId.productName %></h5>
-                                    <p class="mb-1 text-muted">Price: ₹ <%= product.productId.salePrice %></p>
+                                    <h5 class="mb-1 fw-bold"><%= product.productId.productName %></h5>
+                                    <p class="mb-0 text-muted">Price: ₹ <%= product.productId.salePrice %></p>
                                     <p class="mb-0 text-muted">Stock: <%= product.productId.quantity %> available</p>
                                 </div>
                                 <div class="d-flex gap-2">
-                                    <a href="/cart/add" class="btn btn-primary"><i class="bi bi-cart-plus"></i> Add to Cart</a>
-                                    <a href="/cart/add" class="btn btn-danger"><i class="bi bi-trash"></i> Remove</a>
+                                    <a onclick="addToCart('<%= product.productId._id %>')" class="btn btn-primary"><i class="bi bi-cart-plus"></i> Add to Cart</a>
+                                    <a onclick="toggleWishlist('<%= product.productId._id %>')" class="btn btn-danger"><i class="bi bi-trash"></i> Remove</a>
                                 </div>
                             </li>
                             <% }) %>
@@ -314,24 +328,25 @@
         
                 <!-- Wallet Section -->
                 <div class="tab-pane fade" id="wallet">
-                    <h3 class="mb-4 bg-div">My Wallet</h3>
+                    
                     <!-- Wallet details here -->
-                
-                    <div class="wallet-summary mb-3">
-                        <div class="d-flex justify-content-between">
-                            <span>Total Balance:</span>
-                            <span class="balance-amount">₹ 
+                    
+                    <div class="wallet-summary mb-3 bg-div d-flex justify-content-between align-items-center">
+                        <h3 class=" ">My Wallet</h3>
+                        <div class="d-flex justify-content-start gap-2 bg-div">
+                            <h5 class="fw-bold" style="color: #044626;">Total Balance:</h5>
+                            <h4 class="balance-amount text-white fw-bold">₹ 
                                 <%= wallet && wallet.balance ? wallet.balance.toFixed(2) : '0.00' %>
-                            </span>
+                            </h4>
                         </div>
                     </div>
                 
                     <div class="transaction-history">
                         <h5 class="section-title">Recent Transactions</h5>
-                        <ul class="list-group">
+                        <ul class="list-group gap-1">
                             <% if (wallet && wallet.transactions && wallet.transactions.length > 0) { %>
                                 <% wallet.transactions.slice(-5).reverse().forEach(transaction => { %>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <li class="list-group-item d-flex justify-content-between bg-div2 align-items-center ">
                                         <div>
                                             <span class="transaction-title"><%= transaction.description || 'Transaction' %></span><br>
                                             <small class="text-muted">
@@ -339,8 +354,12 @@
                                                     day: 'numeric', month: 'short', year: 'numeric'
                                                 }) %>
                                             </small>
+                                            <span class="badge rounded-pill <%= transaction.type === 'Credit' ? 'bg-success' : 'bg-danger' %> text-white">
+                                                <%= transaction.type %>
+                                            </span>
+                                            
                                         </div>
-                                        <span class="amount <%= transaction.type === 'Credit' ? 'positive' : 'negative' %>">
+                                        <span class="amount fw-bold <%= transaction.type === 'Credit' ? 'positive' : 'negative' %>">
                                             <%= transaction.type === 'Credit' ? '+' : '-' %> ₹ <%= transaction.amount.toFixed(2) %>
                                         </span>
                                     </li>
@@ -587,21 +606,106 @@
             return true;
         }
 
-        
+        async function toggleWishlist(productId) {
+    console.log(`Toggling wishlist for product ID: ${productId}`);
+    try {
+        const response = await fetch('/toggleWishlist', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                productId: productId,
+            }),
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            
+            
+
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: data.message,
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+            })
+            
+            .then(() => {
+                window.location.reload()
+            })
+        } else {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: data.message,
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+            });
+        }
+    } catch (error) {
+        console.error('Error:', error.message);
+
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'Error updating wishlist. Please try again later.',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+        });
+    }
+}
 
 
-    //    const addressType = document.getElementById('addressType').value;
-    //    const name = document.getElementById('name').value;
-    //    const city = document.getElementById('city').value;
-    //    const landMark = document.getElementById('landMark').value;
-    //    const state = document.getElementById('state').value;
-    //    const pincode = document.getElementById('pincode').value;
-    //    const phone = document.getElementById('phone').value;
-    //    const altPhone = document.getElementById('altPhone').value;
-    //    const namePattern = /^[A-Za-z\s]+$/;
-    //    const pincodePattern = /^\d{6}$/;
-    //    const phonePattern = /^\d{10}$/;
-       
+        async function addToCart(productId) {
+            console.log(productId,'productID');
+            
+            const quantity = 1; // You can replace this with a dynamic quantity if needed
+
+            try {
+                const response = await fetch('/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        productId: productId,
+                        quantity: quantity,
+                    }),
+                });
+
+                const data = await response.json();
+                console.log(data);
+                
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: data.success ? 'success' : 'error',
+                    title: data.message,
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+
+            } catch (error) {
+                console.log(error.message, 'cart adding problem');
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'Error',
+                    text: error.message,
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
+        }
 
 
 

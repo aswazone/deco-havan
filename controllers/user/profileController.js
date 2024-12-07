@@ -345,7 +345,9 @@ const cancelOrder = async (req, res) => {
         }
 
         // Handle refund to wallet logic only if paymentMethod is Razorpay and paymentStatus is Completed
-        if (order.paymentMethod === 'razorpay' && order.paymentStatus === 'Completed') {
+        if (order.paymentMethod === 'razorpay' && order.paymentStatus === 'Completed' ||
+             order.paymentMethod === 'wallet' && order.paymentStatus === 'Completed') {
+
             console.log('handle refund to wallet logic');
             
             // Find the user's wallet
@@ -389,12 +391,13 @@ const cancelOrder = async (req, res) => {
 
         // Update the order status to 'Canceled'
         order.status = 'Canceled';
+        order.paymentStatus = 'Refunded';
         await order.save(); // Save the updated order status
 
         // Send a success response
         res.json({
             success: true,
-            message: 'Order canceled successfully, product stock restored, and wallet refunded if applicable.',
+            message: 'Order canceled successfully, and wallet refunded if applicable.',
         });
     } catch (error) {
         console.error('Error canceling order:', error.message);
@@ -482,6 +485,7 @@ const toggleWishlist = async (req, res) => {
                 success: true,
                 action: 'added',
                 message: 'Product added to wishlist.',
+                productId: productId
             });
         }
 

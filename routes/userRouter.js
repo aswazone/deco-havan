@@ -20,6 +20,8 @@ router.post('/verify-otp', userController.verifyOtp);
 router.post('/resend-otp', userController.resendOtp);
 
 router.get('/shop', userController.loadShopping);
+// --- Search Functionality ---
+router.get('/searchAndFilter', userController.searchProduct); // Search and filter products
 // router.get('/cart',userController.loadCart);
 router.get('/pageNotFound', userController.pageNotFound);
 
@@ -45,42 +47,31 @@ router.post('/editAddress', userAuth, profileController.postEditAddress)
 router.get('/deleteAddress', userAuth, profileController.deleteAddress)
 
 
-//cart-management
-router.get('/cart', userAuth, cartController.getCart);
+// --- Cart Management ---
+router.get('/cart', cartController.getCart); // View cart
+router.get('/cart/items', userAuth, cartController.getCartItems); // View cart items
+router.post('/cart/add', cartController.addToCart); // Add to cart
+router.post('/cart/update', userAuth, cartController.updateCart); // Update cart item quantity
+router.post('/cart/remove', userAuth, cartController.removeFromCart); // Remove from cart
 
-// // Add an item to the cart or update the quantity if it exists
-router.post('/cart/add', userAuth, cartController.addToCart);
+// --- Checkout Management ---
+router.get('/checkout', userAuth, cartController.checkout); // Checkout
 
-// Update item quantity in the cart
-router.post('/cart/update', userAuth, cartController.updateCart);
+// --- Address Management ---
+router.get('/user/addresses', userAuth, cartController.getAddresses); // Get user addresses
+router.post('/user/saveNewAddress', userAuth, cartController.saveAddress); // Save a new address
 
-// Remove an item from the cart
-router.post('/cart/remove', userAuth, cartController.removeFromCart);
+// --- Order Management ---
+router.post('/order/place', userAuth, cartController.placeOrder); // Place an order
+router.post('/order/confirm-order', userAuth, cartController.confirmOrder); // Confirm an order
+router.put('/cancel/:orderId', userAuth, profileController.cancelOrder); // Cancel an order
+router.get('/:orderId', userAuth, profileController.viewOrderDetails); // View order details
+router.post('/order/:id/request-return', userAuth, profileController.requestReturn); // Request return for an order
 
-router.get('/checkout', userAuth, cartController.checkout);
-
-router.get('/user/addresses', userAuth, cartController.getAddresses);
-
-router.post('/user/saveNewAddress', userAuth, cartController.saveAddress);
-
-router.post('/order/place', userAuth, cartController.placeOrder);
-router.post('/order/confirm-order', userAuth, cartController.confirmOrder);
-
-router.put('/cancel/:orderId', userAuth, profileController.cancelOrder);
-
-router.get('/cart/items', userAuth, cartController.getCartItems);
-
-// router.get('/confirmation', userAuth ,cartController.cofirmation )
-//search implementation
-router.get('/searchAndFilter', userController.searchProduct);
-
-router.get('/:orderId', userAuth, profileController.viewOrderDetails)
-
-router.post('/order/:id/request-return', userAuth, profileController.requestReturn);
+// --- Wishlist Management ---
+router.post('/toggleWishlist', profileController.toggleWishlist); // Toggle wishlist status for a product
 
 
-
-router.post('/toggleWishlist', profileController.toggleWishlist);
 
 
 
