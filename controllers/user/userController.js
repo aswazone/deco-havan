@@ -107,7 +107,7 @@ const login = async (req, res) => {
         }
 
         req.session.user = findUser._id;
-       return res.json({ success: true, message: `${findUser.name} logged Successfully !!` })
+       return res.json({ success: true, message: `${findUser.name} login !!` })
 
     } catch (error) {
         console.error('login error',error.message);
@@ -504,7 +504,7 @@ const productDetail=async(req,res)=>{
 //     }
 // };
 
-const searchProduct = async (req, res) => {
+    const searchProduct = async (req, res) => {
     const { query, category, sort, priceRange, page = 1, limit = 8 } = req.query;
 
     console.log(`Query: ${query}`);
@@ -524,13 +524,21 @@ const searchProduct = async (req, res) => {
     // MongoDB Aggregation Pipeline
     const pipeline = [];
 
+    const searchFilter = query 
+          ? { productName : {$regex: query , $options: 'i'}} : {} ;
+    
     // 1. Text search if query exists
     if (query) {
-        pipeline.push({
-            $match: {
-                $text: { $search: query },
-            },
-        });
+        if (searchFilter) {
+            console.log(searchFilter);
+            
+            pipeline.push({
+                $match: {
+                    ...searchFilter,
+                    isBlocked: false
+                },
+            });
+        }
     }
 
     // 2. Category filter
@@ -539,6 +547,12 @@ const searchProduct = async (req, res) => {
             $match: { category: new mongoose.Types.ObjectId(category) },
         });
     }
+
+    // 4. Filter products that are not blocked
+    // pipeline.push({
+    //     $match: { isBlocked: false },
+    // });
+
 
     // 3. Price range filter
     if (priceRange) {
@@ -568,7 +582,8 @@ const searchProduct = async (req, res) => {
         ]);
 
         const totalItems = totalItemsCount[0]?.totalItems || 0;
-
+        console.log(products,'products-------------------------------------');
+        
         res.json({
             products,
             totalItems, // Return the correct total count

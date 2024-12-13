@@ -71,30 +71,32 @@ const Product = require('../../models/productModel');
 
     const addCategory = async (req,res) =>{
 
-        try {
+    try {
             console.log(req.body);
             
             const {name,description} = req.body;
+            console.log(name,description);
+            
+            const nameReg = new RegExp('^' + name + '$', 'i');
 
-        const existingCategory = await Category.findOne({name});
-        console.log(existingCategory);
-        
-        if(existingCategory){
-            return res.status(400).json({success:false,message:'Category already exists !!'})
-        }
+            const existingCategory = await Category.findOne({name:{$regex:nameReg}});
+            console.log(existingCategory);
+            
+            if(existingCategory){
+                return res.json({success:false,message:'Category already exists !!'})
+            }
 
-        const newCategory = new Category({
-            name:name,
-            description:description
-        })
-
-        await newCategory.save();
-
-        res.json({success:true, message:`New category created !!`})
+            if(!existingCategory){
+                const category = new Category({
+                    name:name,
+                    description:description});
+                await category.save();
+                res.json({success:true,message:'Category added successfully !!'})
+            }
 
         } catch (error) {
             console.log(error.message, 'Internal ser errrr');
-            res.status(500)
+            res.status(500).json({ success: false, message: 'Internal server error' });
             // res.redirect('/pageNotFound');
         }
     }
@@ -105,15 +107,17 @@ const Product = require('../../models/productModel');
             const categoryId = req.body.categoryId;
             const percentage = parseInt(req.body.percentage);
 
+            console.log(categoryId, percentage);
+
             const category = await Category.findOne({ _id: categoryId });
-            console.log(category);
+            console.log(category,'category----------------------------------------');
 
             if (!category) {
                 return res.status(400).json({ success: false, message: 'Category not found !!' });
             }
 
             const products = await Product.find({ category: categoryId });
-            console.log(products);
+            console.log(products,'products----------------------------------------');
 
             const hasProductOffer = products.some((product) => product.productOffer > percentage);
 
@@ -143,20 +147,22 @@ const Product = require('../../models/productModel');
             const categoryId = req.body.categoryId;
 
         const category = await Category.findOne({_id:categoryId});
-        console.log(category);
+        console.log(category,'category----------------------------------------remove');
         if(!category){
             return res.status(400).json({success:false,message:'Category not found !!'})
         }
 
-        const percentage = category.productOffer;
+        const percentage = category.categoryOffer;
+        console.log(percentage,'percentage---inremove');
 
         const products = await Product.find({category:categoryId});
-        console.log(products);
+        console.log(products,'products----------------------------------------remove');
 
         if(products.length > 0){
             for(const product of products){
                 product.salePrice += Math.floor(product.regularPrice * (percentage/100));
                 product.productOffer = 0;
+                await product.save();
             }
         }
         category.categoryOffer = 0;
@@ -165,8 +171,7 @@ const Product = require('../../models/productModel');
         res.json({success:true})
         } catch (error) {
             console.log(error.message, 'Internal ser errrr');
-            
-            
+            res.status(500).json({ success: false, message: 'Internal server error' });
         }
     }
 

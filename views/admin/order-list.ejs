@@ -25,6 +25,7 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
+                                    <th class="text-center" scope="col">#</th>
                                     <th>Order ID</th>
                                     <th>Customer</th>
                                     <th>Order-Status</th>
@@ -38,7 +39,8 @@
                             <tbody>
                                 <% orders.forEach(function(order) { %>
                                     <tr>
-                                        <td>#<%= order._id %></td>
+                                        <td class="text-center"><%= orders.indexOf(order) + 1 %></td>
+                                        <td>#<%= order.orderId %></td>
                                         <td><%= order.userId.name %></td>
                                         <td>
                                             <% if(order.status === "Pending") { %>

@@ -115,17 +115,25 @@
                     .then(data => {
                         if (data.success) {
                             Swal.fire({
-                                title: data.message,
+                                toast: true,
+                                position: 'top-end',
                                 icon: 'success',
-                                confirmButtonText: 'OK'
+                                title: data.message,
+                                showConfirmButton: false,
+                                timer: 1000,
+                                timerProgressBar: true
                             }).then(() => {
                                 window.location.href = '/admin/dashboard';
                             });
                         } else {
                             Swal.fire({
-                                title: data.message,
+                                toast: true,
+                                position: 'top-end',
                                 icon: 'error',
-                                confirmButtonText: 'OK'
+                                title: data.message,
+                                showConfirmButton: false,
+                                timer: 1000,
+                                timerProgressBar: true
                             });
                         }
                     })

@@ -1,4 +1,5 @@
 const User = require('../../models/userModel');
+const Order = require('../../models/orderModel');
 const bcrypt = require('bcrypt');
 
 
@@ -21,19 +22,96 @@ const loadLogin = async (req, res)=>{
     }
 }
 
+
 const loadDashboard = async (req, res)=>{
     try {
         console.log(req.session.admin,'DASHBOARD');
-        
-        // if(req.session.admin){
-             return res.render('dashboard')
-        // }
-        res.redirect('/admin/login')
+
+        if(req.session.admin){
+            const orders = await Order.find()
+                .populate('userId')
+                .populate({
+                    path: 'orderItems.product',
+                    model: 'Products',
+                    populate: {
+                        path: 'category',
+                        model: 'Category'
+                    }
+                })
+
+            console.log(orders.orderItems,'dashboard');
+            //map product name from orders
+            const categoryIds = orders.flatMap(order => order.orderItems.map(item => item.product.category));
+            console.log(categoryIds,'categoryIds');
+
+            //find the occurence of each category
+            const categoryCounts = categoryIds.reduce((counts, category) => {
+                counts[category.name] = (counts[category.name] || 0) + 1;
+                return counts;
+            }, {});
+
+            const totalCategories = Object.values(categoryCounts).reduce((sum, count) => sum + count, 0);
+            const data = Object.keys(categoryCounts).map(name => ({
+              name,
+              progress: (categoryCounts[name] / totalCategories) * 100
+            }));
+
+            console.log(data,'data');
+
+            return res.render('statistics')
+        } else {
+            res.redirect('/admin/login')
+        }
     } catch (error) {
         console.error('Error loading dashboard page', error.message);
         res.status(500).send('server error');
     }
 }
+const loadDashboardData = async (req, res)=>{
+    try {
+        console.log(req.session.admin,'DASHBOARD');
+
+        
+            const orders = await Order.find()
+                .populate('userId')
+                .populate({
+                    path: 'orderItems.product',
+                    model: 'Products',
+                    populate: {
+                        path: 'category',
+                        model: 'Category'
+                    }
+                })
+
+            // console.log(orders,'dashboard');
+            //map product name from orders
+            const categoryIds = orders.flatMap(order => order.orderItems.map(item => item.product.category));
+            console.log(categoryIds,'categoryIds');
+
+            //find the occurence of each category
+            const categoryCounts = categoryIds.reduce((counts, category) => {
+                counts[category.name] = (counts[category.name] || 0) + 1;
+                return counts;
+            }, {});
+
+            const totalCategories = Object.values(categoryCounts).reduce((sum, count) => sum + count, 0);
+            const data = Object.keys(categoryCounts).map(name => ({
+              name,
+              progress: (categoryCounts[name] / totalCategories) * 100
+            }));
+
+            console.log(data,'data');
+
+
+            return res.json({success: true, data})
+        
+    } catch (error) {
+        console.error('Error loading dashboard page', error.message);
+        res.status(500).send('server error');
+    }
+}
+
+
 
 const login = async (req,res)=>{
 
@@ -56,7 +134,7 @@ const login = async (req,res)=>{
                 return  res.json({ success: false, message: 'Incorrect Password !!' });
             }else{
                 req.session.admin = true;
-                return  res.json({ success: true, message: 'Admin Login Successfully !!' });
+                return  res.json({ success: true, message: 'Fetching Dashboard... !!' });
             }
 
         }else{
@@ -90,6 +168,7 @@ module.exports = {
     loadLogin,
     login,
     loadDashboard,
+    loadDashboardData,
     logout,
     pageNotFound
 }

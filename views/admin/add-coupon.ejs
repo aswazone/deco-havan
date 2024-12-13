@@ -45,6 +45,13 @@
 </div>
 
 <script>
+
+
+    const currentDate = new Date().toISOString().split('T')[0];
+    const expiryDate = document.getElementById('expiryDate');
+
+    expiryDate.setAttribute('min', currentDate);
+
     document.getElementById('addCouponForm').addEventListener('submit', async (e) => {
         e.preventDefault();
 

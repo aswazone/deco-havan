@@ -9,7 +9,8 @@ const loadOrder = async (req,res) => {
                 path: 'orderItems.product',
                 model: 'Products'
             })
-            .populate('userId');
+            .populate('userId')
+            .sort({createdAt:-1});
         console.log(orders,'order---------------------------');
 
         
@@ -78,6 +79,11 @@ const updateStatus = async (req, res) => {
         }
 
         order.status = orderStatus;
+
+        if(order.paymentMethod === 'cod'){
+            order.paymentStatus = orderStatus === 'Delivered' ? 'Completed' : 'Pending';
+        }
+        
         await order.save();
 
         res.json({ success: true, message: 'Order status updated successfully' });
@@ -99,7 +105,7 @@ const returnStatus = async (req, res) => {
         if (!order) return res.status(404).json({ success: false, message: 'Order not found' });
 
         // Update the return status and status of the order
-        order.status = status === 'approved' ? 'Returned' : 'Cancelled';
+        order.status = status === 'approved' ? 'Returned' : 'Delivered';
         order.returnReason = status === 'approved' ? 'Return approved' : 'Return rejected';
         await order.save();
 
@@ -109,6 +115,7 @@ const returnStatus = async (req, res) => {
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 }
+
 
 
 

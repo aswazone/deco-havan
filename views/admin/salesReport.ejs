@@ -1,0 +1,533 @@
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script> <!-- Add this line -->
+    <style>
+                /* For paymentStatus */
+        .payment-pending {
+             background-color: #fca311;
+            color: #fff;
+        }
+
+        .payment-completed {
+           background-color: #88c957;
+            color: #fff;
+        
+        }
+
+        .payment-failed {
+            background-color: #c1121f;
+            color: #fff;
+        }
+
+        .payment-refunded {
+            background-color: #219ebc;
+            color: #fff;
+        }
+
+        /* For orderStatus */
+        .status-pending {
+            
+            background-color: #fca311;
+            color: #fff;
+        }
+
+        .status-processing {
+            background-color: #88c957;
+            color: #fff;
+        }
+
+        .status-shipped {
+            background-color: #c1121f;
+            color: #fff;
+        }
+
+        .status-delivered {
+            background-color: #219ebc;
+            color: #fff;
+        }
+
+        .status-canceled {
+            background-color: #c1121f;
+            color: #fff;
+        }
+
+        .status-return-request {
+            background-color: #219ebc;
+            color: #fff;
+        }
+
+        .status-returned {
+            background-color: #976698;
+            color: #333;
+        }
+    </style>
+</head>
+<%- include("../../views/partials/admin/header") %>
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Sales Report</h2>
+                <p>Detailed analysis of sales performance and trends</p>
+            </div>
+            
+        </div>
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="card card-body mb-4">
+                    <article class="icontext">
+                        <span class="icon icon-sm rounded-circle bg-primary-light"><i class="text-primary material-icons md-monetization_on"></i></span>
+                        <div class="text">
+                            <h6 class="mb-1 card-title">Revenue</h6>
+                            <span>$13,456.5</span>
+                            <span class="text-sm"> Shipping fees are not included </span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="card card-body mb-4">
+                    <article class="icontext">
+                        <span class="icon icon-sm rounded-circle bg-success-light"><i class="text-success material-icons md-local_shipping"></i></span>
+                        <div class="text">
+                            <h6 class="mb-1 card-title">Orders</h6>
+                            <span>53.668</span>
+                            <span class="text-sm"> Excluding orders in transit </span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="card card-body mb-4">
+                    <article class="icontext">
+                        <span class="icon icon-sm rounded-circle bg-warning-light"><i class="text-warning material-icons md-qr_code"></i></span>
+                        <div class="text">
+                            <h6 class="mb-1 card-title">Products</h6>
+                            <span>9.856</span>
+                            <span class="text-sm"> In 19 Categories </span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="card card-body mb-4">
+                    <article class="icontext">
+                        <span class="icon icon-sm rounded-circle bg-info-light"><i class="text-info material-icons md-shopping_basket"></i></span>
+                        <div class="text">
+                            <h6 class="mb-1 card-title">Monthly Earning</h6>
+                            <span>$6,982</span>
+                            <span class="text-sm"> Based in your local time. </span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <header class="card-header">
+                <div class="d-flex justify-content-between">
+                    <h4 class="card-title m-0">Latest orders</h4>
+                    <div>
+                        <div class="d-flex gap-2">
+                            <a href="#" id="Excel" style="background-color: #3bb77e;   color: #ffffff;   border: none;   font-size: 11px;   font-weight: 400;   border-radius: 4px;   display: inline-block;   padding: 6px 19px;" class="btn btn-light rounded font-md ">Export Excel</a>
+                            <a href="#" id="PDF" style="background-color: #f44343;   color: #ffffff;   border: none;   font-size: 11px;   font-weight: 400;   border-radius: 4px;   display: inline-block;   padding: 6px 19px;" class="btn btn-light rounded font-md ">Export PDF</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row align-items-center gap-2">
+                    <div class="row g-3">
+                        <div class="col-lg-3 col-md-6">
+                            <select id="periodfilter" class="form-select">
+                                <option value="" selected>All Periods</option>
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-lg-3 col-md-6 me-auto">
+                            <select id="statusfilter" class="form-select">
+                                <option value="" selected>All Status</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Processing">Processing</option>
+                                <option value="Shipped">Shipped</option>
+                                <option value="Delivered">Delivered</option>
+                                <option value="Cancelled">Cancelled</option>
+                                <option value="Return Request">Return Request</option>
+                                <option value="Returned">Returned</option>
+                            </select>
+                        </div>
+
+                        <div class="col-lg-2 col-md-6 d-flex align-items-center">
+                            <label for="startDate" class="me-2">From:</label>
+                            <input id="startDate" type="date" class="form-control">
+                        </div>
+
+                        <div class="col-lg-2 col-md-6 d-flex align-items-center ms-2">
+                            <label for="endDate" class="me-2">To:</label>
+                            <input id="endDate" type="date" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <div class="table-responsive">
+                        <table id="order-table" class="table align-middle table-nowrap mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="text-center" scope="col">#</th>
+                                    <th class="align-middle" scope="col">Order ID</th>
+                                    <th class="align-middle" scope="col">Billing Name</th>
+                                    <th class="align-middle" scope="col">Date</th>
+                                    <th class="align-middle" scope="col">Total</th>
+                                    <th class="align-middle" scope="col">Payment Status</th>
+                                    <th class="align-middle" scope="col">Payment Method</th>
+                                    <th class="align-middle" scope="col">Status</th>
+                                    <th class="align-middle" scope="col">View Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- table-responsive end// -->
+            </div>
+        </div>
+        
+        <div id="pagination" class="pagination justify-content-center mt-4"></div>
+
+    </section>
+<%- include("../../views/partials/admin/footer") %>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const startDate = document.getElementById('startDate');
+        const endDate = document.getElementById('endDate');
+        const periodFilter = document.getElementById('periodfilter');
+        const statusfilter = document.getElementById('statusfilter');
+        const pagination = document.getElementById('pagination');
+
+        async function fetchFilteredData(startDate = '', endDate = '', status = '', page = 1) {
+            try {
+                const response = await fetch(`/admin/fetchsalesReport?startDate=${startDate}&endDate=${endDate}&status=${status}&page=${page}&limit=5`);
+                const data = await response.json();
+                console.log(data);
+                renderOrdersList(data.orders);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        function renderOrdersList(orders) {
+    const ordersTableBody = document.querySelector('tbody');
+    ordersTableBody.innerHTML = '';
+
+    orders.forEach((order) => {
+        const paymentStatusClass = getPaymentStatusClass(order.paymentStatus);
+        const orderStatusClass = getOrderStatusClass(order.status);
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td class="text-center">${orders.indexOf(order) + 1}</td>
+            <td><a href="#" class="fw-bold">#${order.orderId}</a></td>
+            <td><a href="/admin/${order.id}">${order.user.name}</a></td>
+            <td>${new Date(order.createdAt).toLocaleString('default', { day: 'numeric', month: 'long', year: 'numeric' })}</td>
+            <td>Rs. ${order.finalAmount}</td>
+            <td><span class="badge badge-pill ${paymentStatusClass}">${order.paymentStatus}</span></td>
+            <td>${(order.paymentMethod).toUpperCase()}</td>
+            <td><span class="badge badge-pill ${orderStatusClass}">${order.status}</span></td>
+            <td><a href="/admin/${order._id}" style="font-size: 10px; font-weight: 400; border-radius: 4px; display: inline-block; padding:5px 10px;" class="btn btn-outline-dark">View details</a></td>
+        `;
+        ordersTableBody.appendChild(row);
+    });
+}
+
+function getPaymentStatusClass(paymentStatus) {
+    switch (paymentStatus) {
+        case 'Pending':
+            return 'payment-pending';
+        case 'Completed':
+            return 'payment-completed';
+        case 'Failed':
+            return 'payment-failed';
+        case 'Refunded':
+            return 'payment-refunded';
+        default:
+            return '';
+    }
+}
+
+function getOrderStatusClass(status) {
+    switch (status) {
+        case 'Pending':
+            return 'status-pending';
+        case 'Processing':
+            return 'status-processing';
+        case 'Shipped':
+            return 'status-shipped';
+        case 'Delivered':
+            return 'status-delivered';
+        case 'Canceled':
+            return 'status-canceled';
+        case 'Return Request':
+            return 'status-return-request';
+        case 'Returned':
+            return 'status-returned';
+        default:
+            return '';
+    }
+}
+
+
+        
+
+        function handlePeriodFilterChange() {
+            const period = periodFilter.value;
+            let startDateValue, endDateValue;
+
+            const today = new Date();
+            switch (period) {
+                case 'daily':
+                    startDateValue = today.toISOString().split('T')[0];
+                    endDateValue = startDateValue;
+                    console.log(startDateValue, endDateValue);
+                    
+                    break;
+                case 'weekly':
+                    startDateValue = new Date(today.setDate(today.getDate() - today.getDay())).toISOString().split('T')[0];
+                    endDateValue = new Date(today.setDate(today.getDate() + 6)).toISOString().split('T')[0];
+                    break;
+                case 'monthly':
+                    startDateValue = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
+                    endDateValue = new Date(today.getFullYear(), today.getMonth() + 1, 0).toISOString().split('T')[0];
+                    break;
+                case 'yearly':
+                    startDateValue = new Date(today.getFullYear(), 0, 1).toISOString().split('T')[0];
+                    endDateValue = new Date(today.getFullYear(), 11, 31).toISOString().split('T')[0];
+                    break;
+                default:
+                    startDateValue = '';
+                    endDateValue = '';
+            }
+
+            // Disable date inputs and fetch data
+            startDate.value = startDateValue;
+            endDate.value = endDateValue;
+            startDate.disabled = !!startDateValue;
+            endDate.disabled = !!endDateValue;
+
+            fetchFilteredData(startDateValue, endDateValue, statusfilter.value, 1);
+        }
+
+        function handleCustomDateChange() {
+            // Reset the period filter to "Custom"
+            if (periodFilter.value !== '') {
+                periodFilter.value = '';
+                startDate.disabled = false;
+                endDate.disabled = false;
+            }
+
+            // Fetch data with the selected dates
+            fetchFilteredData(startDate.value, endDate.value, statusfilter.value, 1);
+        }
+
+        periodFilter.addEventListener('change', handlePeriodFilterChange);
+        startDate.addEventListener('change', handleCustomDateChange);
+        endDate.addEventListener('change', handleCustomDateChange);
+        statusfilter.addEventListener('change', () => {
+            fetchFilteredData(startDate.value, endDate.value, statusfilter.value, 1);
+        });
+
+        fetchFilteredData(); // Initial load
+    });
+
+</script>
+<script>
+    document.getElementById('Excel').addEventListener('click', function () {
+        const table = document.querySelector('.table'); // Select the sales report table
+        if (!table || table.querySelectorAll('tbody tr').length === 0) {
+            Swal.fire({
+                title: 'Error',
+                text: 'No data to export',
+                icon: 'error',
+                confirmButtonText: 'Okay',
+            });
+            return;
+        }
+
+        const rows = [];
+        // Extract headers excluding the last column (View Details)
+        const headers = Array.from(table.querySelectorAll('thead th'))
+            .slice(0, -1) // Exclude the last column
+            .map((th) => th.textContent.trim());
+        rows.push(headers);
+
+        // Extract data rows excluding the last column (View Details)
+        const dataRows = Array.from(table.querySelectorAll('tbody tr'));
+        dataRows.forEach((row) => {
+            const cells = Array.from(row.querySelectorAll('td'))
+                .slice(0, -1) // Exclude the last column
+                .map((td) => td.textContent.trim());
+            rows.push(cells);
+        });
+
+        // Generate Excel sheet
+        const workbook = XLSX.utils.book_new();
+        const worksheet = XLSX.utils.aoa_to_sheet(rows);
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sales Report');
+
+        // Export file
+        const currentDate = new Date().toISOString().split('T')[0];
+        const filename = `Sales_Report_${currentDate}.xlsx`;
+        XLSX.writeFile(workbook, filename);
+    });
+
+    document.getElementById('PDF').addEventListener('click', function () {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    const table = document.getElementById('order-table');
+
+    if (!table || table.style.display === 'none') {
+        swal.fire({
+            title: 'Error',
+            text: 'No data to export',
+            icon: 'error',
+            confirmButtonText: 'Okay',
+        });
+        return;
+    }
+
+    const rows = [];
+    const headers = Array.from(table.querySelectorAll('thead th')).map((th) => th.textContent.trim());
+    rows.push(headers);
+
+    const dataRows = Array.from(table.querySelectorAll('tbody tr'));
+    dataRows.forEach((row) => {
+        const cells = Array.from(row.querySelectorAll('td')).map((td) => td.textContent.trim().split(/\s+/).map((word) => word[0].toUpperCase() + word.slice(1)).join(' '));
+        rows.push(cells);
+    });
+
+    // Add table headers to the PDF
+    const tableRows = rows.map((row) => {
+        return {
+            cells: row.slice(0, -1).map((cell) => {
+                const cellConfig = {
+                    content: cell,
+                    styles: {
+                        fontSize: 6,  // Slightly smaller font size
+                        cellPadding: 3,  // Smaller padding for better fit
+                        cellWidth: 'auto',  // Ensure content fits in each cell
+                        halign: 'center',  // Align content in the center horizontally
+                        valign: 'middle',  // Align content in the center vertically
+                        minCellWidth: 20, // Minimum width to avoid shrinking too much
+                    }
+                };
+
+                // Apply color coding for paymentStatus
+                if (cell === 'Pending') {
+                    cellConfig.styles.fillColor = [249, 199, 79];  // Yellow
+                    cellConfig.styles.textColor = 'white';
+                }
+                if (cell === 'Completed') {
+                    cellConfig.styles.fillColor = [45, 106, 79];  // Green
+                    cellConfig.styles.textColor = 'white';
+                }
+                if (cell === 'Failed') {
+                    cellConfig.styles.fillColor = [230, 57, 70];  // Red
+                    cellConfig.styles.textColor = 'white';
+                }
+
+                return cellConfig;
+            })
+        };
+    });
+
+    // Explicitly define smaller column widths
+    const columnWidths = [18, 40, 40, 20, 20, 35];  // Adjusted smaller column widths for a better fit
+
+    doc.autoTable({
+        head: [tableRows[0].cells],  // Header row
+        body: tableRows.slice(1).map((row) => row.cells),  // Data rows (excluding header row)
+        theme: 'grid',
+        styles: {
+            fontSize: 9,  // Slightly smaller font size
+            cellPadding: 3,  // Smaller padding for better fit
+            cellWidth: 'auto',  // Ensure cells expand to fit content
+            minCellWidth: 20,  // Prevent word shrinkage
+            halign: 'center',  // Center alignment for all cells
+            valign: 'middle',  // Vertical centering
+        },
+        headStyles: {
+            fillColor: [50, 50, 50],  // Dark background for headers
+            textColor: 'white',  // White text color for headers
+            fontSize: 10,  // Slightly larger font for headers
+        },
+        bodyStyles: {
+            fontSize: 9,  // Ensure readable font for body
+            cellPadding: 3,  // Add some padding for the content
+            textColor: 'black',  // Default text color
+        },
+        tableLineWidth: 0.5,  // Add thin border lines for clarity
+        tableLineColor: [0, 0, 0],  // Black color for table borders
+        margin: { top: 10, left: 10, right: 10 },  // Add margin to avoid content sticking to page edges
+        columnStyles: {
+            0: { cellWidth: columnWidths[0] },  // Adjust first column
+            1: { cellWidth: columnWidths[1] },  // Adjust second column
+            2: { cellWidth: columnWidths[2] },  // Adjust third column
+            3: { cellWidth: columnWidths[3] },  // Adjust fourth column
+            4: { cellWidth: columnWidths[4] },  // Adjust fifth column
+            5: { cellWidth: columnWidths[5] },  // Adjust sixth column
+        },
+        rowHeight: 5,  // Adjusted row height for better fit
+    });
+
+    // Save the PDF
+    doc.save('Sales_Report.pdf');
+});
+
+
+    // Get Payment Status Color
+    function getPaymentStatusColor(paymentStatus) {
+        switch (paymentStatus) {
+            case 'Pending':
+                return [249, 199, 79];  // Yellow
+            case 'Completed':
+                return [45, 106, 79];  // Green
+            case 'Failed':
+                return [230, 57, 70];  // Red
+            case 'Refunded':
+                return [106, 76, 147];  // Purple
+            default:
+                return [255, 255, 255];  // White (default)
+        }
+    }
+
+    // Get Order Status Color
+    function getOrderStatusColor(status) {
+        switch (status) {
+            case 'Pending':
+                return [249, 199, 79];  // Yellow
+            case 'Processing':
+                return [241, 250, 238];  // Light Blue
+            case 'Shipped':
+                return [45, 106, 79];  // Green
+            case 'Delivered':
+                return [38, 71, 83];  // Dark Blue
+            case 'Canceled':
+                return [230, 57, 70];  // Red
+            case 'Return Request':
+                return [106, 76, 147];  // Purple
+            case 'Returned':
+                return [168, 221, 220];  // Light Teal
+            default:
+                return [255, 255, 255];  // White (default)
+        }
+    }
+
+</script>
+
+

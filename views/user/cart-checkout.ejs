@@ -54,7 +54,7 @@
                             <div class="accordion-body">
                                 <form id="checkoutForm">
                                     <div id="savedAddresses" class="saved-addresses">
-                                        <h6>Select a saved address:</h6>
+                                        <h6 class="fw-bold">Select a saved address:</h6>
                                         <div id="addressList" class="address-list">
                                             <!-- Saved addresses will be rendered here -->
                                         </div>
@@ -133,6 +133,26 @@
 
             <!-- Right Section: Order Summary -->
             <div class="col-lg-4">
+                <% if (couponCode !== null) { %>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                        <h2 class="h3 my-2 text-black" for="couponCode">Coupon Added !!</h2>
+                        <div class="p-3 bg-white shadow-sm  rounded d-flex flex-column gap-1">
+                            <div class="input-group  d-flex">
+                                <input type="text" id="couponCode" name="couponCode" value="<%= couponCode %>" class="form-control" readonly>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <div class="row mb-3">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <h5 class="fw-bold my-2 text-black">Have a Coupon Code?</h5>
+                            <a href="/cart" class="alert-link"> Yes</a>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </div>
+                <% } %>   
                 <div class="card order-summary">
                     <div class="card-body">
                         <h5 class="card-title">Order Summary</h5>
@@ -152,6 +172,10 @@
                         <div class="d-flex justify-content-between">
                             <span>SGST (2.5%)</span>
                             <span id="sgst">Rs. <%= sgst %></span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Discount</span>
+                            <span id="discount"><%= discount  %></span>
                         </div>
                         <hr>
                         <div class="d-flex justify-content-between fw-bold">
@@ -345,6 +369,8 @@ const addressFields = [
                     }
                 }
 
+                
+
                 // Fetch cart items from the server
                 const cartResponse = await fetch('/cart/items');
                 const cartData = await cartResponse.json();
@@ -366,17 +392,25 @@ const addressFields = [
 
                 // Calculate total price and final amount
                 const totalPrice = orderItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-                const discount = 0; // Set discount if applicable
+                const discount = document.getElementById('discount').textContent;
                 // const finalAmount = totalPrice - discount;
                 const finalAmount = parseInt(document.getElementById('total').textContent);
-                console.log(finalAmount, typeof finalAmount,'final amount');
+                console.log(finalAmount,'final amount');
+                
+                const couponCode = document.getElementById('couponCode') ? document.getElementById('couponCode').value : '';
+                const couponApplied = document.getElementById('couponCode') ? true : false;
+                console.log(finalAmount, typeof finalAmount,'final amount',couponCode,'coupon code');   
                 
 
-
+                // return console.log('orderItems',orderItems,'totalPrice',totalPrice,'discount',discount,'finalAmount',finalAmount,'couponApplied',couponApplied,'couponCode',couponCode);
+                
                 console.log(addressId,paymentMethod,orderItems,totalPrice,discount,finalAmount,'above order');
                 
                 // Proceed with placing the order using the selected addressId and cart data
                 if (addressId) {
+                    // const finalAmount = parseInt(document.getElementById('total').textContent);
+                    console.log(finalAmount,'final amount');
+                    
                     const orderResponse = await fetch('/order/place', {
                         method: 'POST',
                         headers: {
@@ -388,8 +422,9 @@ const addressFields = [
                             orderItems: orderItems, // Send cart items
                             totalPrice: totalPrice, // Send total price
                             discount: discount, // Send discount if applicable
-                            finalAmount: finalAmount, // Send final amount after discount
-                            couponApplied: false, // Set to true if a coupon is applied
+                            finalAmount, // Send final amount after discount
+                            couponApplied: couponApplied,
+                            couponCode// Set to true if a coupon is applied
                         })
                     });
 
@@ -424,24 +459,27 @@ const addressFields = [
                                             discount,
                                             finalAmount,
                                             address:addressId,
-                                            paymentMethod
+                                            paymentMethod,
+                                            couponApplied
                                         })
                                     });
 
                                     const result = await confirmResponse.json();
+
+                                    console.log(result);
 
                                     if (result.success) {
                                         Swal.fire({
                                             toast: true,
                                             position: 'top-end',
                                             icon: 'success',
-                                            title: data.message,
+                                            title: result.message,
                                             showConfirmButton: false,
                                             timer: 2000
                                         })
-                                        .then(() => {
-                                            window.location.href = '/';
-                                        })
+                                        // .then(() => {
+                                        //     window.location.href = `/orders/confirmation/${result.orderId}`;
+                                        // })
                                     } else {
                                         alert('Order confirmation failed: ' + result.message);
                                     }
@@ -472,11 +510,13 @@ const addressFields = [
                         
 
                     } else {
+                        console.log(orderData.message);
+                        
                         Swal.fire({
                             toast: true,
                             position: 'top-end',
                             icon: 'error',
-                            title: 'Failed to place order.',
+                            title: orderData.message,
                             showConfirmButton: false,
                             timer: 2000
                         });
@@ -519,9 +559,11 @@ const addressFields = [
                     if (addressList.length > 0) {
                         addressList[0].address.forEach((address) => {
                             const addressDiv = document.createElement('div');
-                            addressDiv.classList.add('form-check', 'mt-2');
+                            addressDiv.classList.add('form-check', 'mt-2','alert-success','p-2','rounded','d-flex','gap-2','align-items-start');
                             addressDiv.innerHTML = `
-                                <input class="form-check-input" type="radio" name="savedAddress" id="address${address._id}" value="${address._id}">
+                                <div class="form-check form-switch ms-2">
+                                    <input class="form-check-input" type="radio" name="savedAddress" id="address${address._id}" value="${address._id}">
+                                </div>
                                 <label class="form-check-label" for="address${address._id}">
                                     <strong>${address.name}</strong> <br>
                                     ${address.addressType}, ${address.city}, ${address.state}, ${address.pincode} <br>
@@ -545,43 +587,43 @@ const addressFields = [
         fetchSavedAddresses(); 
 
 
-        const options = {
-            key: "YOUR_RAZORPAY_KEY_ID",
-            amount: finalAmount * 100, // Amount in paise
-            currency: "INR",
-            name: "Your Store Name",
-            description: "Order Payment",
-            order_id: razorpayOrderId, // Razorpay order ID from /place-order response
-            handler: async function (response) {
-                // After payment is successful, confirm the order
-                const confirmResponse = await fetch('/api/orders/confirm-order', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        razorpayOrderId: response.razorpay_order_id,
-                        razorpayPaymentId: response.razorpay_payment_id,
-                        razorpaySignature: response.razorpay_signature,
-                        orderItems, // Send the original order details
-                        totalPrice,
-                        discount,
-                        finalAmount,
-                        address,
-                        paymentMethod: 'ONLINE'
-                    })
-                });
+        // const options = {
+        //     key: "YOUR_RAZORPAY_KEY_ID",
+        //     amount: finalAmount * 100, // Amount in paise
+        //     currency: "INR",
+        //     name: "Your Store Name",
+        //     description: "Order Payment",
+        //     order_id: razorpayOrderId, // Razorpay order ID from /place-order response
+        //     handler: async function (response) {
+        //         // After payment is successful, confirm the order
+        //         const confirmResponse = await fetch('/api/orders/confirm-order', {
+        //             method: 'POST',
+        //             headers: { 'Content-Type': 'application/json' },
+        //             body: JSON.stringify({
+        //                 razorpayOrderId: response.razorpay_order_id,
+        //                 razorpayPaymentId: response.razorpay_payment_id,
+        //                 razorpaySignature: response.razorpay_signature,
+        //                 orderItems, // Send the original order details
+        //                 totalPrice,
+        //                 discount,
+        //                 finalAmount,
+        //                 address,
+        //                 paymentMethod: 'ONLINE'
+        //             })
+        //         });
 
-                const result = await confirmResponse.json();
+        //         const result = await confirmResponse.json();
 
-                if (result.success) {
-                    alert('Order placed successfully!');
-                } else {
-                    alert('Order confirmation failed: ' + result.message);
-                }
-            }
-        };
+        //         if (result.success) {
+        //             alert('Order placed successfully!');
+        //         } else {
+        //             alert('Order confirmation failed: ' + result.message);
+        //         }
+        //     }
+        // };
 
-        const razorpay = new Razorpay(options);
-        razorpay.open();
+        // const razorpay = new Razorpay(options);
+        // razorpay.open();
 
     </script>
 </body>

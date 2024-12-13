@@ -190,45 +190,7 @@
     const error_1 = document.getElementById('error1')
     const error_2 = document.getElementById('error2')
 
-    let isValid = false
-    function nameValidateCheck() {
-      console.log("inside name check")
-      const nameval = name.value;
-      console.log("name is:", nameval, "this")
-      const namepattern = /^[A-Za-z\s]+$/;
-
-      if (nameval.trim() === "") {
-        console.log("condition 1")
-        error_1.style.display = "block";
-        error_1.innerHTML = "Please enter a valid name";
-        isValid = false;
-      } else if (!namepattern.test(nameval)) {
-        console.log("condition 2")
-        error_1.style.display = "block";
-        error_1.innerHTML = "Name can only contain alphabet and spaces";
-        isValid = false;
-      } else {
-        console.log("condition 3")
-        error_1.style.display = "none";
-        error_1.innerHTML = "";
-        isValid = true;
-      }
-    }
-
-
-    function descriptionValidate() {
-      const descriptionval = description.value;
-
-      if (descriptionval === '') {
-        error_2.style.display = "block";
-        error_2.innerHTML = "Please enter a description !!"
-        isValid = false;
-      } else {
-        error_2.style.display = "none";
-        error_2.innerHTML = ""
-        isValid = true;
-      }
-    }
+    
 
 
     async function addOffer(categoryId) {
@@ -254,10 +216,6 @@
             })
           });
 
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-
           const data = await response.json();
 
           if (data.success) {
@@ -277,14 +235,11 @@
               toast: true,
               position: 'top-end',
               icon: 'error',
-              title: 'Creation failed !!',
+              // title: 'Creation failed !!',
               text: data.message,
               showConfirmButton: false,
               timer: 2000
             })
-              .then(() => {
-                window.location.href = '/admin/category'
-              })
           }
         }
       } catch (error) {
@@ -299,8 +254,6 @@
           icon: 'error',
           confirmButtonText: 'OK'
         });
-
-        console.log(error);
       }
     }
 
@@ -467,6 +420,50 @@
 
     console.log('1');
 
+    let isValid = false
+    function nameValidateCheck() {
+      console.log("inside name check")
+      const nameval = name.value;
+   
+      console.log("name is:", nameval, "this")
+      const namepattern = /^[A-Za-z\s]+$/;
+
+      if (!nameval.trim()) {
+        console.log("condition 1")
+        error_1.style.display = "block";
+        error_1.innerHTML = "Please enter a valid name";
+        isValid = false;
+      } else if (!namepattern.test(nameval)) {
+        console.log("condition 2")
+        error_1.style.display = "block";
+        error_1.innerHTML = "Name can only contain alphabet and spaces";
+        isValid = false;
+      } else {
+        console.log("condition 3")
+        error_1.style.display = "none";
+        error_1.innerHTML = "";
+        isValid = true;
+      }
+    }
+
+
+    function descriptionValidate() {
+      const descriptionval = description.value;
+      console.log("description is:", descriptionval);
+      
+
+      if (!descriptionval.trim()) {
+        error_2.style.display = "block";
+        error_2.innerHTML = "Please enter a description !!"
+        isValid = false;
+      } else {
+        error_2.style.display = "none";
+        error_2.innerHTML = ""
+        isValid = true;
+      }
+    }
+
+    
    
     
     
@@ -483,73 +480,74 @@
         nameValidateCheck();
         descriptionValidate();
 
-        const hasErrors =
+        const hasErrors = 
           error_1.innerHTML.trim() !== "" ||
           error_2.innerHTML.trim() !== "";
 
-        console.log(hasErrors);
+        console.log(hasErrors,isValid);
 
         if (!isValid || hasErrors) {
+          console.log('456465');
           e.preventDefault();
         }
 
-        console.log('form submitted');
-
-        const name = document.getElementById('name');
-        const description = document.getElementById('description')
-
-        fetch('/admin/category', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ name: name.value, description: description.value })
-        })
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('Network response was not ok');
-            }
-            return response.json();
+        else{
+          console.log('form submitted');
+  
+          const name = document.getElementById('name');
+          const description = document.getElementById('description')
+  
+          fetch('/admin/category', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name: name.value, description: description.value })
           })
-          .then(data => {
-            console.log(data);
-            if (data.success) {
-              Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'success',
-                title: 'New category created !!',
-                showConfirmButton: false,
-                timer: 2000
-              })
-                .then(() => {
-                  window.location.href = '/admin/category'
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+  
+              return response.json();
+            })
+            .then(data => {
+              console.log(data);
+              if (data.success) {
+                Swal.fire({
+                  toast: true,
+                  position: 'top-end',
+                  icon: 'success',
+                  title: 'New category created !!',
+                  showConfirmButton: false,
+                  timer: 2000
                 })
-            } else {
+                  .then(() => {
+                    window.location.href = '/admin/category'
+                  })
+              } else {
+                Swal.fire({
+                  toast: true,
+                  position: 'top-end',
+                  icon: 'error',
+                  // title: 'Creation failed !!',
+                  text: data.message,
+                  showConfirmButton: false,
+                  timer: 2000
+                })
+              }
+            })
+            .catch(error => {
               Swal.fire({
-                toast: true,
-                position: 'top-end',
+                title: 'An error occurred',
+                text: error.message,
                 icon: 'error',
-                title: 'Creation failed !!',
-                text: data.message,
-                showConfirmButton: false,
-                timer: 2000
-              })
-                .then(() => {
-                  window.location.href = '/admin/category'
-                })
-            }
-          })
-          .catch(error => {
-            Swal.fire({
-              title: 'An error occurred',
-              text: error.message,
-              icon: 'error',
-              confirmButtonText: 'OK'
+                confirmButtonText: 'OK'
+              });
             });
-          });
-
-      })
+  
+        }
+        })
     })
 
 
@@ -569,7 +567,7 @@
           data.categories.forEach(category => {
             const row = document.createElement('tr');
             row.innerHTML = `
-              <td><div class="form-check"><input class="form-check-input" type="checkbox" value="" /></div></td>
+              
               <td>${data.categories.indexOf(category) + 1}</td>
               <td><b>${category.name}</b></td>
               <td>${category.description}</td>

@@ -268,9 +268,12 @@
                                         <% } %>
                                         
                                         <span class="badge bg-<%= (order.paymentStatus === 'Completed' ? 'success' : (order.paymentStatus === 'Refunded' ? 'primary' : 'danger')) %>">
-                                            <%= order.paymentStatus %>
+                                            <% if (order.paymentStatus === 'Failed' && order.paymentMethod === 'cod') { %>
                                             <% if (order.paymentMethod === 'razorpay' && order.paymentStatus === 'Refunded') { %> to Wallet <%  %>
                                             <% }else if (order.paymentMethod === 'wallet' && order.paymentStatus === 'Refunded') { %> to Wallet <% } %>
+                                            <% } else { %>
+                                            <%= order.paymentStatus %>
+                                            <% } %>
                                         </span>
                                     </p>
                                 </div>
@@ -917,7 +920,7 @@
             }
         } catch (error) {
             alert('Error canceling order. Please try again later.');
-            console.error(error);
+            console.log(error.message, 'cancel order error');
         }
     }
         

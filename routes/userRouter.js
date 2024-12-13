@@ -4,6 +4,7 @@ const userController = require('../controllers/user/userController')
 const profileController = require('../controllers/user/profileController')
 const cartController = require('../controllers/user/cartController')
 const { userAuth, adminAuth } = require('../middleware/auth');
+const { status } = require('../middleware/productCheck');
 const passport = require('passport');
 const router = express.Router();
 
@@ -53,9 +54,12 @@ router.get('/cart/items', userAuth, cartController.getCartItems); // View cart i
 router.post('/cart/add', cartController.addToCart); // Add to cart
 router.post('/cart/update', userAuth, cartController.updateCart); // Update cart item quantity
 router.post('/cart/remove', userAuth, cartController.removeFromCart); // Remove from cart
+router.post('/apply-coupon', userAuth, cartController.applyCoupon); // Apply a coupon
+
 
 // --- Checkout Management ---
-router.get('/checkout', userAuth, cartController.checkout); // Checkout
+router.get('/checkout', userAuth, status, cartController.checkout); // Checkout
+router.get('/finalAmount', userAuth, cartController.calculateTotal); // Checkout
 
 // --- Address Management ---
 router.get('/user/addresses', userAuth, cartController.getAddresses); // Get user addresses
@@ -67,6 +71,8 @@ router.post('/order/confirm-order', userAuth, cartController.confirmOrder); // C
 router.put('/cancel/:orderId', userAuth, profileController.cancelOrder); // Cancel an order
 router.get('/:orderId', userAuth, profileController.viewOrderDetails); // View order details
 router.post('/order/:id/request-return', userAuth, profileController.requestReturn); // Request return for an order
+router.get('/orders/confirmation/:id',userAuth,cartController.confirmation);
+
 
 // --- Wishlist Management ---
 router.post('/toggleWishlist', profileController.toggleWishlist); // Toggle wishlist status for a product

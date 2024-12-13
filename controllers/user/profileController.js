@@ -315,7 +315,9 @@ const deleteAddress = async (req, res) => {
 
 const cancelOrder = async (req, res) => {
     try {
+        
         const { orderId } = req.params; // Get the order ID (UUID) from the request params
+        console.log(orderId,'canceling--------------------------------------');
 
         // Find the order by orderId (UUID) instead of _id
         const order = await Order.findOne({ orderId })
@@ -323,6 +325,8 @@ const cancelOrder = async (req, res) => {
                 path: 'orderItems.product',  // Populate the product field inside orderItems
                 model: 'Products'           // Specify the model (optional if 'Product' is already referenced in schema)
             });
+
+        console.log(order,'order');
 
         if (!order) {
             return res.json({ success: false, message: 'Order not found.' });
@@ -342,7 +346,9 @@ const cancelOrder = async (req, res) => {
                 product.quantity += item.quantity; // Restore the quantity
                 await product.save(); // Save the updated product
             }
+            
         }
+
 
         // Handle refund to wallet logic only if paymentMethod is Razorpay and paymentStatus is Completed
         if (order.paymentMethod === 'razorpay' && order.paymentStatus === 'Completed' ||
@@ -352,6 +358,8 @@ const cancelOrder = async (req, res) => {
             
             // Find the user's wallet
             const wallet = await Wallet.findOne({ userId: order.userId });
+            console.log(wallet,'wallet-------------');
+            
             
            //create a wallet as empty
             if (!wallet) {
@@ -387,20 +395,34 @@ const cancelOrder = async (req, res) => {
                 console.log('Wallet updated for user:', wallet);
                 
             } 
+            order.status = 'Canceled';
+            order.paymentStatus = 'Refunded';
+            await order.save(); // Save the updated order status
+
+            res.json({
+                success: true,
+                message: 'Order canceled successfully, and wallet refunded if applicable.',
+            });
+           
         }
 
+        else{
+            order.status = 'Canceled';
+            order.paymentStatus = 'Failed';
+            await order.save();
+
+            res.json({
+                success: true,
+                message: 'Order canceled successfully.',
+            });
+            
+        }
         // Update the order status to 'Canceled'
-        order.status = 'Canceled';
-        order.paymentStatus = 'Refunded';
-        await order.save(); // Save the updated order status
 
         // Send a success response
-        res.json({
-            success: true,
-            message: 'Order canceled successfully, and wallet refunded if applicable.',
-        });
+        
     } catch (error) {
-        console.error('Error canceling order:', error.message);
+        console.log('Error canceling order:', error.message);
         res.json({ success: false, message: 'Error canceling order. Please try again later.' });
     }
 };

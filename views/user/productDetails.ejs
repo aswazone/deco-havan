@@ -29,6 +29,29 @@
             text-decoration: underline;
         }
 
+        /* Zoom Styling */
+.main-image-container {
+    position: relative;
+    overflow: hidden; /* Prevent overflow when zoomed */
+    border-radius: 10px;
+    cursor: zoom-in; /* Indicate zoom functionality */
+}
+
+.main-image-container img {
+    transition: transform 0.3s ease, transform-origin 0.3s ease;
+}
+
+.main-image-container img.zoomed {
+    transform: scale(2); /* Adjust zoom level */
+    cursor: zoom-out; /* Indicate zoom-out functionality */
+}
+
+@media (max-width: 768px) {
+    .main-image-container img.zoomed {
+        transform: none; /* Disable zoom for smaller screens */
+    }
+}
+
         #imageZoom {
             width: 100%;
             max-width: 550px;
@@ -215,7 +238,7 @@
             
             <div class="thumbnails-container mt-3" style="flex-direction: column;">
                 <% product.productImage.forEach((image, index) => { %>
-                    <div class="thumbnail">
+                    <div class="thumbnail shadow-sm">
                         <img src="/uploads/product-images/<%=image%>" 
                              alt="Thumbnail <%= index + 1 %>" 
                              class="img-thumbnail" 
@@ -223,7 +246,7 @@
                     </div>
                 <% }) %>
             </div>
-            <div class="main-image-container " id="mainImageContainer">
+            <div class="main-image-container shadow-md" id="mainImageContainer">
                 <img src="/uploads/product-images/<%=product.productImage[0]%>" id="mainProductImage" alt="Product">
             </div>
         </div>
@@ -243,13 +266,20 @@
                 <div class="d-flex gap-3 align-items-center">
                     <h3 class="product-price" style="font-size: xx-large;">₹<%= product.salePrice %></h3>
                     <span class="product-price text-muted" style="font-size: medium;" >
-                        <strike>₹ <%= product.regularPrice %></strike>
+                        <strike class="d-<% if (product.productOffer == 0) { %>none<%  }  else { %>block<% } %>">₹ <%= product.regularPrice %></strike>
                         <% if (product.productOffer > 0) { %>
                         <span class="badge rounded-pill bg-danger ms-2 ">Best Offer</span>
                         <% } %>
                     </span>
                 </div>
-                <p class="product-quantity text-muted" style="font-size: smaller;">Stock: <%= product.quantity %></p>
+                <p class="product-quantity text-muted" style="font-size: smaller;">
+                    Stock: <%= product.quantity %>
+                    <% if (product.quantity <= 0) { %>
+                    <span class="badge rounded-pill bg-danger text-white ms-2">Out of Stock</span>
+                    <% } else if (product.quantity < 10) { %>
+                    <span class="badge rounded-pill bg-warning text-dark ms-2">Low Stock</span>
+                    <% } %>
+                </p>
                 <div class="mb-2">
                     <span class="rating">
                         <i class="fas fa-star"></i>
@@ -374,25 +404,7 @@
         button.classList.toggle('liked');
     }
 
-        // const imageZoom = document.getElementById('imageZoom');
-        // imageZoom.addEventListener('mousemove', (event) => {
-        //     imageZoom.style.setProperty('--display', 'block');
-
-        //     // Calculate pointer position as a percentage of the image dimensions
-        //     const rect = imageZoom.getBoundingClientRect();
-        //     const pointer = {
-        //         x: ((event.clientX - rect.left) / rect.width) * 100,
-        //         y: ((event.clientY - rect.top) / rect.height) * 100,
-        //     };
-
-        //     // Update the zoom position
-        //     imageZoom.style.setProperty('--zoom-x', `${pointer.x}%`);
-        //     imageZoom.style.setProperty('--zoom-y', `${pointer.y}%`);
-        // });
-
-        // imageZoom.addEventListener('mouseout', () => {
-        //     imageZoom.style.setProperty('--display', 'none');
-        // });
+        
 
         async function addToCart(productId) {
             console.log(productId,'productID');
@@ -437,6 +449,31 @@
             }
         }
 
+        document.addEventListener('DOMContentLoaded', () => {
+    const mainImageContainer = document.getElementById('mainImageContainer');
+    const mainImage = document.getElementById('mainProductImage');
+
+    // Enable zoom on mouse enter and adjust cursor position
+    mainImageContainer.addEventListener('mousemove', (e) => {
+        const rect = mainImageContainer.getBoundingClientRect();
+        const offsetX = e.clientX - rect.left; // Cursor X position relative to container
+        const offsetY = e.clientY - rect.top;  // Cursor Y position relative to container
+
+        const xPercent = (offsetX / rect.width) * 100;
+        const yPercent = (offsetY / rect.height) * 100;
+
+        mainImage.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+    });
+
+    // Add/remove zoom effect on hover
+    mainImageContainer.addEventListener('mouseenter', () => {
+        mainImage.classList.add('zoomed');
+    });
+
+    mainImageContainer.addEventListener('mouseleave', () => {
+        mainImage.classList.remove('zoomed');
+    });
+});
 
 </script>
 

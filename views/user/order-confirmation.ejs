@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        .order-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .confetti {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 15px solid #f2d74e;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%) rotate(100deg);
+            opacity: 0;
+            animation: confetti 5s ease-in-out infinite;
+        }
+        @keyframes confetti {
+            0% {
+                opacity: 0;
+                transform: translateY(0) rotate(100deg);
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(100vh) rotate(960deg);
+            }
+        }
+        .order-header {
+            text-align: center;
+            color: #333;
+            border-bottom: 2px solid #50c154bb;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 10;
+        }
+        .order-header h2 {
+            margin: 0;
+            color: #4CAF50;
+            animation: bounce 1s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .order-details {
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 10;
+        }
+        .order-details ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .order-details li {
+            background-color: #f9f9f9;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            transition: transform 0.3s ease;
+        }
+        .order-details li:hover {
+            transform: scale(1.03);
+        }
+        .order-details li:hover span:last-child {
+            font-weight: bold;
+        }
+        .order-total {
+            text-align: right;
+            font-weight: bold;
+            color: #4CAF50;
+            font-size: 1.2em;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 15px;
+            position: relative;
+            z-index: 10;
+        }
+        .home-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            position: relative;
+            z-index: 10;
+        }
+        .home-button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="order-container">
+        <% for(let i = 0; i < 50; i++) { %>
+            <div class="confetti" style="left: <%= Math.random() * 100 %>%; animation-delay: <%= Math.random() * 5 %>s;"></div>
+        <% } %>
+        <div class="order-header">
+            <h2>Order Confirmation</h2>
+            <p>Thank you for your order! Your order ID is <%= order._id %>.</p>
+        </div>
+        <div class="order-details">
+            <ul>
+                <% order.orderItems.forEach(product => { %>
+                    <li>
+                        <span><%= product.product.productName %> x <%= product.quantity %></span>
+                        <span>₹<%= product.price * product.quantity %></span>
+                    </li>
+                <% }); %>
+            </ul>
+        </div>
+        <div class="order-total">
+            Total Price : <%= order.totalPrice %> <br>
+            Coupon applied Price : ₹<%= order.finalAmount %>
+        </div>
+        <a href="/" class="home-button">Return to Home</a>
+    </div>
+</body>
+</html>
