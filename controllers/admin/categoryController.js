@@ -204,7 +204,7 @@ const Product = require('../../models/productModel');
         }
       };
     
-      const getEditCategory=async(req,res)=>{
+    const getEditCategory=async(req,res)=>{
         try {
             let id=req.query.id;
             console.log(id,'edit');
@@ -215,14 +215,15 @@ const Product = require('../../models/productModel');
             res.redirect("/pageNotFound");
         }
     };
-    //accessing query params from frontent
+  
     const editCategory=async(req,res)=>{
         try {
             const id=req.params.id;
             const {categoryName,description}=req.body;
-            const existingCategory=await Category.findOne({name:categoryName});
-    
-            console.log(existingCategory,'existing');
+            const nameReg = new RegExp('^' + categoryName + '$', 'i');
+
+            const existingCategory = await Category.findOne({name:{$regex:nameReg}});
+            console.log(existingCategory);
             
             if(existingCategory){
                 return res.status(400).json({success:false,message:"Category exists,Please choose another name"})

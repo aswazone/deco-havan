@@ -29,6 +29,21 @@ const addProducts = async (req, res) => {
             productName: products.productName,
         });
 
+        if (productExists) {
+            const regex = new RegExp(products.productName, 'i');
+            const productExistsByName = await Product.findOne({ productName: regex });
+
+            if (productExistsByName) {
+                return res.status(400).json({success:false, message: 'Product with this name already exists' });
+            }
+
+            return res.status(400).json({ success: false, message: 'Product already exists' });
+        }
+
+        if(products.quantity <= 0){
+            return res.status(400).json({ success: false, message: 'Quantity should be greater than 0' });    
+        }
+
         if (!productExists) {
             const images = [];
 
@@ -50,7 +65,6 @@ const addProducts = async (req, res) => {
 
                 productName: products.productName,
                 description: products.description,
-                // brand:products.brands,
                 category: categoryId._id,
                 regularPrice: products.regularPrice,
                 salePrice: products.salePrice,
@@ -65,13 +79,13 @@ const addProducts = async (req, res) => {
             });
             await newProduct.save();
             console.log('products added successfully')
-            return res.status(200).json({ redirectTo: '/admin/addProducts?success=true' });
+            return res.status(200).json({ success: true, message: 'Product added successfully', redirectTo: '/admin/addProducts?success=true' });
         } else {
             return res.status(400).json('Product already exists, Please try with another name');
         }
     } catch (error) {
         console.error('Error saving product', error);
-        return res.status(500).json({ redirectTo: '/admin/pageError' });
+        return res.status(500).json({ redirectTo: '/admin/pageNotFound' });
     }
 }
 
@@ -80,7 +94,6 @@ const getProductsList = async (req, res) => {
         const search = req.query.search || ""; // Default search to empty string
         const page = parseInt(req.query.page) || 1; // Default page to 1
         const limit = 5;
-
         
         // Fetch filtered products with pagination
         const productData = await Product.find({
@@ -90,7 +103,6 @@ const getProductsList = async (req, res) => {
             .skip((page - 1) * limit)
             .populate("category") // Populate category details
             .exec();
-        console.log('product from backend',productData);
         
         // Get total count of matching products
         const count = await Product.find({
@@ -122,7 +134,6 @@ const getProductsListStyle2 = async (req, res) => {
         const search = req.query.search || ""; // Default search to empty string
         const page = parseInt(req.query.page) || 1; // Default page to 1
         const limit = 3;
-
         
         // Fetch filtered products with pagination
         const productData = await Product.find({
@@ -167,9 +178,7 @@ const addProductOffer = async (req, res) => {
         const percentage = parseInt(req.body.percentage);
 
         const findProduct = await Product.findOne({ _id: productId });
-        console.log('FC',findProduct);
         const findCategory = await Category.findOne({ _id:findProduct.category});
-        console.log('cata FC',findCategory);
 
         if (!findCategory.categoryOffer > percentage) {
             return res.status(400).json({ success: false, message: 'Product has already has a category offer!!' });
@@ -194,7 +203,6 @@ const removeProductOffer = async (req,res)=>{
     try {
         const productId = req.body.productId;
         const findProduct = await Product.findOne({_id:productId});
-        console.log('fP',findProduct);
         
         const percentage = findProduct.productOffer;
         findProduct.salePrice = findProduct.salePrice + Math.floor( findProduct.regularPrice * (percentage/100))
@@ -211,19 +219,14 @@ const removeProductOffer = async (req,res)=>{
 
 const productToggleStatus = async (req, res) => {
     try {
-        console.log('product toggle',req.body);
 
         const { id, condition } = req.body;
-
-        console.log(id, condition);
 
         // Await the update operation
         const product = await Product.findByIdAndUpdate(
             id,
             { isBlocked: condition },
         );
-
-        console.log('pdt',product);
         
 
         if (!product) {
@@ -247,66 +250,135 @@ const getEditProduct=async(req,res)=>{
     try {
         const id=req.query.id;
         console.log(id)
-        const product=await Product.findOne({_id:id});
+        const product=await Product.findOne({_id:id}).populate('category');
         const category=await Category.find({});
 
-        console.log(product);
+        // console.log(product,'product');
+        // console.log(category,'category');
+        
        
         res.render("edit-product",{
             product:product,
             cat:category,
-            // brand:brand,
-
         })
         
     } catch (error) {
-        console.log("iam catched")
-        res.redirect("/pageerror")
+        console.log(error.message,'get edit product error');
+        res.redirect("/pageNotFound");
     }
 }
 
-const editProduct=async(req,res)=>{
+const editProduct = async(req,res)=>{
     try {
-        const id=req.params.id;
-        const product=await Product.findOne({_id:id});
-        const data=req.body;
-        const existingProduct=await Product.findOne({
-            productNae:data.productName,
-            _id:{$ne:id}
-        }) 
-        console.log("category is :",data)
-        console.log("product is :",product)
-        if(existingProduct){
-            return res.status(400).json({error:"product with these name already exists.Please try with another name"})
-        }
-        const images=[];
+        const { id } = req.params;
 
-        if(req.files&&req.files.length>0){
-            for(let i=0;i<req.files.length;i++){
-                images.push(req.files[i].filename);
+        // Extract updated fields from form data
+        const {
+            productName,
+            description,
+            category,
+            regularPrice,
+            salePrice,
+            quantity
+        } = req.body;
+
+        console.log(productName,'productName');
+        console.log(description,'description');
+        console.log(category,'category');
+        console.log(regularPrice,'regularPrice');
+        console.log(salePrice,'salePrice');
+        console.log(quantity,'quantity');
+        console.log(req.files,'files');
+
+
+        // Find the existing product to work with its current data
+        const existingProduct = await Product.findById(id);
+        if (!existingProduct) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+
+        if(regularPrice <= 0){
+            return res.status(400).json({ success: false, message: 'Regular price should be greater than 0' });
+        }
+
+        if(salePrice <= 0){
+            return res.status(400).json({ success: false, message: 'Sale price should be greater than 0' });
+        }
+
+        if(quantity <= 0){
+            return res.status(400).json({ success: false, message: 'Quantity should be greater than 0' });    
+        }
+
+
+        // Initialize updated product data with the existing ones
+        const updatedProduct = {
+            productName,
+            description,
+            category,
+            regularPrice: parseFloat(regularPrice),
+            salePrice: parseFloat(salePrice),
+            quantity: parseInt(quantity),
+            productImage: [...(existingProduct.productImage || [])], // Clone existing images
+        };
+
+        // Handle uploaded images and update specific indices
+        const uploadedFiles = req.files;
+
+
+        if (uploadedFiles) {
+            if(uploadedFiles.image1){
+                const originalImagePath = uploadedFiles.image1[0].path;
+                const resizedImagePath = path.join('public', 'uploads', 'product-images', uploadedFiles.image1[0].filename);
+                await sharp(originalImagePath).resize({ width: 440, height: 440 }).toFile(resizedImagePath);
+            }else if(uploadedFiles.image2){
+                const originalImagePath = uploadedFiles.image2[0].path;
+                const resizedImagePath = path.join('public', 'uploads', 'product-images', uploadedFiles.image2[0].filename);
+                await sharp(originalImagePath).resize({ width: 440, height: 440 }).toFile(resizedImagePath);
+            }else if(uploadedFiles.image3){
+                const originalImagePath = uploadedFiles.image3[0].path;
+                const resizedImagePath = path.join('public', 'uploads', 'product-images', uploadedFiles.image3[0].filename);
+                await sharp(originalImagePath).resize({ width: 440, height: 440 }).toFile(resizedImagePath);
+            }else if(uploadedFiles.image4){
+                const originalImagePath = uploadedFiles.image4[0].path;
+                const resizedImagePath = path.join('public', 'uploads', 'product-images', uploadedFiles.image4[0].filename);
+                await sharp(originalImagePath).resize({ width: 440, height: 440 }).toFile(resizedImagePath);
             }
         }
-        const updateFields={
-            productName:data.productName,
-            description:data.description,
-            // brand:data.brand,
-            category:product.category,
-            regularPrice:data.regularPrice,
-            salePrice:data.salePrice,
-            quantity:data.quantity,
-            size:data.size,
-            color:data.color,
+
+        // return
+        // Helper function to check if a file is valid
+        const isValidFile = (file) => file && file.filename && file.filename.trim() !== '';
+
+        if (uploadedFiles.image1 && isValidFile(uploadedFiles.image1[0])) {
+            updatedProduct.productImage[0] = uploadedFiles.image1[0].filename;
         }
-        if(req.files.length>0){
-            updateFields.$push={productImage:{$each:images}};
+        if (uploadedFiles.image2 && isValidFile(uploadedFiles.image2[0])) {
+            updatedProduct.productImage[1] = uploadedFiles.image2[0].filename;
         }
-        await Product.findByIdAndUpdate(id,updateFields,{new:true});
-        res.redirect("/admin/listProducts")
-        
+        if (uploadedFiles.image3 && isValidFile(uploadedFiles.image3[0])) {
+            updatedProduct.productImage[2] = uploadedFiles.image3[0].filename;
+        }
+        if (uploadedFiles.image4 && isValidFile(uploadedFiles.image4[0])) {
+            updatedProduct.productImage[3] = uploadedFiles.image4[0].filename;
+        }
+
+        // Preserve existing images where no update is provided
+        updatedProduct.productImage = updatedProduct.productImage.map((img, index) => {
+            return img || existingProduct.productImage[index] || null;
+        });
+
+        // Filter out empty slots (optional if nulls need to be removed)
+        updatedProduct.productImage = updatedProduct.productImage.filter(Boolean);
+
+        // Update the product in the database
+        await Product.findByIdAndUpdate(id, updatedProduct, { new: true });
+
+        res.status(200).json({ success: true, message: 'Product updated successfully!' });
     } catch (error) {
-        res.redirect("/pageerror")
-        
+        console.error('Error updating product:', error);
+        res.status(500).json({ success: false, message: 'Error updating product' });
     }
+
 }
 
 const deleteSingleImage=async(req,res)=>{

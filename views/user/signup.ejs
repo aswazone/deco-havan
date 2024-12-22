@@ -1,304 +1,378 @@
-
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.0/mdb.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.0/mdb.min.css"
+      rel="stylesheet"
+    />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.0/mdb.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
-        integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+      integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-</head>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+  </head>
 
-<body class="bg-image-signup">
-    <section class="h-100 gradient-form bg-transparent p-3" style="background-color: #eee;">
-        <div class="container py-5 h-100">
-            <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col-lg-8 col-md-10 d-flex justify-content-center align-items-center"
-                    style="max-width: 900px;">
-
-                    <div class="card rounded-3 text-black">
-                        <div class="row g-0">
-                            <div class="col-md-6 d-flex align-items-center">
-                                <div class="rounded-3 overflow-hidden px-3 py-2 mx-md-3">
-                                    <img src="assets/signup.jpeg" class="img-fluid rounded-3" alt="Sample image">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card-body p-md-4 mx-md-3">
-                                    <form id="signform">
-                                        <div class="text-end">
-                                            <img src="assets/logo-deco2.png" style="width: 150px;" alt="logo">
-                                        </div>
-
-                                        <h2 class="fw-bold mb-3 mt-2"
-                                            style="font-family: 'Roboto', sans-serif; cursor: pointer; color: #267685;">
-                                            Create An Account</h2>
-
-                                        <div class="form-outline mb-3">
-                                            <input type="text" id="name" name="name" class="form-control" />
-                                            <label class="form-label" for="name">Fullname</label>
-                                            <div id="error1" class="error-msg"></div>
-                                        </div>
-                                        <div class="form-outline mb-3">
-                                            <input type="text" id="email" name="email" class="form-control" />
-                                            <label class="form-label" for="email">Email</label>
-                                            <div id="error2" class="error-msg"></div>
-                                        </div>
-                                        <div class="form-outline mb-3">
-                                            <input type="text" id="phone" name="phone" class="form-control" />
-                                            <label class="form-label" for="phone">Phonenumber</label>
-                                            <div id="error3" class="error-msg"></div>
-                                        </div>
-
-                                        <div class="form-outline mb-3">
-                                            <input type="password" id="password" name="password" class="form-control" />
-                                            <label class="form-label" for="password">Password</label>
-                                            <div id="error4" class="error-msg"></div>
-                                        </div>
-
-                                        <div class="form-outline mb-3">
-                                            <input type="password" id="cpassword" name="cpassword"
-                                                class="form-control" />
-                                            <label class="form-label" for="cpassword">Confirm Password</label>
-                                            <div id="error5" class="error-msg"></div>
-                                        </div>
-
-                                        <div class="text-center pt-1 mb-4 pb-1">
-                                            <button class="btn btn-primary btn-lg btn-block gradient-custom-3 mb-4"
-                                                type="submit" value="Sign up" style="width: 100%;">Sign Up</button>
-
-
-                                            <a href="" class="btn btn-primary btn-floating mx-1"
-                                                style="background-color: #3b5998;">
-                                                <i class="fab fa-facebook" style="font-size: 24px; color: white;"></i>
-                                            </a>
-                                            <a type="button" class="btn btn-primary btn-floating mx-1"
-                                                style="background-color: #55acee;">
-                                                <i class="fab fa-twitter" style="font-size: 24px; color: white;"></i>
-                                            </a>
-                                            <a href="/auth/google" class="btn btn-primary btn-floating mx-1"
-                                                style="background-color: #dd4b39;">
-                                                <i class="fab fa-google" style="font-size: 24px; color: white;"></i>
-                                            </a>
-                                        </div>
-
-                                        <div class="d-flex align-items-center justify-content-center pb-3">
-                                            <p class="mb-0 me-2">Already have an account?</p>
-                                            <a href="/login" class="btn btn-outline-success">Login</a>
-                                        </div>
-
-                                    </form>
-
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
+  <body class="bg-image-signup">
+    <section
+      class="h-100 gradient-form bg-transparent p-3"
+      style="background-color: #eee"
+    >
+      <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div
+            class="col-lg-8 col-md-10 d-flex justify-content-center align-items-center"
+            style="max-width: 900px"
+          >
+            <div class="card rounded-3 text-black">
+              <div class="row g-0">
+                <div class="col-md-6 d-flex align-items-center">
+                  <div class="rounded-3 overflow-hidden px-3 py-2 mx-md-3">
+                    <img
+                      src="assets/signup.jpeg"
+                      class="img-fluid rounded-3"
+                      alt="Sample image"
+                    />
+                  </div>
                 </div>
+                <div class="col-md-6">
+                  <div class="card-body p-md-4 mx-md-3">
+                    <form id="signform">
+                      <div class="text-end">
+                        <img
+                          src="assets/logo-deco2.png"
+                          style="width: 150px"
+                          alt="logo"
+                        />
+                      </div>
+
+                      <h2
+                        class="fw-bold mb-3 mt-2"
+                        style="
+                          font-family: 'Roboto', sans-serif;
+                          cursor: pointer;
+                          color: #267685;
+                        "
+                      >
+                        Create An Account
+                      </h2>
+
+                      <div class="form-outline mb-3">
+                        <input
+                          type="text"
+                          id="name"
+                          name="name"
+                          class="form-control"
+                        />
+                        <label class="form-label" for="name">Fullname</label>
+                        <div id="error1" class="error-msg"></div>
+                      </div>
+                      <div class="form-outline mb-3">
+                        <input
+                          type="text"
+                          id="email"
+                          name="email"
+                          class="form-control"
+                        />
+                        <label class="form-label" for="email">Email</label>
+                        <div id="error2" class="error-msg"></div>
+                      </div>
+                      <div class="form-outline mb-3">
+                        <input
+                          type="text"
+                          id="phone"
+                          name="phone"
+                          class="form-control"
+                        />
+                        <label class="form-label" for="phone"
+                          >Phonenumber</label
+                        >
+                        <div id="error3" class="error-msg"></div>
+                      </div>
+
+                      <div class="form-outline mb-3">
+                        <input
+                          type="password"
+                          id="password"
+                          name="password"
+                          class="form-control"
+                        />
+                        <label class="form-label" for="password"
+                          >Password</label
+                        >
+                        <div id="error4" class="error-msg"></div>
+                      </div>
+
+                      <div class="form-outline mb-3">
+                        <input
+                          type="password"
+                          id="cpassword"
+                          name="cpassword"
+                          class="form-control"
+                        />
+                        <label class="form-label" for="cpassword"
+                          >Confirm Password</label
+                        >
+                        <div id="error5" class="error-msg"></div>
+                      </div>
+
+                      <div class="text-center pt-1 mb-4 pb-1">
+                        <button
+                          class="btn btn-primary btn-lg btn-block gradient-custom-3 mb-4"
+                          type="submit"
+                          value="Sign up"
+                          style="width: 100%"
+                        >
+                          Sign Up
+                        </button>
+
+                        <a
+                          href=""
+                          class="btn btn-primary btn-floating mx-1"
+                          style="background-color: #3b5998"
+                        >
+                          <i
+                            class="fab fa-facebook"
+                            style="font-size: 24px; color: white"
+                          ></i>
+                        </a>
+                        <a
+                          type="button"
+                          class="btn btn-primary btn-floating mx-1"
+                          style="background-color: #55acee"
+                        >
+                          <i
+                            class="fab fa-twitter"
+                            style="font-size: 24px; color: white"
+                          ></i>
+                        </a>
+                        <a
+                          href="/auth/google"
+                          class="btn btn-primary btn-floating mx-1"
+                          style="background-color: #dd4b39"
+                        >
+                          <i
+                            class="fab fa-google"
+                            style="font-size: 24px; color: white"
+                          ></i>
+                        </a>
+                      </div>
+
+                      <div
+                        class="d-flex align-items-center justify-content-center pb-3"
+                      >
+                        <p class="mb-0 me-2">Already have an account?</p>
+                        <a href="/login" class="btn btn-outline-success"
+                          >Login</a
+                        >
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
     </section>
     <script>
-        const name = document.getElementById('name');
-        const email = document.getElementById('email');
-        const phone = document.getElementById('phone');
-        const password = document.getElementById('password');
-        const cpassword = document.getElementById('cpassword');
-        const error_1 = document.getElementById('error1')
-        const error_2 = document.getElementById('error2')
-        const error_3 = document.getElementById('error3')
-        const error_4 = document.getElementById('error4')
-        const error_5 = document.getElementById('error5')
-        const signForm = document.getElementById('signform')
+      const name = document.getElementById("name");
+      const email = document.getElementById("email");
+      const phone = document.getElementById("phone");
+      const password = document.getElementById("password");
+      const cpassword = document.getElementById("cpassword");
+      const error_1 = document.getElementById("error1");
+      const error_2 = document.getElementById("error2");
+      const error_3 = document.getElementById("error3");
+      const error_4 = document.getElementById("error4");
+      const error_5 = document.getElementById("error5");
+      const signForm = document.getElementById("signform");
 
+      let isValid = false;
+      function nameValidateCheck() {
+        console.log("inside name check");
+        const nameval = name.value;
+        console.log("name is:", nameval, "this");
+        const namepattern = /^[A-Za-z\s]+$/;
 
-        let isValid = false;
-        function nameValidateCheck() {
-            console.log("inside name check")
-            const nameval = name.value;
-            console.log("name is:", nameval, "this")
-            const namepattern = /^[A-Za-z\s]+$/;
+        if (nameval.trim() === "") {
+          console.log("condition 1");
+          error_1.style.display = "block";
+          error_1.innerHTML = "Please enter a valid name";
+          isValid = false;
+        } else if (!namepattern.test(nameval)) {
+          console.log("condition 2");
+          error_1.style.display = "block";
+          error_1.innerHTML = "Name can only contain alphabet and spaces";
+          isValid = false;
+        } else {
+          console.log("condition 3");
+          error_1.style.display = "none";
+          error_1.innerHTML = "";
+          isValid = true;
+        }
+      }
 
-            if (nameval.trim() === "") {
-                console.log("condition 1")
-                error_1.style.display = "block";
-                error_1.innerHTML = "Please enter a valid name";
-                isValid = false;
-            } else if (!namepattern.test(nameval)) {
-                console.log("condition 2")
-                error_1.style.display = "block";
-                error_1.innerHTML = "Name can only contain alphabet and spaces";
-                isValid = false;
-            } else {
-                console.log("condition 3")
-                error_1.style.display = "none";
-                error_1.innerHTML = "";
-                isValid = true;
-            }
+      function emailValidateCheck() {
+        const emailval = email.value;
+        // const emailpattern = /^[a-zA-Z0-9.-]+)@[a-zA-Z0-9.-]+)\.([a-zA-Z]{2,4})$/;
+        const emailpattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        if (!emailpattern.test(emailval)) {
+          error_2.style.display = "block";
+          error_2.innerHTML = "Invalid E-Mail format eg: abc@gmail.com";
+          isValid = false;
+        } else {
+          error_2.style.display = "none";
+          error_2.innerHTML = "";
+          isValid = true;
+        }
+      }
+
+      function phoneValidateCheck() {
+        const phoneval = phone.value;
+        const phonepattern = /^\d{10}$/;
+
+        if (!phonepattern.test(phoneval)) {
+          error_3.style.display = "block";
+          error_3.innerHTML = "Invalid Phone Number format eg: 9876543210";
+          isValid = false;
+        } else {
+          error_3.style.display = "none";
+          error_3.innerHTML = "";
+          isValid = true;
+        }
+      }
+      function passwordValidatecheck() {
+        const passval = password.value;
+        const cPassval = cpassword.value;
+
+        const minLength = 8;
+        const hasUpperCase = /[A-Z]/;
+        const hasLowerCase = /[a-z]/;
+        const hasDigit = /\d/;
+        // const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/;\
+        const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>[\]\\/`~_+;='"]/;
+
+        if (passval.length < minLength) {
+          console.log("condition 1 pass length");
+          error_4.style.display = "block";
+          error_4.innerHTML =
+            "Password must be at least " + minLength + " characters long.";
+          isValid = false;
+        } else if (!hasUpperCase.test(passval)) {
+          console.log("condition upper");
+          error_4.style.display = "block";
+          error_4.innerHTML =
+            "Password must contain at least one uppercase letter.";
+          isValid = false;
+        } else if (!hasLowerCase.test(passval)) {
+          console.log("condition lower");
+          error_4.style.display = "block";
+          error_4.innerHTML =
+            "Password must contain at least one lowercase letter.";
+          isValid = false;
+        } else if (!hasDigit.test(passval)) {
+          console.log("condition digit");
+          error_4.style.display = "block";
+          error_4.innerHTML = "Password must contain at least one digit.";
+          isValid = false;
+        } else if (!hasSpecialChar.test(passval)) {
+          console.log("condition special char");
+          error_4.style.display = "block";
+          error_4.innerHTML =
+            "Password must contain at least one special character.";
+          isValid = false;
+        } else {
+          console.log("condition true else");
+          error_4.style.display = "none";
+          error_4.innerHTML = "";
+          isValid = true;
         }
 
-        function emailValidateCheck() {
-            const emailval = email.value;
-            // const emailpattern = /^[a-zA-Z0-9.-]+)@[a-zA-Z0-9.-]+)\.([a-zA-Z]{2,4})$/;
-            const emailpattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-
-
-            if (!emailpattern.test(emailval)) {
-                error_2.style.display = "block";
-                error_2.innerHTML = "Invalid E-Mail format eg: abc@gmail.com"
-                isValid = false;
-            } else {
-                error_2.style.display = "none";
-                error_2.innerHTML = ""
-                isValid = true;
-            }
+        if (passval !== cPassval) {
+          console.log("condition not same pass");
+          error_5.style.display = "block";
+          error_5.innerHTML = "Passwords do not match.";
+          isValid = false;
+        } else {
+          console.log("condition pass same");
+          error_5.style.display = "none";
+          error_5.innerHTML = "";
+          isValid = true;
         }
+      }
 
-        function phoneValidateCheck() {
-            const phoneval = phone.value;
-            const phonepattern = /^\d{10}$/;
+      document.addEventListener("DOMContentLoaded", () => {
+        signForm.addEventListener("submit", (e) => {
+          // // Run all validation functions
+          e.preventDefault();
 
-            if (!phonepattern.test(phoneval)) {
-                error_3.style.display = "block";
-                error_3.innerHTML = "Invalid Phone Number format eg: 9876543210"
-                isValid = false;
-            } else {
-                error_3.style.display = "none";
-                error_3.innerHTML = ""
-                isValid = true;
-            }
-        }
-        function passwordValidatecheck() {
-            const passval = password.value;
-            const cPassval = cpassword.value;
+          nameValidateCheck();
+          emailValidateCheck();
+          phoneValidateCheck();
+          passwordValidatecheck();
 
-            const minLength = 8;
-            const hasUpperCase = /[A-Z]/;
-            const hasLowerCase = /[a-z]/;
-            const hasDigit = /\d/;
-            // const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/;\
-            const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>[\]\\/`~_+;='"]/
+          // Check if any error messages are displayed
+          const hasErrors =
+            error_1.innerHTML.trim() !== "" ||
+            error_2.innerHTML.trim() !== "" ||
+            error_3.innerHTML.trim() !== "" ||
+            error_4.innerHTML.trim() !== "";
 
-
-
-
-
-            if (passval.length < minLength) {
-                console.log("condition 1 pass length")
-                error_4.style.display = "block";
-                error_4.innerHTML = "Password must be at least " + minLength + " characters long.";
-                isValid = false;
-            } else if (!hasUpperCase.test(passval)) {
-                console.log("condition upper")
-                error_4.style.display = "block";
-                error_4.innerHTML = "Password must contain at least one uppercase letter.";
-                isValid = false;
-            } else if (!hasLowerCase.test(passval)) {
-                console.log("condition lower")
-                error_4.style.display = "block";
-                error_4.innerHTML = "Password must contain at least one lowercase letter.";
-                isValid = false;
-            } else if (!hasDigit.test(passval)) {
-                console.log("condition digit")
-                error_4.style.display = "block";
-                error_4.innerHTML = "Password must contain at least one digit.";
-                isValid = false;
-            } else if (!hasSpecialChar.test(passval)) {
-                console.log("condition special char")
-                error_4.style.display = "block";
-                error_4.innerHTML = "Password must contain at least one special character.";
-                isValid = false;
-            } else {
-                console.log("condition true else")
-                error_4.style.display = "none";
-                error_4.innerHTML = ""
-                isValid = true;
-            }
-
-            if (passval !== cPassval) {
-                console.log("condition not same pass")
-                error_5.style.display = "block";
-                error_5.innerHTML = "Passwords do not match.";
-                isValid = false;
-            } else {
-                console.log("condition pass same")
-                error_5.style.display = "none";
-                error_5.innerHTML = ""
-                isValid = true;
-            }
-        }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            signForm.addEventListener("submit", (e) => {
-                // // Run all validation functions
-                e.preventDefault();
-
-                nameValidateCheck();
-                emailValidateCheck();
-                phoneValidateCheck();
-                passwordValidatecheck();
-
-                // Check if any error messages are displayed
-                const hasErrors =
-                    error_1.innerHTML.trim() !== "" ||
-                    error_2.innerHTML.trim() !== "" ||
-                    error_3.innerHTML.trim() !== "" ||
-                    error_4.innerHTML.trim() !== "";
-
-                // Prevent form submission if there are errors
-                if (!isValid || hasErrors) {
-                    e.preventDefault();
+          // Prevent form submission if there are errors
+          if (!isValid || hasErrors) {
+            e.preventDefault();
+          } else {
+            fetch("/signup", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                name: name.value,
+                email: email.value,
+                password: password.value,
+                cpassword: cpassword.value,
+                phone: phone.value,
+              }),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                console.log(data);
+                if (data.success) {
+                  Swal.fire({
+                    title: "User Created Successfully",
+                    icon: "success",
+                    confirmButtonText: "OK",
+                  }).then(() => {
+                    window.location.href = "/verify-otp";
+                  });
                 } else {
-                    fetch('/signup', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            name: name.value,
-                            email: email.value,
-                            password: password.value,
-                            cpassword: cpassword.value,
-                            phone: phone.value,
-
-                        })
-                    }).then(response => response.json())
-                    .then(data => {
-                        console.log(data);
-                        if(data.success){
-                            Swal.fire({
-                                title: 'User Created Successfully',
-                                icon: 'success',
-                                confirmButtonText: 'OK'
-                            })
-                            .then(() => {
-                                window.location.href = '/verify-otp';
-                            })
-                        }else{
-                            Swal.fire({
-                                title: 'User Creation Failed',
-                                text: data.message,
-                                icon: 'error',
-                                confirmButtonText: 'OK'
-                            })
-                        }
-                    })
+                  Swal.fire({
+                    title: "User Creation Failed",
+                    text: data.message,
+                    icon: "error",
+                    confirmButtonText: "OK",
+                  });
                 }
-            });
+              });
+          }
         });
-
-
-
-
+      });
     </script>
-</body>
-
+  </body>
 </html>

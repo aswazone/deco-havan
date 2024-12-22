@@ -136,7 +136,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" <%= order.status === 'Delivered' ? 'disabled' : '' %>>Save Changes</button>
+                        <button type="submit" class="btn btn-primary" <% if (order.status === 'Delivered' || ( order.paymentMethod === 'razorpay' && order.paymentStatus === 'Pending')) { %> disabled <% } %>>Save Changes</button>
                     </div>
                 </form>
             </div>
@@ -146,6 +146,8 @@
 
 <script>
     async function updateReturnStatus(orderId, status) {
+        console.log
+        (orderId,status);
         try {
             const response = await fetch(`/admin/orders/${orderId}/return-status`, {
                 method: 'POST',
@@ -155,7 +157,8 @@
                 body: JSON.stringify({ status }),
             });
             const result = await response.json();
-            console.log(result);
+            
+            // console.log(result);
             
             if (result.success) {
                 console.log(result.success,status);
@@ -166,7 +169,7 @@
                 alert('Failed to update return request. Please try again.');
             }
         } catch (error) {
-            console.error('Error:', error.message);
+            console.log('Error:', error.message);
             alert('An error occurred while updating the return request.');
         }
     }

@@ -48,20 +48,6 @@ const loadUser = async (req, res) => {
     }
 };
 
-
-// const userBlocked = async (req,res) =>{
-//     try {
-        
-//         const id = req.params.id;
-//         const user = await User.updateOne({_id:id},{$set:{isBlocked:true}});
-//         res.json({success:true,message:`${user.name} blocked successfully`});
-
-//     } catch (error) {
-//         console.log(error.message,'user blocking error');
-//         res.status(500).send('server error');
-//     }
-// }
-
 const usertoggleStatus = async (req, res) => {
     try {
         console.log(req.body);

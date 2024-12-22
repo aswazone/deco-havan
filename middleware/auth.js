@@ -46,22 +46,6 @@ const adminAuth = async (req,res,next)=>{
     }
 }
 
-// const adminAuth = async (req,res,next)=>
-//     if(req.session.admin){
-//         User.findOne({isAdmin: true})
-//             .then((data)=>{
-//                 if(data){
-//                     next();
-//                 }else{
-//                     res.redirect('/admin/login');
-//                 }
-//             })
-//             .catch((error)=>{
-//                 console.log('admin auth error', error.message);
-//                 res.status(500).send('server error');
-//             })
-//     }
-// }
 
 module.exports = {
     userAuth,

@@ -10,10 +10,6 @@ const productSchema = new Schema({
         type: String,
         required: true,
     },
-    brand: {
-        type: String,
-        required: false,
-    },
     category: {
         type: Schema.Types.ObjectId,
         ref: "Category",
@@ -33,10 +29,6 @@ const productSchema = new Schema({
     quantity: {
         type: Number,
         default: true
-    },
-    color: {
-        type: String,
-        required: true
     },
     productImage: {
         type: [String],

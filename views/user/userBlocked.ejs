@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Account Banned</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f4f6f8;
+        font-family: "Poppins", sans-serif;
+      }
+      .banned-container {
+        text-align: center;
+        background: linear-gradient(135deg, #ffffff, #f9fafb);
+        padding: 50px;
+        border-radius: 12px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 500px;
+      }
+      .banned-container i {
+        font-size: 80px;
+        color: #ff4d4f;
+        margin-bottom: 20px;
+      }
+      .banned-container h1 {
+        font-size: 2.8rem;
+        color: #333;
+        font-weight: 700;
+      }
+      .banned-container p {
+        font-size: 1.1rem;
+        color: #555;
+        margin: 15px 0 30px;
+      }
+      .banned-container .btn-contact {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 1rem;
+        color: #fff;
+        background-color: #ff4d4f;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background 0.3s ease;
+      }
+      .banned-container .btn-contact:hover {
+        background-color: #e63946;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="banned-container">
+      <i class="bi bi-exclamation-circle-fill"></i>
+      <h1>Account Suspended</h1>
+      <p>
+        We regret to inform you that your account has been banned due to policy
+        violations. If you believe this is a mistake, please contact our support
+        team.
+      </p>
+      <a href="/contact-support" class="btn-contact">Contact Support</a>
+    </div>
+
+    <!-- Bootstrap Icons -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

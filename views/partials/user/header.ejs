@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -9,103 +8,221 @@
   <meta name="description" content="" />
   <meta name="keywords" content="bootstrap, bootstrap4" />
 
-		<!-- Bootstrap CSS -->
-		<link rel="stylesheet" href="css/bootstrap.min.css">
+  <!-- Bootstrap CSS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.24/dist/sweetalert2.all.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" >
 
-		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-		<link href="css/tiny-slider.css" rel="stylesheet">
-		<link href="css/style.css" rel="stylesheet">
-		<title>Deco-Havan</title>
-		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-		<style>
-			@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
-			h1  {
-        font-family: 'Nunito', sans-serif;
-			}
-			
-			h2  {
-        font-family: 'Nunito', sans-serif;
-			}
-			h3  {
-				font-family: 'Nunito', sans-serif;
-			}
-			h4    {
-				font-family: 'Nunito', sans-serif;
-			}
-			h5   {
-				font-family: 'Nunito', sans-serif;
-			}
-			h6   {
-				font-family: 'Nunito', sans-serif;
-			}
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- <link rel="stylesheet" href="css/bootstrap.min.css"> -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <title>Deco-Havan</title>
 
-			button {
-				font-family: 'Nunito', sans-serif;
-			}
-			a {
-				font-family: 'Nunito', sans-serif;
-				font-weight: bold;
-			}
-			label {
-				font-family: 'Nunito', sans-serif;
-			}
-		</style>
-		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.4/dist/sweetalert2.all.min.js"></script>
-	</head>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
 
-	<body>
+    body {
+      font-family: 'Nunito', sans-serif;
+    }
 
-		<!-- Start Header/Navigation -->
-		<nav class="custom-navbar navbar navbar navbar-expand-md" arial-label="Furni navigation bar">
+    /* Offcanvas Styles */
+	.offcanvas {
+		background-color: rgb(15 40 18 / 79%) !important;
+		backdrop-filter: blur(2px);
+		width: 25% !important;
+	}
+	.offcanvas-backdrop {
+		background-color: rgba(15, 40, 18, 0.353) !important;
+		/* backdrop-filter: blur(2px); */
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1040;
+    width: 120vw;
+    height: 120vh;
+    /* background-color: #000; */
+	}
 
-			<div class="container">
-				<div class="text-start">
-					<img src="assets/logo-white.png"
-						style="width: 185px;" alt="logo">
-				</div>
+    /* Navbar Links */
+    .custom-navbar .nav-link {
+      font-family: 'Nunito', sans-serif;
+      font-weight: bold;
+      color: #333;
+      transition: color 0.3s ease;
+    }
+    .custom-navbar {
+      height: 86px;
+    }
+    .custom-navbar img {
+        width: 150px !important;
+    }
+   
+       
 
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
+    .custom-navbar .nav-link:hover {
+      color: #3BB77E;
+    }
 
-				<div class="collapse navbar-collapse" id="navbarsFurni">
-					<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
-						<li class="nav-item">
-							<a class="nav-link" href="/">Home</a>
-						</li>
-						<li><a class="nav-link" href="/shop">Shop</a></li>
-						<!-- <li><a class="nav-link" href="about.html">About us</a></li>
-						<li><a class="nav-link" href="services.html">Services</a></li>
-						<li><a class="nav-link" href="blog.html">Blog</a></li>
-						<li><a class="nav-link" href="contact.html">Contact us</a></li> -->
-					</ul>
+    /* Show offcanvas button only on mobile */
+    .offcanvas-toggler {
+      display: none;
+    }
 
-					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-						<li class="nav-item dropdown">
-							<a class="nav-link pe-1 dropdown-toggle profile" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-								<% if (locals.user) { %>
-									<span class="me-2 "><%= locals.user.name %></span>
-								<% } %>
-								<i class="fa-regular fa-user"></i>
-							</a>
-							<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-								<% if (locals.user) { %>
-									<!-- User is logged in -->
-									<li><a class="dropdown-item" href="/profile">Profile</a></li>
-									<li><a class="dropdown-item" href="/logout">Logout</a></li>
-								  <% } else { %>
-									<!-- User is not logged in -->
-									<li><a class="dropdown-item" href="/login">Login</a></li>
-									<li><a class="dropdown-item" href="/signup">Sign Up</a></li>
-								  <% } %>
-							</ul>
-						</li>
-						<!-- <li><a class="nav-link px-3 active" href="/wishlist"><i class="fa-regular fa-heart"></i></a></li> -->
-						<li><a class="nav-link ps-4 " href="/cart"><i class="fa fa-shopping-cart"></i></a></li>
-					</ul>
-				</div>
-			</div>
+    @media (max-width: 768px) {
+      .offcanvas-toggler {
+        display: block;
+      }
 
-		</nav>
-		<!-- End Header/Navigation -->
+      /* .custom-navbar {
+        height: auto;
+      } */
+    }
+
+    /* Hide offcanvas on desktop view */
+    .mobile-offcanvas-links {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-offcanvas-links {
+        display: block;
+      }
+      .custom-navbar img {
+        width: 120px !important;
+      }
+
+      .swiper-button-next,
+      .swiper-button-prev {
+        color: #f9efb61f !important;   
+      }
+
+      .swiper-button-prev::after,
+      .swiper-button-next::after {
+          font-size: 25px !important;
+      }
+      .custom-navbar {
+      height: 72px;
+    }
+    }
+
+    .spinner {
+      border: 8px solid #f3f3f3; /* Light grey */
+      border-top: 8px solid #3498db; /* Blue */
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+
+  </style>
+</head>
+
+<body>
+
+  <!-- Start Header/Navigation -->
+  <nav class="custom-navbar navbar navbar-expand-md" aria-label="Furni navigation bar">
+    <div class="container">
+      <!-- Logo -->
+      <div class="text-start">
+        <img src="assets/logo-white.png" style="width: 185px;" alt="logo">
+      </div>
+
+      <!-- Offcanvas Button -->
+      <button style="background-color: #113f2a1c;border: none;" class="btn btn-primary offcanvas-toggler  d-md-none py-1 px-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+      <!-- Desktop Navbar -->
+      <div class="collapse navbar-collapse" id="navbarsFurni">
+        <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/shop">Shop</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/cart"><i class="fa fa-shopping-cart"></i> Cart</a>
+          </li>
+        </ul>
+
+        <!-- Profile Dropdown -->
+        <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle profile" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <% if (locals.user) { %>
+              <span class="me-2"><%= locals.user.name %></span>
+              <% } %>
+              <i class="fa-regular fa-user"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+              <% if (locals.user) { %>
+              <li><a class="dropdown-item" href="/profile">Profile</a></li>
+              <li><a class="dropdown-item" href="/logout">Logout</a></li>
+              <% } else { %>
+              <li><a class="dropdown-item" href="/login">Login</a></li>
+              <li><a class="dropdown-item" href="/signup">Sign Up</a></li>
+              <% } %>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- End Header/Navigation -->
+
+  <!-- Offcanvas Navigation for Mobile -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel" data-bs-scroll="true">
+    <div class="offcanvas-header p-0">
+      <img src="assets/logo-white.png" class="btn" data-bs-dismiss="offcanvas" aria-label="Close" style="width: 100px;" alt="logo">
+    </div>
+    <div class="offcanvas-body">
+      <ul class="navbar-nav mobile-offcanvas-links">
+        <li class="nav-item">
+          <a class="nav-link dropdown-toggle profile" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-regular fa-user"></i>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <% if (locals.user) { %>
+              <li><a class="dropdown-item" href="/profile">Profile</a></li>
+              <li><a class="dropdown-item" href="/logout">Logout</a></li>
+            <% } else { %>
+              <li><a class="dropdown-item" href="/login">Login</a></li>
+              <li><a class="dropdown-item" href="/signup">Sign Up</a></li>
+            <% } %>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/"><i class="fa-solid fa-house"></i></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/shop"><i class="fa-solid fa-store"></i></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/cart"><i class="fa fa-shopping-cart"></i></a>
+        </li>
+      </ul>
+    </div>
+</div>
+
+
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+  
+  </script>
+</body>
+
+</html>
 

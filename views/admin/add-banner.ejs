@@ -68,7 +68,7 @@
                                 <div class="col-lg-4">
                                     <div class="mb-4">
                                         <label class="form-label">Link</label>
-                                        <input name="link" type="text" class="form-control border">
+                                        <input name="link" type="text" placeholder="Type here"  class="form-control border">
                                     </div>
                                     <div id="link-error" class="error-message"></div>
                                 </div>
@@ -112,6 +112,14 @@
     </section>
     <script src="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.js"></script>
     <script>
+
+        const startDateInput = document.querySelector('input[name="startDate"]');
+        const endDateInput = document.querySelector('input[name="endDate"]');
+
+        startDateInput.addEventListener('change', () => {
+            endDateInput.min = startDateInput.value;
+        });
+        
         
 
         async function submitForm(event) {

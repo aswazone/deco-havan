@@ -1,156 +1,237 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Order Confirmation</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
-        body {
-            font-family: 'Nunito', sans-serif;
-            line-height: 1.6;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
-            overflow: hidden;
+      @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap");
+
+      body {
+        font-family: "Nunito", sans-serif;
+        background: linear-gradient(135deg, #f8fafc, #e0f2f1);
+        color: #333;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        overflow: hidden;
+      }
+
+      .order-container {
+        background: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        padding: 20px 10px;
+        width: 90%;
+        max-width: 550px;
+        position: relative;
+        text-align: center;
+        overflow: hidden;
+      }
+
+      /* Confetti */
+      .confetti {
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-bottom: 12px solid #ff9800;
+        top: -10px;
+        left: 50%;
+        opacity: 0;
+        animation: confetti 4s ease-in-out infinite;
+      }
+
+      @keyframes confetti {
+        0% {
+          opacity: 0;
+          transform: translateY(0) rotate(120deg);
         }
-        .order-container {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            max-width: 500px;
-            width: 100%;
-            position: relative;
-            overflow: hidden;
+
+        50% {
+          opacity: 1;
         }
-        .confetti {
-            position: absolute;
-            width: 0;
-            height: 0;
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            border-bottom: 15px solid #f2d74e;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%) rotate(100deg);
-            opacity: 0;
-            animation: confetti 5s ease-in-out infinite;
+
+        100% {
+          opacity: 0;
+          transform: translateY(100vh) rotate(720deg);
         }
-        @keyframes confetti {
-            0% {
-                opacity: 0;
-                transform: translateY(0) rotate(100deg);
-            }
-            50% {
-                opacity: 1;
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(100vh) rotate(960deg);
-            }
-        }
-        .order-header {
-            text-align: center;
-            color: #333;
-            border-bottom: 2px solid #50c154bb;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 10;
-        }
-        .order-header h2 {
-            margin: 0;
-            color: #4CAF50;
-            animation: bounce 1s infinite;
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        .order-details {
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 10;
-        }
-        .order-details ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        .order-details li {
-            background-color: #f9f9f9;
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            display: flex;
-            justify-content: space-between;
-            transition: transform 0.3s ease;
-        }
-        .order-details li:hover {
-            transform: scale(1.03);
-        }
-        .order-details li:hover span:last-child {
-            font-weight: bold;
-        }
-        .order-total {
-            text-align: right;
-            font-weight: bold;
-            color: #4CAF50;
-            font-size: 1.2em;
-            border-top: 1px solid #e0e0e0;
-            padding-top: 15px;
-            position: relative;
-            z-index: 10;
-        }
-        .home-button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-top: 20px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            position: relative;
-            z-index: 10;
-        }
-        .home-button:hover {
-            background-color: #45a049;
-            transform: scale(1.05);
-        }
+      }
+
+      /* Header Section */
+      .order-header h2 {
+        color: #4caf50;
+        margin-bottom: 10px;
+        font-weight: 700;
+      }
+
+      .order-header p {
+        color: #666;
+        font-size: 1rem;
+      }
+
+      /* Order Details */
+      .order-details ul {
+        list-style: none;
+        padding: 0;
+        margin: 20px 0;
+      }
+
+      .order-details li {
+        background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+        border: 1px solid #c8e6c9;
+        margin-bottom: 12px;
+        padding: 10px 10px;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .order-details li:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .order-details li:hover span:last-child {
+        font-weight: 700;
+      }
+
+      /* Order Total */
+      .order-total {
+        font-weight: 700;
+        color: #388e3c;
+        border-top: 1px solid #e0e0e0;
+        padding: 15px;
+        font-size: 1.1rem;
+      }
+
+      /* Buttons */
+      .button-container {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+      }
+
+      .home-button,
+      .pdf-button {
+        text-decoration: none;
+        font-weight: 700;
+        padding: 12px 25px;
+        border-radius: 8px;
+        color: white;
+        transition: all 0.3s ease;
+      }
+
+      .home-button {
+        background-color: #4caf50;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .home-button:hover {
+        background-color: #43a047;
+        transform: scale(1.05);
+      }
+
+      .pdf-button {
+        background: linear-gradient(135deg, #ffb74d, #ffcc80);
+        color: #333;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .pdf-button:hover {
+        background: linear-gradient(135deg, #ffa726, #ffb74d);
+        transform: scale(1.05);
+      }
     </style>
-</head>
-<body>
+  </head>
+
+  <body>
     <div class="order-container">
-        <% for(let i = 0; i < 50; i++) { %>
-            <div class="confetti" style="left: <%= Math.random() * 100 %>%; animation-delay: <%= Math.random() * 5 %>s;"></div>
-        <% } %>
-        <div class="order-header">
-            <h2>Order Confirmation</h2>
-            <p>Thank you for your order! Your order ID is <%= order._id %>.</p>
+      <% for(let i=0; i < 50; i++) { %>
+      <div
+        class="confetti"
+        style="
+          left: <%= Math.random() * 100 %>%;
+          animation-delay: <%= Math.random() * 5 %>s;
+        "
+      ></div>
+      <% } %>
+
+      <!-- Order Confirmation Header -->
+      <div class="order-header">
+        <h2>🎉 Order Confirmed! 🎉</h2>
+        <p style="font-size: small">
+          Thank you for your order! Your Order ID is
+          <strong>#<%= order._id %> </strong>
+        </p>
+      </div>
+
+      <!-- Order Items -->
+      <div class="order-details">
+        <ul>
+          <% order.orderItems.forEach(product=> { %>
+          <li>
+            <span>
+              <%= product.product.productName %> × <%= product.quantity %>
+            </span>
+            <span>₹<%= product.price * product.quantity %></span>
+          </li>
+          <% }); %>
+        </ul>
+      </div>
+
+      <!-- Total Amount -->
+      <div class="order-total border-top pt-3 mt-3">
+        <div class="d-flex justify-content-between">
+          <span>Total Price:</span>
+          <span>₹ <%= order.totalPrice.toFixed(2) %></span>
         </div>
-        <div class="order-details">
-            <ul>
-                <% order.orderItems.forEach(product => { %>
-                    <li>
-                        <span><%= product.product.productName %> x <%= product.quantity %></span>
-                        <span>₹<%= product.price * product.quantity %></span>
-                    </li>
-                <% }); %>
-            </ul>
+        <div class="d-flex justify-content-between">
+          <span>Shipping:</span>
+          <span>₹ <%= shipping.toFixed(2) %></span>
         </div>
-        <div class="order-total">
-            Total Price : <%= order.totalPrice %> <br>
-            Coupon applied Price : ₹<%= order.finalAmount %>
+        <div class="d-flex justify-content-between">
+          <span>CGST (2.5%):</span>
+          <span>₹ <%= cgst.toFixed(2) %></span>
         </div>
-        <a href="/" class="home-button">Return to Home</a>
+        <div class="d-flex justify-content-between">
+          <span>SGST (2.5%):</span>
+          <span>₹ <%= sgst.toFixed(2) %></span>
+        </div>
+        <div class="d-flex justify-content-between text-danger">
+          <span>Discount:</span>
+          <span>₹ <%= order.discount.toFixed(2) %></span>
+        </div>
+      </div>
+
+      <div class="order-total border-top pt-3 mt-3">
+        <div class="d-flex justify-content-between fw-bold">
+          <span>Grand Total:</span>
+          <span>₹ <%= order.finalAmount.toFixed(2) %></span>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="button-container">
+        <a href="/" class="home-button">Home</a>
+        <a
+          href="/order/<%= order.orderId %>/download-receipt"
+          class="pdf-button"
+          >📄 Download Receipt</a
+        >
+      </div>
     </div>
-</body>
+  </body>
 </html>

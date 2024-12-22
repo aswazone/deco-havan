@@ -27,8 +27,8 @@ a {
   -webkit-transition: .3s all ease;
   -o-transition: .3s all ease;
   transition: .3s all ease;
-  color: #2f2f2f;
-  }
+  color: #2f2f2f  }
+  
  
   a.more {
     font-weight: 600; }
@@ -61,7 +61,7 @@ a {
       .nav-link {
         display: block;
         padding: .5rem 1rem;
-        color: #e9eef6d2;
+        color: #e9eef6d2 !important;
         text-decoration: none;
         transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out;
       }
@@ -138,7 +138,7 @@ a {
   .hero h1 {
     font-weight: 700;
     color: #ffffff;
-    margin-bottom: 30px; }
+    margin-bottom: 20px; }
     @media (min-width: 1400px) {
       .hero h1 {
         font-size: 54px; } }

@@ -1,398 +1,630 @@
 <%- include("../../views/partials/user/header")%>
+
 <head>
-	<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
-	
-<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-	<style>
-		@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
-		/* Customize navigation buttons */
-.swiper-button-next,
-.swiper-button-prev {
-  color: #ffffff;
-  width: 50px;
-  height: 50px;
-}
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/swiper/swiper-bundle.min.css"
+  />
 
-.swiper-button-next:hover,
-.swiper-button-prev:hover {
-  color: #f9bf29;
-}
+  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
 
-/* Customize pagination dots */
-.swiper-pagination-bullet {
-  background: rgba(255, 255, 255, 0.5);
-  width: 12px;
-  height: 12px;
-}
+    /* Customize navigation buttons */
+    .swiper-button-next,
+    .swiper-button-prev {
+      color: #ffffff;
+      width: 50px;
+      height: 50px;
+    }
 
-.swiper-pagination-bullet-active {
-  background: #ffffff;
-}
+    .product-title {
+        font-size: 20px !important;
+        color: #032d0de0;
+        text-shadow: -1px 1.5px 2px #00000075;
+        font-weight: 500;
+    }
 
-	</style>
+    .product-price {
+      font-size: 16px;
+      color: #952156e0 !important;
+      font-weight: 700;
+      text-shadow: -1.5px 1.5px 0px rgba(0, 0, 0, 0.2), 0 0 1px rgba(0, 0, 0, 0.3);
+    }
+
+    .swiper-button-next:hover,
+    .swiper-button-prev:hover {
+      color: #f9bf29;
+    }
+
+    /* Customize pagination dots */
+    .swiper-pagination-bullet {
+      background: rgba(255, 255, 255, 0.5);
+      width: 12px;
+      height: 12px;
+    }
+
+    .swiper-pagination-bullet-active {
+      background: #ffffff;
+    }
+
+    @media (max-width: 768px) {
+                  
+                .product-title {
+                    font-size: 20px;
+                    color: #032d0de0;
+                    text-shadow: -1px 1.5px 2px #00000075;
+                    font-weight: 500;
+                    margin: 10px 0 10px 6px;
+                }
+
+                .product-price {
+                  font-size: 16px;
+                  color: #952156e0;
+                  font-weight: 700;
+                  text-shadow: -1.5px 1.5px 0px rgba(0, 0, 0, 0.2), 0 0 1px rgba(0, 0, 0, 0.3);
+                  transform: translateY(1px);
+                  position: relative;
+                  right: -300px;
+                  top: -34px;
+                }
+
+                .product-grid{
+                    margin-left: 1px;
+                }
+
+                .product-item img {
+                    background-color: aliceblue;
+                    border: #fbfaf0e1 8px solid;
+                    box-shadow: 0 3px 10px 1px rgba(0, 0, 0, 0.15);
+                    border-radius: 12px;
+                    overflow: hidden;
+                }
+                .section-title {
+                  text-shadow: -1px 2px #0000004f;
+                  color: #2e7025;
+                  font-size: 30px;
+                  font-weight: 700;
+                  margin-bottom: 20px;
+                  position: relative;
+                  display: inline-block;
+                }
+
+                .first-para {
+                    text-shadow: 0px 0px #0000004f;
+                    color: #533e21ed;
+                    line-height: normal;
+                    width: 72%;
+                    font-size: 10px;
+                    font-weight: 400;
+                    margin-top: 0px;
+                    position: relative;
+                    display: inline-block;
+                }
+
+                .btn-explore {
+                    background-color: #ceae3c;
+                    color: white;
+                    padding: 5px 10px;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    transition: background-color 0.3s ease;
+                }
+
+                .grid img {
+                  width: 100%;
+                }
+
+                #tns1-mw {
+                    display: none;
+                }
+
+                .post-content-entry {
+                    font-size: 10px;
+                    color: #032d0de0;
+                    text-shadow: -1px 1.5px 2px #00000075;
+                    font-weight: 500;
+                    margin: 10px 0 10px 6px;
+                }
+
+            }
+  </style>
 </head>
-		<!-- Start Hero Section -->
-		<div id="heroCarousel" class="swiper">
-			<div class="swiper-wrapper">
-			  <% banner.slice(0, 3).forEach(bannerItem => { %>
-				<div class="swiper-slide">
-				  <img src="uploads/banner/<%= bannerItem.image %>" class="d-block w-100 img-fluid" alt="Hero Image">
-				  <div class="carousel-caption d-none d-md-block">
-					<a href="/shop" style="color: #fce3a5;">
-						<div class="intro-excerpt" style="margin-bottom: 100px;">
-						<h1 class="display-4" style="text-shadow: -5px 4px 12px rgb(0 0 0 / 65%); font-weight: 600; font-size: 3.5rem; font-family: 'Nunito', sans-serif;"><%= bannerItem.title %></h1>
-						<p class="lead mb-4" style="text-shadow: 0px 4px 16px 0px #313131;"><%= bannerItem.description %></p>
-						<p>
-							<a href="/shop" class="btn btn-secondary me-2" style="box-shadow: 0px 4px 16px 0px #313131;">Shop Now</a>
-							<a href="/shop" class="btn btn-white-outline" style="box-shadow: 0px 4px 16px 0px #313131;">Explore</a>
-						</p>
-						</div>
-					</a>
-				  </div>
-				</div>
-			  <% }); %>
-			</div>
-		  
-			<!-- Navigation buttons -->
-			<div class="swiper-button-next"></div>
-			<div class="swiper-button-prev"></div>
-			<div class="swiper-pagination"></div>
-		  </div>
-		  
-		<!-- End Hero Section -->
+<!-- Start Hero Section -->
+<div id="heroCarousel" class="swiper">
+  <div class="swiper-wrapper">
+    <% banner.slice(0, 3).forEach(bannerItem=> { %>
+    <div class="swiper-slide">
+      <img
+        src="uploads/banner/<%= bannerItem.image %>"
+        class="d-block w-100 img-fluid"
+        alt="Hero Image"
+      />
+      <div class="carousel-caption d-none d-md-block">
+        <a href="/shop" style="color: #fce3a5">
+          <div class="intro-excerpt" style="margin-bottom: 100px">
+            <h1
+              class="display-4"
+              style="
+                text-shadow: -5px 4px 12px rgb(0 0 0 / 65%);
+                font-weight: 600;
+                font-size: 3.5rem;
+                font-family: 'Nunito', sans-serif;
+              "
+            >
+              <%= bannerItem.title %>
+            </h1>
+            <p class="lead mb-4" style="text-shadow: 0px 4px 16px 0px #313131">
+              <%= bannerItem.description %>
+            </p>
+            <p>
+              <a
+                href="/shop"
+                class="btn btn-secondary me-2"
+                style="box-shadow: 0px 4px 16px 0px #313131"
+                >Shop Now</a
+              >
+              <a
+                href="/shop"
+                class="btn btn-success-outline"
+                style="box-shadow: 0px 4px 16px 0px #313131"
+                >Explore</a
+              >
+            </p>
+          </div>
+        </a>
+      </div>
+    </div>
+    <% }); %>
+  </div>
 
-		<!-- Start Product Section -->
-		<div class="product-section">
-			<div class="container">
-				<div class="row">
+  <!-- Navigation buttons -->
+  <div class="swiper-button-next"></div>
+  <div class="swiper-button-prev"></div>
+  <div class="swiper-pagination"></div>
+</div>
 
-					<!-- Start Column 1 -->
-					<div class="col-md-12 col-lg-3 mb-5 mb-lg-0">
-						<h2 class="mb-4 section-title">Crafted with excellent material.</h2>
-						<p class="mb-4">Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. </p>
-						<p><a href="/shop" class="btn">Explore</a></p>
-					</div> 
-					<!-- End Column 1 -->
-					<% for (var i = product.length - 1; i >= product.length - 3; i--) { %>
-					
-					<div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-						<a class="product-item" href="/productDetail/<%=product[i]._id%>">
-							<img src="uploads/product-images/<%= product[i].productImage[0] %>" alt="Image" style="border-radius: 8px;" class="img-fluid product-thumbnail">
-							<h3 class="product-title text-left"><%= product[i].productName %></h3>
-							<strong class="product-price text-left">₹ <%= product[i].salePrice %></strong>
+<!-- End Hero Section -->
 
-							<span class="icon-cross">
-								<img src="images/cross.svg" class="img-fluid">
-							</span>
-						</a>
-					</div>
-					<% } %>
-				</div>
-			</div>
-		</div>
-		<!-- End Product Section -->
+<!-- Start Product Section -->
+<div class="product-section">
+  <div class="container">
+    <div class="row">
+      <!-- Start Column 1 -->
+      <div class="col-md-12 col-lg-3 mb-5 mb-lg-0">
+        <h2 class="mb-4 section-title">Crafted with excellent material.</h2>
+        <p class="mb-4 first-para">
+          Experience the ultimate comfort and style with our furniture collection.
+          From plush sofas to sleek coffee tables, our pieces are designed to
+          elevate your living space and make it a reflection of your personal
+          style.
+        </p>
+        <p><a href="/shop" class="btn btn-explore">Explore</a></p>
+      </div>
+      <!-- End Column 1 -->
+      <% for (var i=product.length - 1; i>= product.length - 3; i--) { %>
 
-		<!-- Start Why Choose Us Section -->
-		<div class="why-choose-section">
-			<div class="container">
-				<div class="row justify-content-between">
-					<div class="col-lg-6">
-						<h2 class="section-title">Why Choose Us</h2>
-						<p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique.</p>
+      <div class="col-12 col-md-4 col-lg-3 mb-0 mb-md-0">
+        <a class="product-item" href="/productDetail/<%=product[i]._id%>">
+          <img
+            src="uploads/product-images/<%= product[i].productImage[0] %>"
+            alt="Image"
+            style="border-radius: 8px"
+            class="img-fluid product-thumbnail"
+          />
+          <h3 class="product-title text-left"><%= product[i].productName %></h3>
+          <strong class="product-price text-left"
+            >₹ <%= product[i].salePrice %></strong
+          >
 
-						<div class="row my-5">
-							<div class="col-6 col-md-6">
-								<div class="feature">
-									<div class="icon">
-										<img src="images/truck.svg" alt="Image" class="imf-fluid">
-									</div>
-									<h3>Fast &amp; Free Shipping</h3>
-									<p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
-								</div>
-							</div>
+        </a>
+      </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+<!-- End Product Section -->
 
-							<div class="col-6 col-md-6">
-								<div class="feature">
-									<div class="icon">
-										<img src="images/bag.svg" alt="Image" class="imf-fluid">
-									</div>
-									<h3>Easy to Shop</h3>
-									<p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
-								</div>
-							</div>
+<!-- Start Why Choose Us Section -->
+<div class="why-choose-section">
+  <div class="container">
+    <div class="row justify-content-between">
+      <div class="col-lg-6">
+        <h2 class="section-title">Why Choose Us</h2>
+        <p  class="lh-sm ">
+          At Untree, we understand that online shopping should be a seamless and
+          enjoyable experience. That's why we've made it our mission to provide
+          you with a wide range of quality products, a user-friendly website, and
+          exceptional customer service. Whether you're looking for fashion
+          products, electronics, or home goods, we've got you covered.
+        </p>
 
-							<div class="col-6 col-md-6">
-								<div class="feature">
-									<div class="icon">
-										<img src="images/support.svg" alt="Image" class="imf-fluid">
-									</div>
-									<h3>24/7 Support</h3>
-									<p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
-								</div>
-							</div>
+        <div class="row my-5">
+          <div class="col-6 col-md-6 p-4">
+            <div class="feature">
+              <div class="icon">
+                <img src="images/truck.svg" alt="Image" class="imf-fluid" />
+              </div>
+              <h3>Fast &amp; Free Shipping</h3>
+              <p class="lh-sm">
+                With our fast and free shipping options, you can get your
+                purchases delivered right to your doorstep in no time.
+              </p>
+            </div>
+          </div>
 
-							<div class="col-6 col-md-6">
-								<div class="feature">
-									<div class="icon">
-										<img src="images/return.svg" alt="Image" class="imf-fluid">
-									</div>
-									<h3>Hassle Free Returns</h3>
-									<p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
-								</div>
-							</div>
+          <div class="col-6 col-md-6 p-4">
+            <div class="feature">
+              <div class="icon">
+                <img src="images/bag.svg" alt="Image" class="imf-fluid" />
+              </div>
+              <h3>Easy to Shop</h3>
+              <p class="lh-sm">
+                Our website is designed to make shopping easy and convenient.
+                Browse our products, add them to your cart, and checkout with
+                ease.
+              </p>
+            </div>
+          </div>
 
-						</div>
-					</div>
+          <div class="col-6 col-md-6 p-4">
+            <div class="feature">
+              <div class="icon">
+                <img src="images/support.svg" alt="Image" class="imf-fluid" />
+              </div>
+              <h3>24/7 Support</h3>
+              <p class="lh-sm">
+                If you have any questions or concerns, our customer support team
+                is here to help. Contact us anytime, day or night.
+              </p>
+            </div>
+          </div>
 
-					<div class="col-lg-5">
-						<div class="img-wrap">
-							<img src="images/why-choose-us-img.jpg" alt="Image" class="img-fluid">
-						</div>
-					</div>
+          <div class="col-6 col-md-6 p-4">
+            <div class="feature">
+              <div class="icon">
+                <img src="images/return.svg" alt="Image" class="imf-fluid" />
+              </div>
+              <h3>Hassle Free Returns</h3>
+              <p class="lh-sm">
+                We want you to be completely satisfied with your purchases. If
+                you're not satisfied, we offer a hassle-free return policy.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-				</div>
-			</div>
-		</div>
-		<!-- End Why Choose Us Section -->
+      <div class="col-lg-5">
+        <div class="img-wrap">
+          <img
+            src="images/why-choose-us-img.jpg"
+            alt="Image"
+            class="img-fluid"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Why Choose Us Section -->
 
-		<!-- Start We Help Section -->
-		<div class="we-help-section">
-			<div class="container">
-				<div class="row justify-content-between">
-					<div class="col-lg-7 mb-5 mb-lg-0">
-						<div class="imgs-grid">
-							<div class="grid grid-1"><img src="images/img-grid-1.jpg" alt="Untree.co"></div>
-							<div class="grid grid-2"><img src="images/img-grid-2.jpg" alt="Untree.co"></div>
-							<div class="grid grid-3"><img src="images/img-grid-3.jpg" alt="Untree.co"></div>
-						</div>
-					</div>
-					<div class="col-lg-5 ps-lg-5">
-						<h2 class="section-title mb-4">We Help You Make Modern Interior Design</h2>
-						<p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant morbi tristique senectus et netus et malesuada</p>
+<!-- Start We Help Section -->
+<div class="we-help-section">
+  <div class="container">
+    <div class="row justify-content-between">
+      <div class="col-lg-7 mb-5 mb-lg-0">
+        <div class="imgs-grid">
+          <div class="grid grid-1">
+            <img src="images/img-grid-1.jpg" class="img-fluid rounded mb-2" alt="Untree.co" />
+          </div>
+          <div class="grid grid-2">
+            <img src="images/img-grid-2.jpg" class="img-fluid rounded mb-2" alt="Untree.co" />
+          </div>
+          <div class="grid grid-3">
+            <img src="images/img-grid-3.jpg" class="img-fluid rounded mb-2" alt="Untree.co" />
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5 ps-lg-5">
+        <h2 class="section-title mb-4">
+          We Help You Make Modern Interior Design
+        </h2>
+        <p class="lh-sm">
+          We offer a wide range of products from various categories to make it
+          easy for you to find what you need. Our products are sourced from
+          reputable suppliers and are competitively priced. We also offer a
+          convenient and secure online shopping experience.
+        </p>
 
-						<ul class="list-unstyled custom-list my-4">
-							<li>Donec vitae odio quis nisl dapibus malesuada</li>
-							<li>Donec vitae odio quis nisl dapibus malesuada</li>
-							<li>Donec vitae odio quis nisl dapibus malesuada</li>
-							<li>Donec vitae odio quis nisl dapibus malesuada</li>
-						</ul>
-						<p><a herf="#" class="btn">Explore</a></p>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- End We Help Section -->
+        <ul class="list-unstyled custom-list my-4">
+          <li>Fast and secure checkout process</li>
+          <li>Multiple payment options</li>
+          <li>Free shipping on orders over ₹ 10000</li>
+          <li>Easy returns and exchanges</li>
+        </ul>
+        <p><a herf="#" class="btn">Explore</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End We Help Section -->
 
-		<!-- Start Popular Product -->
-		<div class="popular-product">
-			<div class="container">
-				<div class="row">
-					<% for (var i = 0; i < 3; i++) { %>
-					<div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
-						<div class="product-item-sm d-flex">
-							<div class="thumbnail">
-								<img src="images/product-1.png" alt="Image" class="img-fluid">
-							</div>
-							<div class="pt-3">
-								<h3>Nordic Chair</h3>
-								<p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio </p>
-								<p><a href="#">Read More</a></p>
-							</div>
-						</div>
-					</div>
-					<% } %>
-					
+<!-- Start Popular Product -->
+<div class="popular-product">
+  <div class="container">
+    <div class="row">
+      <% for (var i=0; i < 3; i++) { %>
+      <div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
+        <div class="product-item-sm d-flex">
+          <div class="thumbnail rounded">
+            <img  src="uploads/product-images/<%= product[i].productImage[0] %>" alt="Image" class="img-fluid rounded" />
+          </div>
+          <div class="p-3">
+            <h3><%= product[i].productName %></h3>
+            <p  class="lh-sm">
+              <%= product[i].description %>
+            </p>
+            <p><a href="/productDetail/<%=product[i]._id%>" class="btn btn-explore text-white">Read More</a></p>
+          </div>
+        </div>
+      </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+<!-- End Popular Product -->
 
-				</div>
-			</div>
-		</div>
-		<!-- End Popular Product -->
+<!-- Start Testimonial Slider -->
+<div class="testimonial-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-7 mx-auto text-center">
+        <h2 class="section-title">Testimonials</h2>
+      </div>
+    </div>
 
-		<!-- Start Testimonial Slider -->
-		<div class="testimonial-section">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-7 mx-auto text-center">
-						<h2 class="section-title">Testimonials</h2>
-					</div>
-				</div>
+    <div class="row justify-content-center">
+      <div class="col-lg-12">
+        <div class="testimonial-slider-wrap text-center">
+          <div id="testimonial-nav">
+            <span class="prev" data-controls="prev"
+              ><span class="fa fa-chevron-left"></span
+            ></span>
+            <span class="next" data-controls="next"
+              ><span class="fa fa-chevron-right"></span
+            ></span>
+          </div>
 
-				<div class="row justify-content-center">
-					<div class="col-lg-12">
-						<div class="testimonial-slider-wrap text-center">
+          <div class="testimonial-slider">
+            <div class="item">
+              <div class="row justify-content-center">
+                <div class="col-lg-8 mx-auto">
+                  <div class="testimonial-block text-center">
+                    <blockquote class="mb-5">
+                      <p>
+                        &ldquo;Donec facilisis quam ut purus rutrum lobortis.
+                        Donec vitae odio quis nisl dapibus malesuada. Nullam ac
+                        aliquet velit. Aliquam vulputate velit imperdiet dolor
+                        tempor tristique. Pellentesque habitant morbi tristique
+                        senectus et netus et malesuada fames ac turpis egestas.
+                        Integer convallis volutpat dui quis scelerisque.&rdquo;
+                      </p>
+                    </blockquote>
 
-							<div id="testimonial-nav">
-								<span class="prev" data-controls="prev"><span class="fa fa-chevron-left"></span></span>
-								<span class="next" data-controls="next"><span class="fa fa-chevron-right"></span></span>
-							</div>
+                    <div class="author-info">
+                      <div class="author-pic">
+                        <img
+                          src="images/person-1.png"
+                          alt="Maria Jones"
+                          class="img-fluid"
+                        />
+                      </div>
+                      <h3 class="font-weight-bold">Maria Jones</h3>
+                      <span class="position d-block mb-3"
+                        >CEO, Co-Founder, XYZ Inc.</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- END item -->
 
-							<div class="testimonial-slider">
-								
-								<div class="item">
-									<div class="row justify-content-center">
-										<div class="col-lg-8 mx-auto">
+            <div class="item">
+              <div class="row justify-content-center">
+                <div class="col-lg-8 mx-auto">
+                  <div class="testimonial-block text-center">
+                    <blockquote class="mb-5">
+                      <p>
+                        &ldquo;Donec facilisis quam ut purus rutrum lobortis.
+                        Donec vitae odio quis nisl dapibus malesuada. Nullam ac
+                        aliquet velit. Aliquam vulputate velit imperdiet dolor
+                        tempor tristique. Pellentesque habitant morbi tristique
+                        senectus et netus et malesuada fames ac turpis egestas.
+                        Integer convallis volutpat dui quis scelerisque.&rdquo;
+                      </p>
+                    </blockquote>
 
-											<div class="testimonial-block text-center">
-												<blockquote class="mb-5">
-													<p>&ldquo;Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer convallis volutpat dui quis scelerisque.&rdquo;</p>
-												</blockquote>
+                    <div class="author-info">
+                      <div class="author-pic">
+                        <img
+                          src="images/person-1.png"
+                          alt="Maria Jones"
+                          class="img-fluid"
+                        />
+                      </div>
+                      <h3 class="font-weight-bold">Maria Jones</h3>
+                      <span class="position d-block mb-3"
+                        >CEO, Co-Founder, XYZ Inc.</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- END item -->
 
-												<div class="author-info">
-													<div class="author-pic">
-														<img src="images/person-1.png" alt="Maria Jones" class="img-fluid">
-													</div>
-													<h3 class="font-weight-bold">Maria Jones</h3>
-													<span class="position d-block mb-3">CEO, Co-Founder, XYZ Inc.</span>
-												</div>
-											</div>
+            <div class="item">
+              <div class="row justify-content-center">
+                <div class="col-lg-8 mx-auto">
+                  <div class="testimonial-block text-center">
+                    <blockquote class="mb-5">
+                      <p>
+                        &ldquo;Donec facilisis quam ut purus rutrum lobortis.
+                        Donec vitae odio quis nisl dapibus malesuada. Nullam ac
+                        aliquet velit. Aliquam vulputate velit imperdiet dolor
+                        tempor tristique. Pellentesque habitant morbi tristique
+                        senectus et netus et malesuada fames ac turpis egestas.
+                        Integer convallis volutpat dui quis scelerisque.&rdquo;
+                      </p>
+                    </blockquote>
 
-										</div>
-									</div>
-								</div> 
-								<!-- END item -->
+                    <div class="author-info">
+                      <div class="author-pic">
+                        <img
+                          src="images/person-1.png"
+                          alt="Maria Jones"
+                          class="img-fluid"
+                        />
+                      </div>
+                      <h3 class="font-weight-bold">Maria Jones</h3>
+                      <span class="position d-block mb-3"
+                        >CEO, Co-Founder, XYZ Inc.</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- END item -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Testimonial Slider -->
 
-								<div class="item">
-									<div class="row justify-content-center">
-										<div class="col-lg-8 mx-auto">
+<!-- Start Blog Section -->
+<div class="blog-section">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-md-6">
+        <h2 class="section-title">Recent Blog</h2>
+      </div>
+      <div class="col-md-6 text-start text-md-end">
+        <a href="#" class="more">View All Posts</a>
+      </div>
+    </div>
 
-											<div class="testimonial-block text-center">
-												<blockquote class="mb-5">
-													<p>&ldquo;Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer convallis volutpat dui quis scelerisque.&rdquo;</p>
-												</blockquote>
+    <div class="row">
+      <div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
+        <div class="post-entry">
+          <a href="#" class="post-thumbnail"
+            ><img src="images/post-1.jpg" alt="Image" class="img-fluid rounded"
+          /></a>
+          <div class="post-content-entry">
+            <h4><a href="#">First Time Home Owner Ideas</a></h4>
+            <div class="meta">
+              <span>by <a href="#">Kristin Watson</a></span>
+              <span>on <a href="#">Dec 19, 2021</a></span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-												<div class="author-info">
-													<div class="author-pic">
-														<img src="images/person-1.png" alt="Maria Jones" class="img-fluid">
-													</div>
-													<h3 class="font-weight-bold">Maria Jones</h3>
-													<span class="position d-block mb-3">CEO, Co-Founder, XYZ Inc.</span>
-												</div>
-											</div>
+      <div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
+        <div class="post-entry">
+          <a href="#" class="post-thumbnail"
+            ><img src="images/post-2.jpg" alt="Image" class="img-fluid rounded"
+          /></a>
+          <div class="post-content-entry">
+            <h4><a href="#">How To Keep Your Furniture Clean</a></h4>
+            <div class="meta">
+              <span>by <a href="#">Robert Fox</a></span>
+              <span>on <a href="#">Dec 15, 2021</a></span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-										</div>
-									</div>
-								</div> 
-								<!-- END item -->
+      <div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
+        <div class="post-entry">
+          <a href="#" class="post-thumbnail"
+            ><img src="images/post-3.jpg" alt="Image" class="img-fluid rounded"
+          /></a>
+          <div class="post-content-entry">
+            <h4><a href="#">Small Space Furniture Apartment Ideas</a></h4>
+            <div class="meta">
+              <span>by <a href="#">Kristin Watson</a></span>
+              <span>on <a href="#">Dec 12, 2021</a></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Blog Section -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const status = urlParams.get("status");
 
-								<div class="item">
-									<div class="row justify-content-center">
-										<div class="col-lg-8 mx-auto">
+  if (status === "blocked") {
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "error",
+      title: "Account Blocked",
+      text: "Your account has been blocked by the admin.",
+      showConfirmButton: false,
+      timer: 3000,
+    });
+  } else if (status === "deleted") {
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "warning",
+      title: "Account Deleted",
+      text: "Your account no longer exists. Please contact support if this is a mistake.",
+      showConfirmButton: false,
+      timer: 3000,
+    });
+  }
 
-											<div class="testimonial-block text-center">
-												<blockquote class="mb-5">
-													<p>&ldquo;Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer convallis volutpat dui quis scelerisque.&rdquo;</p>
-												</blockquote>
+  document.addEventListener("scroll", function () {
+    const navbar = document.querySelector(".custom-navbar");
+    if (window.scrollY > 50) {
+      document.body.classList.add("scrolled");
+    } else {
+      document.body.classList.remove("scrolled");
+    }
+  });
 
-												<div class="author-info">
-													<div class="author-pic">
-														<img src="images/person-1.png" alt="Maria Jones" class="img-fluid">
-													</div>
-													<h3 class="font-weight-bold">Maria Jones</h3>
-													<span class="position d-block mb-3">CEO, Co-Founder, XYZ Inc.</span>
-												</div>
-											</div>
-
-										</div>
-									</div>
-								</div> 
-								<!-- END item -->
-
-							</div>
-
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- End Testimonial Slider -->
-
-		<!-- Start Blog Section -->
-		<div class="blog-section">
-			<div class="container">
-				<div class="row mb-5">
-					<div class="col-md-6">
-						<h2 class="section-title">Recent Blog</h2>
-					</div>
-					<div class="col-md-6 text-start text-md-end">
-						<a href="#" class="more">View All Posts</a>
-					</div>
-				</div>
-
-				<div class="row">
-
-					<div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
-						<div class="post-entry">
-							<a href="#" class="post-thumbnail"><img src="images/post-1.jpg" alt="Image" class="img-fluid"></a>
-							<div class="post-content-entry">
-								<h3><a href="#">First Time Home Owner Ideas</a></h3>
-								<div class="meta">
-									<span>by <a href="#">Kristin Watson</a></span> <span>on <a href="#">Dec 19, 2021</a></span>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
-						<div class="post-entry">
-							<a href="#" class="post-thumbnail"><img src="images/post-2.jpg" alt="Image" class="img-fluid"></a>
-							<div class="post-content-entry">
-								<h3><a href="#">How To Keep Your Furniture Clean</a></h3>
-								<div class="meta">
-									<span>by <a href="#">Robert Fox</a></span> <span>on <a href="#">Dec 15, 2021</a></span>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
-						<div class="post-entry">
-							<a href="#" class="post-thumbnail"><img src="images/post-3.jpg" alt="Image" class="img-fluid"></a>
-							<div class="post-content-entry">
-								<h3><a href="#">Small Space Furniture Apartment Ideas</a></h3>
-								<div class="meta">
-									<span>by <a href="#">Kristin Watson</a></span> <span>on <a href="#">Dec 12, 2021</a></span>
-								</div>
-							</div>
-						</div>
-					</div>
-
-				</div>
-			</div>
-		</div>
-		<!-- End Blog Section -->	
-
-		<script>
-			document.addEventListener("scroll", function() {
-				const navbar = document.querySelector(".custom-navbar");
-				if (window.scrollY > 50) {
-					document.body.classList.add("scrolled");
-				} else {
-					document.body.classList.remove("scrolled");
-				}
-				});
-
-				document.addEventListener("DOMContentLoaded", function () {
-			const swiper = new Swiper('#heroCarousel', {
-				loop: true, // Allows infinite loop
-				autoplay: {
-				delay: 5000, // Auto slide every 5 seconds
-				disableOnInteraction: false, // Keeps autoplay on after manual interaction
-				},
-				navigation: {
-				nextEl: '.swiper-button-next',
-				prevEl: '.swiper-button-prev',
-				},
-				pagination: {
-				el: '.swiper-pagination',
-				clickable: true,
-				},
-				effect: 'fade', // Smooth fade effect
-				fadeEffect: {
-				crossFade: true,
-				},
-				speed: 800, // Transition speed in ms
-			});
-			});
-
-		</script>
-         <%- include('../../views/partials/user/footer')%>
+  document.addEventListener("DOMContentLoaded", function () {
+    const swiper = new Swiper("#heroCarousel", {
+      loop: true, // Allows infinite loop
+      autoplay: {
+        delay: 5000, // Auto slide every 5 seconds
+        disableOnInteraction: false, // Keeps autoplay on after manual interaction
+      },
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+      },
+      effect: "fade", // Smooth fade effect
+      fadeEffect: {
+        crossFade: true,
+      },
+      speed: 800, // Transition speed in ms
+    });
+  });
+</script>
+<%- include('../../views/partials/user/footer')%>

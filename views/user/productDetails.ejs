@@ -1,6 +1,6 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,10 +8,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.24/dist/sweetalert2.all.min.js"></script>
-    
+
 
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
 
         .breadcrumb {
             background-color: #f8f9fa;
@@ -30,27 +30,32 @@
         }
 
         /* Zoom Styling */
-.main-image-container {
-    position: relative;
-    overflow: hidden; /* Prevent overflow when zoomed */
-    border-radius: 10px;
-    cursor: zoom-in; /* Indicate zoom functionality */
-}
+        .main-image-container {
+            position: relative;
+            overflow: hidden;
+            /* Prevent overflow when zoomed */
+            border-radius: 10px;
+            cursor: zoom-in;
+            /* Indicate zoom functionality */
+        }
 
-.main-image-container img {
-    transition: transform 0.3s ease, transform-origin 0.3s ease;
-}
+        .main-image-container img {
+            transition: transform 0.3s ease, transform-origin 0.3s ease;
+        }
 
-.main-image-container img.zoomed {
-    transform: scale(2); /* Adjust zoom level */
-    cursor: zoom-out; /* Indicate zoom-out functionality */
-}
+        .main-image-container img.zoomed {
+            transform: scale(2);
+            /* Adjust zoom level */
+            cursor: zoom-out;
+            /* Indicate zoom-out functionality */
+        }
 
-@media (max-width: 768px) {
-    .main-image-container img.zoomed {
-        transform: none; /* Disable zoom for smaller screens */
-    }
-}
+        @media (max-width: 768px) {
+            .main-image-container img.zoomed {
+                transform: none;
+                /* Disable zoom for smaller screens */
+            }
+        }
 
         #imageZoom {
             width: 100%;
@@ -73,14 +78,13 @@
             height: 100%;
             background-color: black;
             background-image: var(--url);
-            background-size: 200%; /* Adjust zoom level */
+            background-size: 200%;
+            /* Adjust zoom level */
             background-position: var(--zoom-x) var(--zoom-y);
             position: absolute;
             left: 0;
             top: 0;
         }
-
-     
     </style>
     <style>
         /* Main Container */
@@ -204,215 +208,234 @@
         .like-button.liked {
             color: red;
         }
+
         @media (max-width: 768px) {
             .main-image-container {
                 height: 300px;
             }
+
             .product-details {
                 padding: 20px;
             }
+
             .review-container {
                 flex-direction: column;
                 align-items: flex-start;
             }
+
             .review-box {
                 width: 100%;
             }
         }
     </style>
 </head>
+
 <body>
 
 
-<div class="container mt-5">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item"><a href="/shop">Shop</a></li>
-            <li class="breadcrumb-item " aria-current="page"><%= product.productName %></li>
-        </ol>
-    </nav>
-    <div class="row g-4">
-        <!-- Main Image Section -->
-        <div class="col-md-6 d-flex gap-4">
-            
-            <div class="thumbnails-container mt-3" style="flex-direction: column;">
-                <% product.productImage.forEach((image, index) => { %>
-                    <div class="thumbnail shadow-sm">
-                        <img src="/uploads/product-images/<%=image%>" 
-                             alt="Thumbnail <%= index + 1 %>" 
-                             class="img-thumbnail" 
-                             onclick="changeMainImage(this)">
-                    </div>
-                <% }) %>
-            </div>
-            <div class="main-image-container shadow-md" id="mainImageContainer">
-                <img src="/uploads/product-images/<%=product.productImage[0]%>" id="mainProductImage" alt="Product">
-            </div>
-        </div>
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="/shop">Shop</a></li>
+                <li class="breadcrumb-item " aria-current="page">
+                    <%= product.productName %>
+                </li>
+            </ol>
+        </nav>
+        <div class="row g-4">
+            <!-- Main Image Section -->
+            <div class="col-md-6 d-flex gap-4">
 
-        <!-- Product Details -->
-        <div class="col-md-6">
-            <div class="product-details position-relative">
-                <% if (product.productOffer > 0) { %>
-                <div class="badge rounded-pill text-white d-flex gap-1" style="position: absolute; top: 10px; right: 10px; font-size: 12px; background-color: #f1b44c; color: #fff; padding: 2px 5px; border-radius: 5px;">
-                    <span class="mt-0 p-1"><%= product.productOffer %>%</span><i class="fa-solid fa-tag mt-1"></i>
+                <div class="thumbnails-container mt-3" style="flex-direction: column;">
+                    <% product.productImage.forEach((image, index)=> { %>
+                        <div class="thumbnail shadow-sm">
+                            <img src="/uploads/product-images/<%=image%>" alt="Thumbnail <%= index + 1 %>"
+                                class="img-thumbnail" onclick="changeMainImage(this)">
+                        </div>
+                        <% }) %>
                 </div>
-                <% } %>
+                <div class="main-image-container shadow-md" id="mainImageContainer">
+                    <img src="/uploads/product-images/<%=product.productImage[0]%>" id="mainProductImage" alt="Product">
+                </div>
+            </div>
 
-
-                <h1 class="product-title"><%= product.productName %></h1>
-                <p class="product-category">Category: <%= category.name %></p>
-                <div class="d-flex gap-3 align-items-center">
-                    <h3 class="product-price" style="font-size: xx-large;">₹<%= product.salePrice %></h3>
-                    <span class="product-price text-muted" style="font-size: medium;" >
-                        <strike class="d-<% if (product.productOffer == 0) { %>none<%  }  else { %>block<% } %>">₹ <%= product.regularPrice %></strike>
-                        <% if (product.productOffer > 0) { %>
-                        <span class="badge rounded-pill bg-danger ms-2 ">Best Offer</span>
+            <!-- Product Details -->
+            <div class="col-md-6">
+                <div class="product-details position-relative">
+                    <% if (product.productOffer> 0) { %>
+                        <div class="badge rounded-pill text-white d-flex gap-1"
+                            style="position: absolute; top: 10px; right: 10px; font-size: 12px; background-color: #f1b44c; color: #fff; padding: 2px 5px; border-radius: 5px;">
+                            <span class="mt-0 p-1">
+                                <%= product.productOffer %>%
+                            </span><i class="fa-solid fa-tag mt-1"></i>
+                        </div>
                         <% } %>
-                    </span>
+
+
+                            <h1 class="product-title">
+                                <%= product.productName %>
+                            </h1>
+                            <p class="product-category">Category: <%= category.name %>
+                            </p>
+                            <div class="d-flex gap-3 align-items-center">
+                                <h3 class="product-price" style="font-size: xx-large;">₹<%= product.salePrice %>
+                                </h3>
+                                <span class="product-price text-muted" style="font-size: medium;">
+                                    <strike
+                                        class="d-<% if (product.productOffer == 0) { %>none<%  }  else { %>block<% } %>">₹
+                                        <%= product.regularPrice %></strike>
+                                    <% if (product.productOffer> 0) { %>
+                                        <span class="badge rounded-pill bg-danger ms-2 ">Best Offer</span>
+                                        <% } %>
+                                </span>
+                            </div>
+                            <p class="product-quantity text-muted" style="font-size: smaller;">
+                                Stock: <%= product.quantity %>
+                                    <% if (product.quantity <=0) { %>
+                                        <span class="badge rounded-pill bg-danger text-white ms-2">Out of Stock</span>
+                                        <% } else if (product.quantity < 10) { %>
+                                            <span class="badge rounded-pill bg-warning text-dark ms-2">Low Stock</span>
+                                            <% } %>
+                            </p>
+                            <div class="mb-2">
+                                <span class="rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                    <i class="far fa-star"></i>
+                                </span>
+                                <span class="text-muted ms-2">(45 reviews)</span>
+                            </div>
+                            <p class="description">
+                                <%= product.description %>
+                            </p>
+                            <div class="action-buttons">
+                                <button class="btn btn-primary" onclick="addToCart('<%= product._id %>')">Add to
+                                    Cart</button>
+                                <button class="btn btn-outline-danger" onclick="toggleWishlist('<%=product._id%>')">Add
+                                    to Wishlist</button>
+                            </div>
                 </div>
-                <p class="product-quantity text-muted" style="font-size: smaller;">
-                    Stock: <%= product.quantity %>
-                    <% if (product.quantity <= 0) { %>
-                    <span class="badge rounded-pill bg-danger text-white ms-2">Out of Stock</span>
-                    <% } else if (product.quantity < 10) { %>
-                    <span class="badge rounded-pill bg-warning text-dark ms-2">Low Stock</span>
-                    <% } %>
-                </p>
-                <div class="mb-2">
-                    <span class="rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                        <i class="far fa-star"></i>
-                    </span>
-                    <span class="text-muted ms-2">(45 reviews)</span>
+            </div>
+        </div>
+
+        <!-- Reviews Section -->
+        <div class="reviews-section">
+            <h3 class="mt-5">Customer Reviews</h3>
+            <div id="reviews">
+                <div class="review-container">
+                    <p><strong>John Doe</strong>: Great product! Highly recommend it.</p>
+                    <span class="like-button" onclick="toggleLike(this)"><i class="fas fa-heart"></i></span>
                 </div>
-                <p class="description"><%= product.description %></p>
-                <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="addToCart('<%= product._id %>')">Add to Cart</button>
-                    <button class="btn btn-outline-danger" onclick="toggleWishlist('<%=product._id%>')">Add to Wishlist</button>
+                <div class="review-container">
+                    <p><strong>Jane Smith</strong>: Good value for money.</p>
+                    <span class="like-button" onclick="toggleLike(this)"><i class="fas fa-heart"></i></span>
                 </div>
+            </div>
+            <div class="review-box mt-4">
+                <h5>Write a Review</h5>
+                <textarea class="form-control" rows="3" id="reviewInput"
+                    placeholder="Share your thoughts..."></textarea>
+                <button class="btn btn-success my-4" onclick="submitReview()">Submit</button>
             </div>
         </div>
     </div>
 
-    <!-- Reviews Section -->
-    <div class="reviews-section">
-        <h3 class="mt-5">Customer Reviews</h3>
-        <div id="reviews">
-            <div class="review-container">
-                <p><strong>John Doe</strong>: Great product! Highly recommend it.</p>
-                <span class="like-button" onclick="toggleLike(this)"><i class="fas fa-heart"></i></span>
-            </div>
-            <div class="review-container">
-                <p><strong>Jane Smith</strong>: Good value for money.</p>
-                <span class="like-button" onclick="toggleLike(this)"><i class="fas fa-heart"></i></span>
-            </div>
-        </div>
-        <div class="review-box mt-4">
-            <h5>Write a Review</h5>
-            <textarea class="form-control" rows="3" id="reviewInput" placeholder="Share your thoughts..."></textarea>
-            <button class="btn btn-success mt-2" onclick="submitReview()">Submit</button>
-        </div>
-    </div>
-</div>
+    <script>
+        async function toggleWishlist(productId) {
+            console.log(`Toggling wishlist for product ID: ${productId}`);
+            try {
+                const response = await fetch('/toggleWishlist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        productId: productId,
+                    }),
+                });
 
-<script>
-    async function toggleWishlist(productId) {
-    console.log(`Toggling wishlist for product ID: ${productId}`);
-    try {
-        const response = await fetch('/toggleWishlist', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                productId: productId,
-            }),
-        });
+                const data = await response.json();
+                if (data.success) {
 
-        const data = await response.json();
-        if (data.success) {
-            
 
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'success',
-                title: data.message,
-                showConfirmButton: false,
-                timer: 2000,
-                timerProgressBar: true,
-            });
-        } else {
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'error',
-                title: data.message,
-                showConfirmButton: false,
-                timer: 2000,
-                timerProgressBar: true,
-            });
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true,
+                    });
+                } else {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true,
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error.message);
+
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'Error updating wishlist. Please try again later.',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true,
+                });
+            }
         }
-    } catch (error) {
-        console.error('Error:', error.message);
+        // Change Main Image
+        function changeMainImage(img) {
+            const mainImage = document.getElementById('mainProductImage');
+            mainImage.src = img.src;
 
-        Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'error',
-            title: 'Error updating wishlist. Please try again later.',
-            showConfirmButton: false,
-            timer: 2000,
-            timerProgressBar: true,
-        });
-    }
-}
-    // Change Main Image
-    function changeMainImage(img) {
-        const mainImage = document.getElementById('mainProductImage');
-        mainImage.src = img.src;
+            // Highlight active thumbnail
+            document.querySelectorAll('.thumbnail img').forEach(thumbnail => {
+                thumbnail.classList.remove('active');
+            });
+            img.classList.add('active');
+        }
 
-        // Highlight active thumbnail
-        document.querySelectorAll('.thumbnail img').forEach(thumbnail => {
-            thumbnail.classList.remove('active');
-        });
-        img.classList.add('active');
-    }
-
-    // Add Review
-    function submitReview() {
-        const reviewInput = document.getElementById('reviewInput');
-        const reviews = document.getElementById('reviews');
-        if (reviewInput.value.trim()) {
-            const newReview = `
+        // Add Review
+        function submitReview() {
+            const reviewInput = document.getElementById('reviewInput');
+            const reviews = document.getElementById('reviews');
+            if (reviewInput.value.trim()) {
+                const newReview = `
                 <div class="review-container">
                     <p><strong>You</strong>: ${reviewInput.value.trim()}</p>
                     <span class="like-button" onclick="toggleLike(this)"><i class="fas fa-heart"></i></span>
                 </div>`;
-            reviews.innerHTML += newReview;
-            reviewInput.value = '';
+                reviews.innerHTML += newReview;
+                reviewInput.value = '';
+            }
         }
-    }
 
-    // Toggle Like
-    function toggleLike(button) {
-        button.classList.toggle('liked');
-    }
+        // Toggle Like
+        function toggleLike(button) {
+            button.classList.toggle('liked');
+        }
 
-        
+
 
         async function addToCart(productId) {
-            console.log(productId,'productID');
-            
+            console.log(productId, 'productID');
+
             const quantity = 1; // You can replace this with a dynamic quantity if needed
 
             try {
-                const response = await fetch('/cart/add', {
+                const response = await fetch('/cart', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -425,7 +448,7 @@
 
                 const data = await response.json();
                 console.log(data);
-                
+
                 Swal.fire({
                     toast: true,
                     position: 'top-end',
@@ -450,34 +473,34 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-    const mainImageContainer = document.getElementById('mainImageContainer');
-    const mainImage = document.getElementById('mainProductImage');
+            const mainImageContainer = document.getElementById('mainImageContainer');
+            const mainImage = document.getElementById('mainProductImage');
 
-    // Enable zoom on mouse enter and adjust cursor position
-    mainImageContainer.addEventListener('mousemove', (e) => {
-        const rect = mainImageContainer.getBoundingClientRect();
-        const offsetX = e.clientX - rect.left; // Cursor X position relative to container
-        const offsetY = e.clientY - rect.top;  // Cursor Y position relative to container
+            // Enable zoom on mouse enter and adjust cursor position
+            mainImageContainer.addEventListener('mousemove', (e) => {
+                const rect = mainImageContainer.getBoundingClientRect();
+                const offsetX = e.clientX - rect.left; // Cursor X position relative to container
+                const offsetY = e.clientY - rect.top;  // Cursor Y position relative to container
 
-        const xPercent = (offsetX / rect.width) * 100;
-        const yPercent = (offsetY / rect.height) * 100;
+                const xPercent = (offsetX / rect.width) * 100;
+                const yPercent = (offsetY / rect.height) * 100;
 
-        mainImage.style.transformOrigin = `${xPercent}% ${yPercent}%`;
-    });
+                mainImage.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+            });
 
-    // Add/remove zoom effect on hover
-    mainImageContainer.addEventListener('mouseenter', () => {
-        mainImage.classList.add('zoomed');
-    });
+            // Add/remove zoom effect on hover
+            mainImageContainer.addEventListener('mouseenter', () => {
+                mainImage.classList.add('zoomed');
+            });
 
-    mainImageContainer.addEventListener('mouseleave', () => {
-        mainImage.classList.remove('zoomed');
-    });
-});
+            mainImageContainer.addEventListener('mouseleave', () => {
+                mainImage.classList.remove('zoomed');
+            });
+        });
 
-</script>
+    </script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>
 
+</html>

@@ -3,11 +3,9 @@
     <div class="content-header">
         <div>
             <h2 class="content-title card-title">Products</h2>
-            <p>Lorem ipsum dolor sit amet.</p>
+            <p class="text-muted">List of all products</p>
         </div>
         <div>
-            <a href="#" class="btn btn-light rounded font-md">Export</a>
-            <a href="#" class="btn btn-light rounded font-md">Import</a>
             <a href="/admin/addProducts" class="btn btn-primary btn-sm rounded">Create new</a>
         </div>
     </div>
@@ -25,13 +23,7 @@
                         <% }) %>
                     </select>
                 </div>
-                <div class="col-lg-2 col-6 col-md-3">
-                    <select class="form-select">
-                      <option>Latest added</option>
-                      <option>Cheap first</option>
-                        <option>Most viewed</option>
-                    </select>
-                </div>
+    
                 <div class="col-lg-2 col-6 col-md-3">
                   <select class="form-select" onchange="this.value === 'grid' ? (window.location.href = '/admin/listProducts') : (window.location.href = '/admin/listProductsStyle2')">
                     <option value="grid">Grid</option>

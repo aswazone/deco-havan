@@ -3,497 +3,591 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Indian E-commerce Cart</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <style>
-        body {
-            background-color: #f5f5f5;
-            font-family: 'Nunito', sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modern Indian E-commerce Cart</title>
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background-color: #f5f5f5;
+      font-family: "Nunito", sans-serif;
+    }
 
-        h1 {
-            color: #333;
-            font-weight: bold;
-        }
+    h1 {
+      color: #333;
+      font-weight: bold;
+    }
 
-        .card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+    .card {
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-        .card-title {
-            font-weight: 600;
-        }
+    .card-title {
+      font-weight: 600;
+    }
 
-        .quantity-input {
-            display: flex;
-            align-items: center;
-        }
+    .quantity-input {
+      display: flex;
+      align-items: center;
+    }
 
-        .quantity {
-            width: 50px;
-            text-align: center;
-            margin: 0 5px;
-        }
+    .quantity {
+      width: 50px;
+      text-align: center;
+      margin: 0 5px;
+    }
 
-        .remove-item {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
-        }
+    .remove-item {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+    }
 
-        .remove-item:hover {
-            background-color: #c82333;
-        }
+    .remove-item:hover {
+      background-color: #c82333;
+    }
 
-        .price {
-            color: #007bff;
-            font-size: 1.1rem;
-        }
+    .price {
+      color: #007bff;
+      font-size: 1.1rem;
+    }
 
-        .btn-outline-secondary {
-            border-radius: 5px;
-        }
+    .btn-outline-secondary {
+      border-radius: 5px;
+    }
 
-        .card-body {
-            padding: 20px;
-        }
+    .card-body {
+      padding: 20px;
+    }
 
-        .input-group .form-control {
-            border-radius: 5px 0 0 5px;
-        }
+    .input-group .form-control {
+      border-radius: 5px 0 0 5px;
+    }
 
-        .apply-coupon {
-            border-radius: 0 5px 5px 0;
-        }
-    </style>
+    .apply-coupon {
+      border-radius: 0 5px 5px 0;
+    }
+  </style>
 </head>
 
 <body>
-    <div class="container py-5" >
-        <h1 class="text-center mb-4">Your Shopping Cart</h1>
-        <hr>
+  <div class="container py-5">
+    <h1 class="text-center mb-4">Your Shopping Cart</h1>
+    <hr />
 
-        <div class="row">
-            <!-- Cart Items Section -->
-            <div class="col-lg-8 mx-auto ">
-                <% if (cartItems.length > 0) { %>
-                    <% cartItems.forEach(item => { %>
-                        <div class="card mb-4 cart-item" data-id="<%= item.product._id %>">
-                            <div class="row g-0">
-                                <div class="col-md-4">
-                                    <a href="/productDetail/<%= item.product._id %>">
-                                        <img src="/uploads/product-images/<%= item.product.productImage[0] %>"
-                                             class="img-fluid rounded-start"
-                                             alt="<%= item.product.productName %>">
-                                    </a>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="card-body">
-                                        <h5 class="card-title"><%= item.product.productName %></h5>
-                                        <p class="card-text text-muted"><%= item.product.description %></p>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <% if (item.product.quantity > 0) { %>
-                                            <div class="quantity-input">
-                                                <button class="btn btn-outline-secondary decrement" id="decrement" data-id="<%= item.product._id %>">-</button>
-                                                <input   type="text" class="quantity" value="<%= item.quantity %>"  data-quantity="<%= item.quantity %>" readonly>
-                                                <button class="btn btn-outline-secondary increment " id="increment-<%= item.product._id %>" data-id="<%= item.product._id %>">+</button>
-                                            </div>
-                                            <% } else { %>
-                                                <span class="badge rounded-pill bg-danger">Out of Stock</span>
-                                            <% } %>
-                                            <div class="text-primary fw-bold price">
-                                                Rs. <%= item.price %>
-                                            </div>
-                                        </div>
-                                        <button class="btn remove-item mt-2" id="removeItem" data-id="<%= item.product._id %>">Remove</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    <% }); %>
-                <% } else { %>
-                    <div class="alert alert-info text-center p-4 mt-4">
-                        <strong>Your cart is currently empty.</strong> Explore our amazing products and <a href="/" class="alert-link">continue shopping</a>!
-                    </div>
-                <% } %>
+    <div class="row">
+      <!-- Cart Items Section -->
+      <div class="col-lg-8 mx-auto">
+        <% if (cartItems.length> 0) { %> <% cartItems.forEach(item=> { %>
+        <div class="card mb-4 cart-item" data-id="<%= item.product._id %>">
+          <div class="row g-0">
+            <div class="col-md-4">
+              <a href="/productDetail/<%= item.product._id %>">
+                <img src="/uploads/product-images/<%= item.product.productImage[0] %>" class="img-fluid rounded-start" alt="<%= item.product.productName %>" />
+              </a>
             </div>
-
-            <!-- Order Summary Section -->
-            <div class="col-lg-4 <% if (cartItems.length > 0) { %>d-block<% } else { %>d-none<% } %>">
-                <form id="couponForm" >
-                    <div class="row mb-3">
-                        <div class="col-md-12">
-                        <h2 class="h3 my-2 text-black" id="couponCodeLabel" for="couponCode">Have a Coupon Code?</h2>
-                        <div class="p-3 bg-white shadow-sm  rounded d-flex flex-column gap-1">
-                            <div class="input-group  d-flex">
-                                <input type="text" id="couponCode" name="couponCode" placeholder="Enter coupon code" class="form-control">
-                                <button class="btn btn-dark " type="button" id="applyCoupon">Apply</button>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <span id="couponMessage" class="text-secondary fw-bold"></span><a class="btn btn-outline-danger btn-sm remove-coupon px-1 py-0 fw-bold d-none" href="/cart">remove</a>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-                </form>
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Order Summary</h5>
-                        <hr>
-                        <div class="d-flex justify-content-between">
-                            <span>Subtotal</span>
-                            <span id="subtotal">Rs. <%= subtotal %></span>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span>Shipping</span>
-                            <span id="shipping">Rs. <%= shipping %></span>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span>CGST (2.5%)</span>
-                            <span id="cgst">Rs. <%= cgst %></span>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span>SGST (2.5%)</span>
-                            <span id="sgst">Rs. <%= sgst %></span>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span>Discount</span>
-                            <span id="discount"><%= discount  %></span>
-                        </div>
-                        <hr>
-                        <div class="d-flex justify-content-between fw-bold">
-                            <span>Total</span>
-                            <span>Rs. <span id="total"><%= total %></span></span>
-                        </div>
-                        <a class="btn btn-primary w-100 mt-3" onclick="getCheckout()">Proceed to Checkout</a>
-                        <a href="/" class="btn btn-outline-secondary w-100 mt-2">Continue Shopping</a>
-                    </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title">
+                  <%= item.product.productName %>
+                </h5>
+                <p class="card-text text-muted">
+                  <%= item.product.description %>
+                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <% if (item.product.quantity> 0) { %>
+                  <div class="quantity-input" id="productQuantity">
+                    <button class="btn btn-outline-secondary decrement" id="decrement" data-id="<%= item.product._id %>">
+                      -
+                    </button>
+                    <input type="text" class="quantity" value="<%= item.quantity %>" data-quantity="<%= item.quantity %>" readonly />
+                    <button class="btn btn-outline-secondary increment" id="increment-<%= item.product._id %>" data-id="<%= item.product._id %>">
+                      +
+                    </button>
+                  </div>
+                  <% } else { %>
+                  <span class="badge rounded-pill bg-danger">Out of Stock</span>
+                  <% } %>
+                  <div class="text-primary fw-bold price">
+                    Rs. <%= item.price %>
+                  </div>
                 </div>
+                <button class="btn remove-item mt-2" id="removeItem" data-id="<%= item.product._id %>">
+                  Remove
+                </button>
+              </div>
             </div>
+          </div>
         </div>
-        <hr>
+        <% }); %>
+        <% } else { %>
+        <div class="alert alert-info text-center p-4 mt-4">
+          <strong>Your cart is currently empty.</strong> Explore our amazing
+          products and <a href="/" class="alert-link">continue shopping</a>!
+        </div>
+        <% } %>
+      </div>
+
+      <!-- Order Summary Section -->
+      <div class="col-lg-4 <% if (cartItems.length > 0) { %>d-block<% } else { %>d-none<% } %>">
+        <form id="couponForm">
+          <div class="row mb-3">
+            <div class="col-md-12">
+              <h2 class="h3 my-2 text-black" id="couponCodeLabel" for="couponCode">
+                Have a Coupon Code?
+              </h2>
+              <div class="p-3 bg-white shadow-sm rounded d-flex flex-column gap-1">
+                <div class="input-group d-flex">
+                  <input type="text" id="couponCode" name="couponCode" placeholder="Enter coupon code" class="form-control" />
+                  <button class="btn btn-dark" type="button" id="applyCoupon">
+                    Apply
+                  </button>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span id="couponMessage" class="text-secondary fw-bold"></span><a class="btn btn-outline-danger btn-sm remove-coupon px-1 py-0 fw-bold d-none" href="/cart">remove</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Order Summary</h5>
+            <hr />
+            <div class="d-flex justify-content-between">
+              <span>Subtotal</span>
+              <span id="subtotal">Rs. <%= subtotal %></span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span>Shipping</span>
+              <span id="shipping">Rs. <%= shipping %></span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span>CGST (2.5%)</span>
+              <span id="cgst">Rs. <%= cgst %></span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span>SGST (2.5%)</span>
+              <span id="sgst">Rs. <%= sgst %></span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span>Discount</span>
+              <span id="discount">
+                <%= discount %>
+              </span>
+            </div>
+            <hr />
+            <div class="d-flex justify-content-between fw-bold">
+              <span>Total</span>
+              <span>Rs. <span id="total">
+                  <%= total %>
+                </span></span>
+            </div>
+            <a class="btn btn-primary w-100 mt-3" onclick="getCheckout()">Proceed to Checkout</a>
+            <a href="/" class="btn btn-outline-secondary w-100 mt-2">Continue Shopping</a>
+          </div>
+        </div>
+      </div>
     </div>
+    <hr />
+  </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let couponOn = false;
 
-    <script>
+    async function getCheckout() {
+      if ("<%= cartItems.length %>" !== "0") {
+        const finalAmount = document.getElementById("total").textContent;
+        const couponCode = couponOn ?
+          document.getElementById("couponCode").value :
+          "";
 
-       
-        
-        async function getCheckout() {
-            if ('<%= cartItems.length %>' !== '0') {
-                const finalAmount = document.getElementById('total').textContent;
-                const couponCode = document.getElementById('couponCode').value;
-                console.log(finalAmount,couponCode);
-                
-                const response = await fetch(`/finalAmount?total=${finalAmount}&&code=${couponCode}`, {
-                    method: 'GET',
-                    headers: { 'Content-Type': 'application/json' },
-                });
-                const data = await response.json();
-                if (data.success) {
-                    console.log(data.finalAmount);
-                    try {
-                        const checkoutResponse = await fetch(`/checkout?finalAmount=${finalAmount}&&code=${couponCode}&&cartId=${data.cartId}`, {
-                            method: 'GET',
-                            headers: { 'Content-Type': 'application/json' },
-                        });
-                        if(checkoutResponse.ok){
-                            console.log('Checkout successful');
-                            console.log(checkoutResponse.url);
-                            window.location.href = checkoutResponse.url;
-                        }else{
-                            const response = await checkoutResponse.json();
-                            console.log(response);
-                            Swal.fire({
-                                toast: true,
-                                position: 'top-end',
-                                icon: 'error',
-                                title: response.message,
-                                showConfirmButton: false,
-                                timer: 3000
-                            })
-                        }
-                        
-                        
-                    } catch (error) {
-                        console.error('Error during checkout:', error.message);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error!',
-                            text: 'Something went wrong during checkout.',
-                            showConfirmButton: false,
-                            timer: 3000
-                        });
-                    }
-                } else {
-                    alert(data.message);
-                }
-            }else{
-                Swal.fire({
-                    toast: true,
-                    position: 'top-end',
-                    icon: 'error',
-                    title: 'Your cart is empty!',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true
-                })
+        console.log(finalAmount, couponCode);
+
+        try {
+          // Fetch the final amount with coupon applied (if any)
+          const response = await fetch(
+            `/finalAmount?total=${finalAmount}&&code=${couponCode}`, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json"
+              },
             }
-        }
-        
-        
-        
-        
-        
+          );
+          const data = await response.json();
 
-
-        document.addEventListener('DOMContentLoaded', function () {
-          
-            
-
-            
-
-            document.getElementById('applyCoupon').addEventListener('click', async () => {
-            if ('<%= cartItems.length %>' !== '0') {
-                if(document.getElementById('couponCode').value){
-                    
-                
-                    const couponCode = document.getElementById('couponCode').value;
-                    const finalAmount = document.getElementById('total').textContent;
-                    try {
-                        const response = await fetch('/apply-coupon', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ couponCode , finalAmount }),
-                        });
-                        const data = await response.json();
-                        if (data.success) {
-                            document.getElementById('couponMessage').innerText = `Coupon applied! Discount: ₹${data.discount}`;
-                            document.getElementById('couponCode').disabled = true;
-                            document.getElementById('applyCoupon').disabled = true;
-                            document.getElementsByClassName('remove-coupon')[0].classList.remove('d-none');
-                            document.getElementById('discount').textContent = `- Rs. ${data.discount}`;
-                            document.getElementById('total').textContent = `${data.finalAmount}`;
-                            document.getElementById('increment').classList.add('disabled');
-                            document.getElementById('decrement').classList.add('disabled');
-                            document.getElementById('removeItem').classList.add('disabled');
-                            document.getElementById('couponCodeLabel').style.display = 'none';
-
-                            
-                            
-                        } else {
-                            document.getElementById('couponMessage').innerText = data.message;
-                        }
-                    } catch (error) {
-                        console.error('Error applying coupon:', error);
-                    }
-                }else{
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'error',
-                        title: 'Please enter a valid coupon code!',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true
-                    })
-                }
-            }else{
-                Swal.fire({
-                    toast: true,
-                    position: 'top-end',
-                    icon: 'error',
-                    title: 'Your cart is empty!',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true
-                })
-            }
-        });
-
-            
-
-        document.querySelectorAll('.remove-item').forEach(button => {
-            button.addEventListener('click', function () {
-                const productId = this.getAttribute('data-id'); // Get product ID from button data attribute
-                const cartItem = this.closest('.cart-item'); // Find the parent cart item
-
-                // Remove item from the UI immediately
-                cartItem.remove();
-                updateTotal(); // Update the total price
-
-                // Send request to backend to remove item from cart
-                removeFromCart(productId);
-            });
-        });
-
-            function updateTotal() {
-                let subtotal = 0;
-                document.querySelectorAll('.cart-item').forEach(item => {
-                    const price = parseFloat(item.querySelector('.price').textContent.replace('Rs.', '').trim());
-                const quantity = parseInt(item.querySelector('.quantity').value);
-                    subtotal += price * quantity;
-                });
-
-                document.getElementById('subtotal').textContent = `Rs.${subtotal.toFixed(2)}`;
-                const cgst = subtotal * 0.025;
-                document.getElementById('cgst').textContent = `Rs.${cgst.toFixed(2)}`;
-                const sgst = subtotal * 0.025;
-                document.getElementById('sgst').textContent = `Rs.${sgst.toFixed(2)}`;
-                const shipping = 10;
-                document.getElementById('discount').textContent = `${0}`;
-                document.getElementById('shipping').textContent = `Rs.${shipping.toFixed(2)}`;
-                document.getElementById('total').textContent = `Rs.${(subtotal + cgst + sgst + shipping).toFixed(2)}`;
-            }
-
-            const removeFromCart = async (productId) => {
-                try {
-                    const response = await fetch('/cart/remove', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ productId })
-                    });
-
-                    const data = await response.json();
-
-                    if (data.success) {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'success',
-                            title: data.message,
-                            showConfirmButton: false,
-                            timer: 2000
-                        })
-                        .then(() => {
-                            location.reload();
-                        })
-                    } else {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'error',
-                            title: data.message,
-                            showConfirmButton: false,
-                            timer: 2000
-                        })
-                    }
-                } catch (error) {
-                    console.error('Error removing item from cart:', error.message);
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'error',
-                        title: error.message,
-                        showConfirmButton: false,
-                        timer: 2000
-                    })
-                }
-            };
-
-
-            const updateCart = async (productId, quantity) => {
+          if (data.success) {
             try {
-                const response = await fetch('/cart/update', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ productId, quantity })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    if(document.getElementById(`increment-${productId}`).classList.contains('disabled')){
-                        document.getElementById(`increment-${productId}`).classList.remove('disabled');
-                    }
-                    updateTotals(data.subtotal, data.cgst, data.sgst, data.total, data.discount);
-                } else {
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'error',
-                        title: data.message,
-                        showConfirmButton: false,
-                        timer: 2000
-                    })
-                    
-                    document.getElementById(`increment-${productId}`).classList.add('disabled');
+              // Proceed to checkout
+              const checkoutResponse = await fetch(
+                `/checkout?code=${couponCode}&&cartId=${data.cartId}`, {
+                  method: "GET",
+                  headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                  },
                 }
-            } catch (error) {
-                console.error('Error updating cart:', error.message);
+              );
+
+              if (checkoutResponse.ok) {
+                // Successful checkout
+                const redirectUrl = checkoutResponse.url;
+                console.log("Checkout successful:", redirectUrl);
+
+                // Clear coupon input and redirect to checkout page
+                document.getElementById("couponCode").value = "";
+                window.location.href = redirectUrl;
+              } else {
+                // Handle server-side validation errors during checkout
+                const errorResponse = await checkoutResponse.json();
+                console.error("Checkout error:", errorResponse);
+
                 Swal.fire({
-                    toast: true,
-                    position: 'top-end',
-                    icon: 'error',
-                    title: error.message,
-                    showConfirmButton: false,
-                    timer: 2000
-                })
+                  toast: true,
+                  position: "top-end",
+                  icon: "error",
+                  title: errorResponse.message || "Error during checkout",
+                  showConfirmButton: false,
+                  timer: 3000,
+                });
+              }
+            } catch (error) {
+              console.error("Error during checkout:", error.message);
+              Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: "Something went wrong during checkout.",
+                showConfirmButton: false,
+                timer: 3000,
+              });
             }
-        };
+          } else {
+            // Handle errors from the `/finalAmount` endpoint
+            console.error("Error fetching final amount:", data.message);
 
-        document.querySelectorAll('.increment').forEach(button => {
-            button.addEventListener('click', function () {
-                const productId = this.getAttribute('data-id');
-
-                const productQuantity = this.getAttribute('data-quantity');
-                const quantityInput = this.parentNode.querySelector('.quantity');
-                let newQuantity = parseInt(quantityInput.value);
-
-                console.log(productQuantity, productId);
-                
-                
-                // Update UI immediately
-                newQuantity++;
-                quantityInput.value = newQuantity;
-
-                // Send request to backend
-                updateCart(productId, newQuantity);
-                
+            Swal.fire({
+              icon: "error",
+              title: "Invalid Coupon",
+              text: data.message || "The coupon code is invalid or expired.",
+              showConfirmButton: true,
             });
-        });
+          }
+        } catch (error) {
+          console.error("Error during final amount fetch:", error.message);
 
-        document.querySelectorAll('.decrement').forEach(button => {
-            button.addEventListener('click', function () {
-                const productId = this.getAttribute('data-id');
-                const quantityInput = this.parentNode.querySelector('.quantity');
-                let newQuantity = parseInt(quantityInput.value);
-
-
-                // Only decrease if greater than 1
-                if (newQuantity > 1) {
-                    newQuantity--;
-                    quantityInput.value = newQuantity;
-
-                    // Send request to backend
-                    updateCart(productId, newQuantity);
-                }
-            });
-        });
-
-        function updateTotals(subtotal, cgst, sgst, total, discount) {
-            document.getElementById('subtotal').textContent = `Rs. ${subtotal}`;
-            document.getElementById('cgst').textContent = `Rs. ${cgst}`;
-            document.getElementById('sgst').textContent = `Rs. ${sgst}`;
-            document.getElementById('discount').textContent = `Rs. ${discount}`;
-            document.getElementById('total').textContent = `${total}`;
+          Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: "Failed to retrieve final amount. Please try again later.",
+            showConfirmButton: false,
+            timer: 3000,
+          });
         }
-
+      } else {
+        // Cart is empty
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "error",
+          title: "Your cart is empty!",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
         });
-    </script>
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      document
+        .getElementById("applyCoupon")
+        .addEventListener("click", async () => {
+          if ("<%= cartItems.length %>" !== "0") {
+            if (document.getElementById("couponCode").value) {
+              const couponCode = document.getElementById("couponCode").value;
+              const finalAmount =
+                document.getElementById("total").textContent;
+              try {
+                const response = await fetch("/cart/apply-coupon", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify({
+                    couponCode,
+                    finalAmount
+                  }),
+                });
+                const data = await response.json();
+                if (data.success) {
+                  document.getElementById("couponMessage").innerText = `Coupon applied! Discount: ${data.label}`;
+                  document.getElementById("couponCode").disabled = true;
+                  document.getElementById("applyCoupon").disabled = true;
+                  document.getElementsByClassName("remove-coupon")[0].classList.remove("d-none");
+                  document.getElementById("discount").textContent = `- Rs. ${data.discount}`;
+                  document.getElementById(
+                    "total"
+                  ).textContent = `${data.finalAmount}`;
+                  // document.getElementById('increment').classList.add('disabled');
+                  // document.getElementById('decrement').classList.add('disabled');
+                  // document.getElementById('removeItem').classList.add('disabled');
+                  // document.getElementById('couponCodeLabel').style.display = 'none';
+                  document
+                    .querySelectorAll("#productQuantity button, #removeItem")
+                    .forEach((button) => {
+                      button.disabled = true;
+                    });
+                  couponOn = true;
+                } else {
+                  document.getElementById("couponMessage").innerText =
+                    data.message;
+                }
+              } catch (error) {
+                console.error("Error applying coupon:", error);
+              }
+            } else {
+              Swal.fire({
+                toast: true,
+                position: "top-end",
+                icon: "error",
+                title: "Please enter a valid coupon code!",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+              });
+            }
+          } else {
+            Swal.fire({
+              toast: true,
+              position: "top-end",
+              icon: "error",
+              title: "Your cart is empty!",
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+            });
+          }
+        });
+
+      document.querySelectorAll(".remove-item").forEach((button) => {
+        button.addEventListener("click", function() {
+          const productId = this.getAttribute("data-id"); // Get product ID from button data attribute
+          const cartItem = this.closest(".cart-item"); // Find the parent cart item
+
+          // Remove item from the UI immediately
+          cartItem.remove();
+          updateTotal(); // Update the total price
+
+          // Send request to backend to remove item from cart
+          removeFromCart(productId);
+        });
+      });
+
+      function updateTotal() {
+        let subtotal = 0;
+        let price = 0;
+        document.querySelectorAll(".cart-item").forEach((item) => {
+          price = parseFloat(
+            item.querySelector(".price").textContent.replace("Rs.", "").trim()
+          );
+          const quantity = parseInt(item.querySelector(".quantity").value);
+          subtotal += price * quantity;
+        });
+
+        document.getElementById(
+          "subtotal"
+        ).textContent = `Rs.${subtotal.toFixed(2)}`;
+        const cgst = subtotal * 0.025;
+        document.getElementById("cgst").textContent = `Rs.${cgst.toFixed(2)}`;
+        const sgst = subtotal * 0.025;
+        document.getElementById("sgst").textContent = `Rs.${sgst.toFixed(2)}`;
+        document.getElementById("discount").textContent = `${0}`;
+        let shipping = price < 10000 ? 299 : 0;
+        document.getElementById(
+          "shipping"
+        ).textContent = `Rs.${shipping.toFixed(2)}`;
+        document.getElementById("total").textContent = `Rs.${(
+            subtotal +
+            cgst +
+            sgst +
+            shipping
+          ).toFixed(2)}`;
+      }
+
+      const removeFromCart = async (productId) => {
+        try {
+          const response = await fetch("/cart", {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              productId
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            Swal.fire({
+              toast: true,
+              position: "top-end",
+              icon: "success",
+              title: data.message,
+              showConfirmButton: false,
+              timer: 2000,
+            }).then(() => {
+              location.reload();
+            });
+          } else {
+            Swal.fire({
+              toast: true,
+              position: "top-end",
+              icon: "error",
+              title: data.message,
+              showConfirmButton: false,
+              timer: 2000,
+            });
+          }
+        } catch (error) {
+          console.error("Error removing item from cart:", error.message);
+          Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "error",
+            title: error.message,
+            showConfirmButton: false,
+            timer: 2000,
+          });
+        }
+      };
+
+      const updateCart = async (productId, quantity) => {
+        try {
+          const response = await fetch("/cart", {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              productId,
+              quantity
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            if (
+              document
+              .getElementById(`increment-${productId}`)
+              .classList.contains("disabled")
+            ) {
+              document
+                .getElementById(`increment-${productId}`)
+                .classList.remove("disabled");
+            }
+            updateTotals(
+              data.subtotal,
+              data.cgst,
+              data.sgst,
+              data.total,
+              data.discount,
+              data.shipping
+            );
+          } else {
+            Swal.fire({
+              toast: true,
+              position: "top-end",
+              icon: "error",
+              title: data.message,
+              showConfirmButton: false,
+              timer: 2000,
+            });
+
+            document
+              .getElementById(`increment-${productId}`)
+              .classList.add("disabled");
+          }
+        } catch (error) {
+          console.error("Error updating cart:", error.message);
+          Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "error",
+            title: error.message,
+            showConfirmButton: false,
+            timer: 2000,
+          });
+        }
+      };
+
+      document.querySelectorAll(".increment").forEach((button) => {
+        button.addEventListener("click", function() {
+          const productId = this.getAttribute("data-id");
+
+          const productQuantity = this.getAttribute("data-quantity");
+          const quantityInput = this.parentNode.querySelector(".quantity");
+          let newQuantity = parseInt(quantityInput.value);
+
+          console.log(productQuantity, productId);
+
+          // Update UI immediately
+          newQuantity++;
+          quantityInput.value = newQuantity;
+
+          // Send request to backend
+          updateCart(productId, newQuantity);
+        });
+      });
+
+      document.querySelectorAll(".decrement").forEach((button) => {
+        button.addEventListener("click", function() {
+          const productId = this.getAttribute("data-id");
+          const quantityInput = this.parentNode.querySelector(".quantity");
+          let newQuantity = parseInt(quantityInput.value);
+
+          // Only decrease if greater than 1
+          if (newQuantity > 1) {
+            newQuantity--;
+            quantityInput.value = newQuantity;
+
+            // Send request to backend
+            updateCart(productId, newQuantity);
+          }
+        });
+      });
+
+      function updateTotals(subtotal, cgst, sgst, total, discount, shipping) {
+        document.getElementById("subtotal").textContent = `Rs. ${subtotal}`;
+        document.getElementById("cgst").textContent = `Rs. ${cgst}`;
+        document.getElementById("sgst").textContent = `Rs. ${sgst}`;
+        if (shipping === 0) {
+          document.getElementById("shipping").textContent = "Free";
+        } else {
+          document.getElementById("shipping").textContent = `Rs. ${shipping}`;
+        }
+        document.getElementById("discount").textContent = `Rs. ${discount}`;
+        document.getElementById("total").textContent = `${total}`;
+      }
+    });
+  </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('.dropdown-toggle').dropdown();
+    });
+  </script>
+
 </body>
 
 <%- include("../../views/partials/user/footer") %>
+
+</html>

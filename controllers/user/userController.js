@@ -252,7 +252,6 @@ const loadCart = async (req, res) => {
     }
 }
 
-
 function generateOtp() {
     return Math.floor(100000 + Math.random() * 900000)
 }
@@ -301,7 +300,6 @@ async function sendVerificationEmail(email, otp) {
         return false;
     }
 }
-
 
 const signup = async (req, res) => {
     try {
@@ -441,70 +439,7 @@ const productDetail=async(req,res)=>{
     }
 }
 
-// const sortProducts = async (req, res) => {
-//     const sort = req.query.sort || '';
-//     const category = req.query.category || ''; // Get the category filter
-//     const page = parseInt(req.query.page) || 1;  // Default page 1
-//     const limit = parseInt(req.query.limit) || 8; // Default limit 8 items per page
-//     const skip = (page - 1) * limit;              // Calculate skip value
-
-//     try {
-//         let query = { isBlocked: false }; // Only fetch unblocked products
-
-//         // If category is provided, filter by category
-//         if (category) {
-//             query.category = category;
-//         }
-
-//         // Create a sorting object
-//         let sortQuery = {};
-//         switch (sort) {
-//             case 'popularity':
-//                 sortQuery.popularity = -1; // Descending
-//                 break;
-//             case 'price-asc':
-//                 sortQuery.salePrice = 1; // Ascending
-//                 break;
-//             case 'price-desc':
-//                 sortQuery.salePrice = -1; // Descending
-//                 break;
-//             case 'ratings':
-//                 sortQuery.ratings = -1; // Descending
-//                 break;
-//             case 'new-arrivals':
-//                 sortQuery.createdAt = -1; // Descending
-//                 break;
-//             case 'az':
-//                 sortQuery.productName = 1; // Ascending
-//                 break;
-//             case 'za':
-//                 sortQuery.productName = -1; // Descending
-//                 break;
-//             default:
-//                 sortQuery = {}; // No sorting
-//         }
-
-//         // Fetch paginated and sorted products
-//         const products = await Product.find(query)
-//             .sort(sortQuery)
-//             .skip(skip)
-//             .limit(limit);
-
-//         // Calculate the total number of items
-//         const totalItems = await Product.countDocuments(query);
-
-//         // Send response with paginated products and total item count
-//         res.json({
-//             products,
-//             totalItems, // Total number of products (for pagination)
-//         });
-//     } catch (error) {
-//         console.error('Error fetching products:', error);
-//         res.status(500).json({ message: 'Internal server error' });
-//     }
-// };
-
-    const searchProduct = async (req, res) => {
+const searchProduct = async (req, res) => {
     const { query, category, sort, priceRange, page = 1, limit = 8 } = req.query;
 
     console.log(`Query: ${query}`);
@@ -548,12 +483,6 @@ const productDetail=async(req,res)=>{
         });
     }
 
-    // 4. Filter products that are not blocked
-    // pipeline.push({
-    //     $match: { isBlocked: false },
-    // });
-
-
     // 3. Price range filter
     if (priceRange) {
         const priceFilter = getPriceFilter(priceRange);
@@ -594,7 +523,6 @@ const productDetail=async(req,res)=>{
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
-
 
 // Helper: Get Price Filter
 function getPriceFilter(priceRange) {
@@ -653,5 +581,4 @@ module.exports = {
     productDetail,
     searchProduct
 
-    // sortProducts
 }

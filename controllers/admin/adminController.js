@@ -42,7 +42,7 @@ const loadDashboard = async (req, res)=>{
             console.log(orders.orderItems,'dashboard');
             //map product name from orders
             const categoryIds = orders.flatMap(order => order.orderItems.map(item => item.product.category));
-            console.log(categoryIds,'categoryIds');
+            // console.log(categoryIds,'categoryIds');
 
             //find the occurence of each category
             const categoryCounts = categoryIds.reduce((counts, category) => {
@@ -56,7 +56,16 @@ const loadDashboard = async (req, res)=>{
               progress: (categoryCounts[name] / totalCategories) * 100
             }));
 
-            console.log(data,'data');
+            // today sales amount
+            const today = new Date();
+            const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+            const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+            const todayOrders = await Order.find({ createdAt: { $gte: startOfDay, $lte: endOfDay } });
+            const todayTotalAmount = todayOrders.reduce((total, order) => total + order.finalAmount, 0);
+
+            console.log(todayTotalAmount,'todayTotalAmount');
+
+            res.locals.todayTotalAmount = todayTotalAmount;
 
             return res.render('statistics')
         } else {
@@ -86,7 +95,7 @@ const loadDashboardData = async (req, res)=>{
             // console.log(orders,'dashboard');
             //map product name from orders
             const categoryIds = orders.flatMap(order => order.orderItems.map(item => item.product.category));
-            console.log(categoryIds,'categoryIds');
+            // console.log(categoryIds,'categoryIds');
 
             //find the occurence of each category
             const categoryCounts = categoryIds.reduce((counts, category) => {
@@ -97,10 +106,10 @@ const loadDashboardData = async (req, res)=>{
             const totalCategories = Object.values(categoryCounts).reduce((sum, count) => sum + count, 0);
             const data = Object.keys(categoryCounts).map(name => ({
               name,
-              progress: (categoryCounts[name] / totalCategories) * 100
+              progress: Number((categoryCounts[name] / totalCategories) * 100).toFixed(2)
             }));
 
-            console.log(data,'data');
+            // console.log(data,'data');
 
 
             return res.json({success: true, data})
@@ -110,7 +119,6 @@ const loadDashboardData = async (req, res)=>{
         res.status(500).send('server error');
     }
 }
-
 
 
 const login = async (req,res)=>{

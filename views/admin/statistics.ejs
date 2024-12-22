@@ -58,10 +58,12 @@
             <div class="col-lg-3">
                 <div class="card card-body mb-4">
                     <article class="icontext">
-                        <span class="icon icon-sm rounded-circle bg-primary-light"><i class="text-primary material-icons md-monetization_on"></i></span>
+                        <span class="icon icon-sm rounded-circle bg-primary-light d-flex align-items-center justify-content-center"><i class="text-primary material-icons md-monetization_on"></i></span>
                         <div class="text">
                             <h6 class="mb-1 card-title">Revenue</h6>
-                            <span>$13,456.5</span>
+                            <div class="d-flex">
+                                <span id="totRevenue">...</span>
+                            </div>
                             <span class="text-sm"> Shipping fees are not included </span>
                         </div>
                     </article>
@@ -70,10 +72,10 @@
             <div class="col-lg-3">
                 <div class="card card-body mb-4">
                     <article class="icontext">
-                        <span class="icon icon-sm rounded-circle bg-success-light"><i class="text-success material-icons md-local_shipping"></i></span>
+                        <span class="icon icon-sm rounded-circle bg-success-light d-flex align-items-center justify-content-center"><i class="text-success material-icons md-local_shipping"></i></span>
                         <div class="text">
                             <h6 class="mb-1 card-title">Orders</h6>
-                            <span>53.668</span>
+                            <span id="totOrders">...</span>
                             <span class="text-sm"> Excluding orders in transit </span>
                         </div>
                     </article>
@@ -82,11 +84,11 @@
             <div class="col-lg-3">
                 <div class="card card-body mb-4">
                     <article class="icontext">
-                        <span class="icon icon-sm rounded-circle bg-warning-light"><i class="text-warning material-icons md-qr_code"></i></span>
+                        <span class="icon icon-sm rounded-circle bg-warning-light d-flex align-items-center justify-content-center"><i class="text-warning material-icons md-qr_code"></i></span>
                         <div class="text">
                             <h6 class="mb-1 card-title">Products</h6>
-                            <span>9.856</span>
-                            <span class="text-sm"> In 19 Categories </span>
+                            <span id="totProducts" class="totProducts">...</span>
+                            <span id="totCategories" class="text-sm totCategories">...</span>
                         </div>
                     </article>
                 </div>
@@ -94,10 +96,10 @@
             <div class="col-lg-3">
                 <div class="card card-body mb-4">
                     <article class="icontext">
-                        <span class="icon icon-sm rounded-circle bg-info-light"><i class="text-info material-icons md-shopping_basket"></i></span>
+                        <span class="icon icon-sm rounded-circle bg-info-light d-flex align-items-center justify-content-center"><i class="text-info material-icons md-shopping_basket"></i></span>
                         <div class="text">
                             <h6 class="mb-1 card-title">Monthly Earning</h6>
-                            <span>$6,982</span>
+                            <span id="monthlyEarnings" class="totEarning">...</span>
                             <span class="text-sm"> Based in your local time. </span>
                         </div>
                     </article>
@@ -199,31 +201,75 @@
                 </div>
                 <!-- table-responsive end// -->
             </div>
+            <hr>
+            <div id="pagination" class="pagination justify-content-center mt-1"></div>
         </div>
         
-        <div id="pagination" class="pagination justify-content-center mt-4"></div>
-        <div>
-            <canvas id="top-selling-products-chart"></canvas>
+        <div class="card mb-4">
+            <article class="card-body">
+                <h5 class="card-title">Top Selling Products</h5>
+                <canvas id="top-selling-products-chart"></canvas>
+            </article>
+        </div>
+        <div class="card mb-4">
+            <article class="card-body">
+                <h5 class="card-title">Visitor Statistics</h5>
+                <canvas id="visitorChart"></canvas>
+            </article>
         </div>
     </section>
 <%- include("../../views/partials/admin/footer") %>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        
+
         const startDate = document.getElementById('startDate');
         const endDate = document.getElementById('endDate');
         const periodFilter = document.getElementById('periodfilter');
         const statusfilter = document.getElementById('statusfilter');
         const pagination = document.getElementById('pagination');
+        const currentDate = new Date().toISOString().split('T')[0];
+        startDate.setAttribute('max', currentDate);
+        startDate.addEventListener('change', function() {
+            const startDateValue = new Date(this.value);
+            const endDateValue = new Date(startDateValue.getTime() + 24 * 60 * 60 * 1000);
+            endDate.setAttribute('min', startDateValue.toISOString().split('T')[0]);
+            endDate.setAttribute('max', currentDate);
+        });
+        
     
         async function fetchFilteredData(startDate = '', endDate = '', status = '', page = 1) {
+            
             try {
                 const response = await fetch(`/admin/fetchOrderList?startDate=${startDate}&endDate=${endDate}&status=${status}&page=${page}&limit=5`);
                 const data = await response.json();
                 console.log(data);
-                renderOrdersList(data.orders);
-                renderPagination(data.totalItems, page);
-                renderTopSellingProducts(data.topProducts);
-                console.log((data.topProducts).map(product => product.name));
+                if(data.success){
+                    
+                    renderOrdersList(data.orders);
+                    renderPagination(data.totalItems, page);
+                    renderTopSellingProducts(data.topProducts);
+                    renderVisitorChart(data.visitorData);
+                    console.log(data.visitorData, 'visitorData');
+                    
+                    console.log(new Intl.NumberFormat('en-IN').format(data.totalAmounts), typeof(data.totalAmounts));
+                    
+    
+                    document.getElementById('totRevenue').innerHTML = `₹  ${new Intl.NumberFormat('en-IN').format(data.totalAmounts)}`;
+                    document.getElementById('totOrders').innerHTML = data.totalOrders;
+                    document.getElementById('totProducts').innerHTML = data.totalProducts;
+                    document.getElementById('totCategories').innerHTML = `In ${data.totalCategories} Categories`;
+                    document.getElementById('monthlyEarnings').innerHTML = `₹  ${new Intl.NumberFormat('en-IN').format(data.monthlyEarnings)}`;
+                    // console.log((data.topProducts).map(product => product.name));
+                }else{
+                    Swal.fire({
+                        title: 'Error',
+                        text: data.message,
+                        icon: 'error',
+                        confirmButtonText: 'Okay',
+                    })
+                    renderOrdersList(data.orders);
+                }
                 
             } catch (error) {
                 console.error('Error fetching data:', error.message);
@@ -233,6 +279,15 @@
         function renderOrdersList(orders) {
             const ordersTableBody = document.querySelector('tbody');
             ordersTableBody.innerHTML = '';
+    
+            if (!orders || orders.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="8" class="text-center text-danger  mt-3">No data available</td>
+                `;
+                ordersTableBody.appendChild(row);
+                return;
+            }
     
             orders.forEach((order) => {
                 const row = document.createElement('tr');
@@ -337,6 +392,37 @@
                         }
                     }
 
+                }
+            });
+        }
+
+        function renderVisitorChart(data) {
+            const labels = data.map((item) => item._id); // Dates
+            const views = data.map((item) => item.totalViews); // Views
+
+            const ctx = document.getElementById('visitorChart').getContext('2d');
+
+            if (Chart.getChart('visitorChart')) {
+                Chart.getChart('visitorChart').destroy();
+            }
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Visitors',
+                        data: views,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 1)',
+                        fill: true,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
                 }
             });
         }

@@ -11,9 +11,6 @@ const loadOrder = async (req,res) => {
             })
             .populate('userId')
             .sort({createdAt:-1});
-        console.log(orders,'order---------------------------');
-
-        
         
         res.render('order-list',{orders});
     } catch (error) {
@@ -31,7 +28,6 @@ const getOrderDetails = async (req,res) => {
                 model: 'Products'
             })
             .populate('userId');
-        console.log(order,order.orderItems,'order---------------------------');
         
         const findAddress = await Address.findOne({
             userId: order.userId._id,
@@ -97,8 +93,6 @@ const returnStatus = async (req, res) => {
     const { orderId } = req.params;
     const { status } = req.body;
 
-    console.log(orderId, status,'return status');
-    
 
     try {
         const order = await Order.findById(orderId);

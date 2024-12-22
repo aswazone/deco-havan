@@ -14,6 +14,7 @@ const multer = require('multer');
 const storage = require('../helpers/multer');
 const uploads = multer({storage:storage});
 const upload = require('../helpers/multer-banner');
+const uploadEdit = require('../helpers/edit-multer');
 
 
 //login-management
@@ -23,12 +24,6 @@ router.get('/logout',adminController.logout);
 router.get('/dashboard',adminAuth,adminController.loadDashboard);
 router.get('/dash-data',adminAuth,adminController.loadDashboardData);
 router.get('/pageNotFound',adminController.pageNotFound);
-
-//user-management
-// router.get('/user',userAuth,adminController.loadUser);
-// router.get('/user/delete/:id',userAuth,adminController.deleteUser);
-// router.get('/user/edit/:id',userAuth,adminController.editUser);
-// router.post('/user/edit/:id',userAuth,adminController.updateUser);
 
 //user-maanagement
 router.get('/users',adminAuth,customerController.loadUser);
@@ -53,7 +48,12 @@ router.post('/addProductOffer',adminAuth,productController.addProductOffer);
 router.post('/removeProductOffer',adminAuth,productController.removeProductOffer);
 router.patch('/productToggleStatus',adminAuth,productController.productToggleStatus);
 router.get("/editProduct",adminAuth,productController.getEditProduct);
-router.post("/editProduct/:id",adminAuth,uploads.array("images",4),productController.editProduct);
+router.post("/editProduct/:id",adminAuth,uploadEdit.fields([
+    { name: 'image1', maxCount: 1 },
+    { name: 'image2', maxCount: 1 },
+    { name: 'image3', maxCount: 1 },
+    { name: 'image4', maxCount: 1 }
+]) ,productController.editProduct);
 router.post("/deleteImage",adminAuth,productController.deleteSingleImage)
 router.post('/deleteProduct/:id',adminAuth,productController.deleteProduct)
 

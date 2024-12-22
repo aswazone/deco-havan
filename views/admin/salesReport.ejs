@@ -72,14 +72,16 @@
             </div>
             
         </div>
-        <div class="row">
+         <div class="row">
             <div class="col-lg-3">
                 <div class="card card-body mb-4">
                     <article class="icontext">
-                        <span class="icon icon-sm rounded-circle bg-primary-light"><i class="text-primary material-icons md-monetization_on"></i></span>
+                        <span class="icon icon-sm rounded-circle bg-primary-light d-flex align-items-center justify-content-center"><i class="text-primary material-icons md-monetization_on"></i></span>
                         <div class="text">
                             <h6 class="mb-1 card-title">Revenue</h6>
-                            <span>$13,456.5</span>
+                            <div class="d-flex">
+                                <span id="totRevenue">...</span>
+                            </div>
                             <span class="text-sm"> Shipping fees are not included </span>
                         </div>
                     </article>
@@ -88,10 +90,10 @@
             <div class="col-lg-3">
                 <div class="card card-body mb-4">
                     <article class="icontext">
-                        <span class="icon icon-sm rounded-circle bg-success-light"><i class="text-success material-icons md-local_shipping"></i></span>
+                        <span class="icon icon-sm rounded-circle bg-success-light d-flex align-items-center justify-content-center"><i class="text-success material-icons md-local_shipping"></i></span>
                         <div class="text">
                             <h6 class="mb-1 card-title">Orders</h6>
-                            <span>53.668</span>
+                            <span id="totOrders">...</span>
                             <span class="text-sm"> Excluding orders in transit </span>
                         </div>
                     </article>
@@ -100,11 +102,11 @@
             <div class="col-lg-3">
                 <div class="card card-body mb-4">
                     <article class="icontext">
-                        <span class="icon icon-sm rounded-circle bg-warning-light"><i class="text-warning material-icons md-qr_code"></i></span>
+                        <span class="icon icon-sm rounded-circle bg-warning-light d-flex align-items-center justify-content-center"><i class="text-warning material-icons md-qr_code"></i></span>
                         <div class="text">
                             <h6 class="mb-1 card-title">Products</h6>
-                            <span>9.856</span>
-                            <span class="text-sm"> In 19 Categories </span>
+                            <span id="totProducts" class="totProducts">...</span>
+                            <span id="totCategories" class="text-sm totCategories">...</span>
                         </div>
                     </article>
                 </div>
@@ -112,10 +114,10 @@
             <div class="col-lg-3">
                 <div class="card card-body mb-4">
                     <article class="icontext">
-                        <span class="icon icon-sm rounded-circle bg-info-light"><i class="text-info material-icons md-shopping_basket"></i></span>
+                        <span class="icon icon-sm rounded-circle bg-info-light d-flex align-items-center justify-content-center"><i class="text-info material-icons md-shopping_basket"></i></span>
                         <div class="text">
                             <h6 class="mb-1 card-title">Monthly Earning</h6>
-                            <span>$6,982</span>
+                            <span id="monthlyEarnings" class="totEarning">...</span>
                             <span class="text-sm"> Based in your local time. </span>
                         </div>
                     </article>
@@ -210,12 +212,28 @@
         const statusfilter = document.getElementById('statusfilter');
         const pagination = document.getElementById('pagination');
 
+        
+
         async function fetchFilteredData(startDate = '', endDate = '', status = '', page = 1) {
+            if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'End date cannot be earlier than start date',
+                    icon: 'error',
+                    confirmButtonText: 'Okay',
+                });
+                return;
+            }
             try {
                 const response = await fetch(`/admin/fetchsalesReport?startDate=${startDate}&endDate=${endDate}&status=${status}&page=${page}&limit=5`);
                 const data = await response.json();
                 console.log(data);
                 renderOrdersList(data.orders);
+                    document.getElementById('totRevenue').innerHTML = `₹  ${new Intl.NumberFormat('en-IN').format(data.totalAmounts)}`;
+                    document.getElementById('totOrders').innerHTML = data.totalOrders;
+                    document.getElementById('totProducts').innerHTML = data.totalProducts;
+                    document.getElementById('totCategories').innerHTML = `In ${data.totalCategories} Categories`;
+                    document.getElementById('monthlyEarnings').innerHTML = `₹  ${new Intl.NumberFormat('en-IN').format(data.monthlyEarnings)}`;
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -291,10 +309,8 @@ function getOrderStatusClass(status) {
             const today = new Date();
             switch (period) {
                 case 'daily':
-                    startDateValue = today.toISOString().split('T')[0];
-                    endDateValue = startDateValue;
-                    console.log(startDateValue, endDateValue);
-                    
+                    startDateValue = new Date().toISOString().split('T')[0];
+                    endDateValue = new Date(today.setDate(today.getDate() + 1)).toISOString().split('T')[0];
                     break;
                 case 'weekly':
                     startDateValue = new Date(today.setDate(today.getDate() - today.getDay())).toISOString().split('T')[0];

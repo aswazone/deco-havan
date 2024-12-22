@@ -1,271 +1,313 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
 
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: #f0f2f5;
-        }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: #f0f2f5;
+      }
 
-        .container {
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            width: 90%;
-            max-width: 400px;
-        }
+      .container {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 90%;
+        max-width: 400px;
+      }
 
-        h2 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 1.5rem;
-        }
+      h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 1.5rem;
+      }
 
-        .otp-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            margin: 1.5rem 0;
-        }
+      .otp-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin: 1.5rem 0;
+      }
 
-        .otp-input {
-            width: 50px;
-            height: 50px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
-            text-align: center;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #333;
-        }
+      .otp-input {
+        width: 50px;
+        height: 50px;
+        border: 2px solid #ddd;
+        border-radius: 5px;
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #333;
+      }
 
-        .otp-input:focus {
-            border-color: #4CAF50;
-            outline: none;
-        }
+      .otp-input:focus {
+        border-color: #4caf50;
+        outline: none;
+      }
 
-        .timer {
-            text-align: center;
-            margin: 1rem 0;
-            color: #666;
-        }
+      .timer {
+        text-align: center;
+        margin: 1rem 0;
+        color: #666;
+      }
 
-        .resend-button {
-            display: block;
-            width: 100%;
-            padding: 0.8rem;
-            background: none;
-            border: none;
-            color: #4CAF50;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 1rem;
-        }
+      .resend-button {
+        display: block;
+        width: 100%;
+        padding: 0.8rem;
+        background: none;
+        border: none;
+        color: #4caf50;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 1rem;
+      }
 
-        .resend-button:disabled {
-            color: #999;
-            cursor: not-allowed;
-        }
+      .resend-button:disabled {
+        color: #999;
+        cursor: not-allowed;
+      }
 
-        .submit-button {
-            display: block;
-            width: 100%;
-            padding: 0.8rem;
-            background: #4CAF50;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 1rem;
-        }
+      .submit-button {
+        display: block;
+        width: 100%;
+        padding: 0.8rem;
+        background: #4caf50;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 1rem;
+      }
 
-        .submit-button:disabled {
-            background: #999;
-            cursor: not-allowed;
-        }
+      .submit-button:disabled {
+        background: #999;
+        cursor: not-allowed;
+      }
 
-        .message {
-            text-align: center;
-            margin-top: 1rem;
-            color: #666;
-        }
+      .message {
+        text-align: center;
+        margin-top: 1rem;
+        color: #666;
+      }
 
-        .error {
-            color: #f44336;
-        }
+      .error {
+        color: #f44336;
+      }
 
-        .success {
-            color: #4CAF50;
-        }
+      .success {
+        color: #4caf50;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container py-5">
-        <div class="row d-flex justify-content-center align-items-center">
-            
-            <form id="otpForm" class="row d-flex justify-content-center align-items-center" >
-                <div class="col-md-9 p-3">
-                    <h5 class="text-center font-bold " style="color: #4CAF50; font-weight: 600;">Enter Verification Code</h5>
-                    <p class="text-center message mt-5" style="font-size: 0.9rem;">We have sent a verification code to your email</p>
-                    
-                    <div class="input-group mb-2">
-                        <input type="text" class="form-control" id="otpInput" maxlength="6" autofocus>
-                    </div>
-                    
-                    <div class="timer text-center mb-4" style="font-size: 0.9rem;">Time remaining: <span id="timer" class="badge rounded-pill bg-success" >01:00</span></div>
-                    
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-primary submit-button" type="submit" id="submitBtn">Verify Code</button>
-                        <button class="btn btn-secondary resend-button" type="button" id="resendBtn" disabled>Resend Code</button>
-                    </div>
-                </div>
-            </form>
-        </div>
+      <div class="row d-flex justify-content-center align-items-center">
+        <form
+          id="otpForm"
+          class="row d-flex justify-content-center align-items-center"
+        >
+          <div class="col-md-9 p-3">
+            <h5
+              class="text-center font-bold"
+              style="color: #4caf50; font-weight: 600"
+            >
+              Enter Verification Code
+            </h5>
+            <p class="text-center message mt-5" style="font-size: 0.9rem">
+              We have sent a verification code to your email
+            </p>
+
+            <div class="input-group mb-2">
+              <input
+                type="text"
+                class="form-control"
+                id="otpInput"
+                maxlength="6"
+                autofocus
+              />
+            </div>
+
+            <div class="timer text-center mb-4" style="font-size: 0.9rem">
+              Time remaining:
+              <span id="timer" class="badge rounded-pill bg-success"
+                >01:00</span
+              >
+            </div>
+
+            <div class="d-grid gap-2">
+              <button
+                class="btn btn-primary submit-button"
+                type="submit"
+                id="submitBtn"
+              >
+                Verify Code
+              </button>
+              <button
+                class="btn btn-secondary resend-button"
+                type="button"
+                id="resendBtn"
+                disabled
+              >
+                Resend Code
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const otpInput = document.getElementById('otpInput');
-            const submitBtn = document.getElementById('submitBtn');
-            const resendBtn = document.getElementById('resendBtn');
-            const timerDisplay = document.getElementById('timer');
-            const otpForm = document.getElementById('otpForm'); 
-            let timeLeft = 60;
-            let timerInterval;
+      document.addEventListener("DOMContentLoaded", function () {
+        const otpInput = document.getElementById("otpInput");
+        const submitBtn = document.getElementById("submitBtn");
+        const resendBtn = document.getElementById("resendBtn");
+        const timerDisplay = document.getElementById("timer");
+        const otpForm = document.getElementById("otpForm");
+        let timeLeft = 60;
+        let timerInterval;
 
-            // Start timer
-            function startTimer() {
-                timeLeft = 60;
-                resendBtn.disabled = true;
-                otpInput.disabled = false;
-                
-                timerInterval = setInterval(() => {
-                    timeLeft--;
-                    const minutes = Math.floor(timeLeft / 60);
-                    const seconds = timeLeft % 60;
-                    timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                    
-                    if (timeLeft <= 0) {
-                        clearInterval(timerInterval);
-                        resendBtn.disabled = false;
-                        otpInput.disabled = true;
-                        timerDisplay.textContent = "00:00";
-                    }
-                }, 1000);
+        // Start timer
+        function startTimer() {
+          timeLeft = 60;
+          resendBtn.disabled = true;
+          otpInput.disabled = false;
+
+          timerInterval = setInterval(() => {
+            timeLeft--;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes
+              .toString()
+              .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+
+            if (timeLeft <= 0) {
+              clearInterval(timerInterval);
+              resendBtn.disabled = false;
+              otpInput.disabled = true;
+              timerDisplay.textContent = "00:00";
             }
+          }, 1000);
+        }
 
-            // Initialize timer
-            startTimer();
+        // Initialize timer
+        startTimer();
 
-            // Handle input field navigation
-            otpInput.addEventListener('keypress', (e) => {
-                if (!/^\d$/.test(e.key)) {
-                    e.preventDefault();
-                }
-            });
+        // Handle input field navigation
+        otpInput.addEventListener("keypress", (e) => {
+          if (!/^\d$/.test(e.key)) {
+            e.preventDefault();
+          }
+        });
 
-            // Check if all inputs are filled
-            function checkComplete() {
-                const value = otpInput.value;
-                submitBtn.disabled = value.length !== 6;
-            }
+        // Check if all inputs are filled
+        function checkComplete() {
+          const value = otpInput.value;
+          submitBtn.disabled = value.length !== 6;
+        }
 
-            otpInput.addEventListener('input', checkComplete);
+        otpInput.addEventListener("input", checkComplete);
 
-            // Handle form submission
-            otpForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const otp = parseInt(otpInput.value);
-                console.log('validateOtpForm called and userOTP :', otp);
+        // Handle form submission
+        otpForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const otp = parseInt(otpInput.value);
+          console.log("validateOtpForm called and userOTP :", otp);
 
-                fetch('/verify-otp', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ otp })
-                }).then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    if(data.success){
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'success',
-                            title: 'OTP Verified Successfully',
-                            showConfirmButton: false,
-                            timer: 2000
-                        }).then(() => {
-                            window.location.href = '/';
-                        });
-                    } else {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'error',
-                            title: 'OTP Verification Failed',
-                            text: data.message,
-                            showConfirmButton: false,
-                            timer: 2000
-                        });
-                    }
-                })
-            });
-            // Handle resend
-            resendBtn.addEventListener('click', () => {
-                // Here you would typically trigger the OTP resend API
-                startTimer();
-                // Clear all inputs
-                otpInput.value = '';
-                otpInput.focus();
-                submitBtn.disabled = true;
-                
-                // Show resend message
-                const message = document.querySelector('.message');
-                message.textContent = 'New verification code sent!';
-                message.className = 'message success';
-                setTimeout(() => {
-                    message.textContent = 'We have sent a verification code to your email';
-                    message.className = 'message';
-                }, 3000);
-
-                fetch('/resend-otp', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }).then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    if(data.success){
-                        Swal.fire({
-                            title: 'Verification code sent successfully',
-                            icon: 'success',
-                            confirmButtonText: 'OK'
-                        });
-                        window.location.href = '/verify-otp'
-                    }
-                })
+          fetch("/verify-otp", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ otp }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log(data);
+              if (data.success) {
+                Swal.fire({
+                  toast: true,
+                  position: "top-end",
+                  icon: "success",
+                  title: "OTP Verified Successfully",
+                  showConfirmButton: false,
+                  timer: 2000,
+                }).then(() => {
+                  window.location.href = "/";
+                });
+              } else {
+                Swal.fire({
+                  toast: true,
+                  position: "top-end",
+                  icon: "error",
+                  title: "OTP Verification Failed",
+                  text: data.message,
+                  showConfirmButton: false,
+                  timer: 2000,
+                });
+              }
             });
         });
-    
+        // Handle resend
+        resendBtn.addEventListener("click", () => {
+          // Here you would typically trigger the OTP resend API
+          startTimer();
+          // Clear all inputs
+          otpInput.value = "";
+          otpInput.focus();
+          submitBtn.disabled = true;
+
+          // Show resend message
+          const message = document.querySelector(".message");
+          message.textContent = "New verification code sent!";
+          message.className = "message success";
+          setTimeout(() => {
+            message.textContent =
+              "We have sent a verification code to your email";
+            message.className = "message";
+          }, 3000);
+
+          fetch("/resend-otp", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log(data);
+              if (data.success) {
+                Swal.fire({
+                  title: "Verification code sent successfully",
+                  icon: "success",
+                  confirmButtonText: "OK",
+                });
+                window.location.href = "/verify-otp";
+              }
+            });
+        });
+      });
     </script>
-</body>
+  </body>
 </html>

@@ -5,14 +5,15 @@
         <style>
             .breadcrumb {
                 background-color: #f8f9fa;
+                font-weight: bold;
                 padding: 10px 15px;
                 border-radius: 5px;
-                margin-bottom: 20px;
             }
 
             .breadcrumb a {
                 text-decoration: none;
-                color: #007bff;
+                color: rgb(52, 161, 59);
+
             }
 
             .breadcrumb a:hover {
@@ -41,6 +42,7 @@
                 background-color: #007bff;
                 color: rgba(255, 255, 255, 0.751);
             }
+
             .badge {
                 font-size: 12px;
                 padding: 5px 8px;
@@ -55,6 +57,38 @@
                 justify-content: center;
             }
 
+            @media (max-width: 768px) {
+                .product-title {
+                    font-size: 20px;
+                    color: #032d0de0;
+                    font-weight: 500;
+                    margin: 10px 0 10px 0;
+                }
+
+                .product-price {
+                    font-size: 16px;
+                    color: #201d0ae0;
+                    font-weight: 700;
+                }
+
+                .product-grid{
+                    margin-left: 1px;
+                }
+
+                .product-item img {
+                    background-color: aliceblue;
+                    border: #fcfdf1 8px solid;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+                    border-radius: 10px;
+                    overflow: hidden;
+                }
+                .hero {
+                    padding-top: 1px;
+                }
+                
+
+
+            }
         </style>
     </head>
     <div class="hero">
@@ -62,10 +96,9 @@
             <div class="row justify-content-between margin-shift">
                 <div class="col-lg-5">
                     <div class="intro-excerpt">
-                        <h1>Shop</h1>
+                        <h1 class="d-md-flex" style="color: #f0e6d4; font-size: 50px; font-weight: 700">Shop</h1>
+                        <h1 class="d-none">Shop</h1>
                     </div>
-                </div>
-                <div class="col-lg-7">
                 </div>
             </div>
         </div>
@@ -88,8 +121,8 @@
                 <div class="container">
 
 
-                    <div class="row d-flex justify-content-between mb-4">
-                        <div class="col-4 d-flex">
+                    <div class="row d-flex justify-content-between m-0 mb-md-2">
+                        <div class="col-md-4 d-flex">
                             <select id="categorySelect" class="form-select mb-2" aria-label="Categories">
                                 <option value="" selected>All Categories</option>
                                 <% for(let i=0; i<category.length; i++) { %>
@@ -117,9 +150,9 @@
                                 <option value="above-15000">Above ₹15000</option>
                             </select>
                         </div>
-                        <div class="col-4 d-flex justify-content-end">
+                        <div class="col-6 d-flex justify-content-end">
                             <form action="/search" method="GET"
-                                class="search-form d-flex ms-2 gap-2 align-items-center">
+                                class="search-form d-flex ms-md-2 gap-2 align-items-center">
                                 <input type="text" name="query" placeholder="Search items..."
                                     class="search-input form-control" />
                                 <button type="submit" class="search-button btn btn-secondary btn-sm"><i
@@ -128,8 +161,6 @@
                         </div>
                     </div>
                 </div>
-
-                
 
                 <div id="loadingIndicator" class="text-center my-4" style="display: none;">
                     <div class="spinner-border text-primary" role="status">
@@ -140,35 +171,39 @@
                 <div id="errorMessage" class="alert alert-danger text-center" style="display: none;">
                     Failed to load products. Please try again later.
                 </div>
-                    <!-- Container to Render the Sorted Data -->
-                <div id="productList" class="product-grid row g-4">
+                <!-- Container to Render the Sorted Data -->
+                <div id="productList" class="product-grid row g-4 mt-0">
 
-                <!-- data -->
-                <% for(var i=0; i < product.length; i++) {%>
+                    <!-- data -->
+                    <% for(var i=0; i < product.length; i++) {%>
 
-                    <div class="col-12 col-md-4 col-lg-3 mb-5 position-relative">
-                        <a class="product-item rounded" href="#">
-                            <% if (product[i].productOffer > 0) { %>
-                                <div class="badge rounded-pill text-white d-flex gap-1" 
-                                    style="position: absolute; top: 10px; left: 10px; font-size: 12px; background-color: #f1b44c; padding: 2px 5px;">
-                                    <span class="mt-0 p-1"><%= product[i].productOffer %>% OFF</span>
-                                    <i class="fa-solid fa-tag mt-1"></i>
-                                </div>
-                            <% } %>
-                
-                            <img src="/uploads/product-images/<%=product[i].productImage[0]%>"
-                                class="img-fluid product-thumbnail rounded">
-                            <h3 class="product-title">
-                                <%=product[i].productName%>
-                            </h3>
-                            <strong class="product-price">₹ <%=product[i].salePrice%></strong>
-                        </a>
-                        <span class="wishlist-btn position-absolute top-0 end-0 m-2 bg-white text-white rounded-circle p-2" value="<%=product[i]._id%>" onclick="toggleWishlist('<%=product[i]._id%>')">🤍</span>
-                    </div>
-                <% } %>
-                
+                        <div class="col-12 col-md-4 col-lg-3 mb-2 position-relative">
+                            <a class="product-item rounded" href="#">
+                                <% if (product[i].productOffer> 0) { %>
+                                    <div class="badge rounded-pill text-white d-flex gap-1"
+                                        style="position: absolute; top: 10px; left: 10px; font-size: 12px; background-color: #f1b44c; padding: 2px 5px;">
+                                        <span class="mt-0 p-1">
+                                            <%= product[i].productOffer %>% OFF
+                                        </span>
+                                        <i class="fa-solid fa-tag mt-1"></i>
+                                    </div>
+                                <% } %>
+
+                                        <img src="/uploads/product-images/<%=product[i].productImage[0]%>"
+                                            class="img-fluid product-thumbnail rounded">
+                                        <h3 class="product-title">
+                                            <%=product[i].productName%>
+                                        </h3>
+                                        <strong class="product-price">₹ <%=product[i].salePrice%></strong>
+                            </a>
+                            <span
+                                class="wishlist-btn position-absolute top-0 end-0 m-2 bg-white text-white rounded-circle p-2"
+                                value="<%=product[i]._id%>" onclick="toggleWishlist('<%=product[i]._id%>')">🤍</span>
+                        </div>
+                        <% } %>
+
                 </div>
-                        
+
 
                 <div id="pagination" class="pagination justify-content-center mt-4"></div>
 
@@ -176,60 +211,60 @@
         </div>
     </div>
 
-    
+
     <script>
 
-async function toggleWishlist(productId) {
-    console.log(`Toggling wishlist for product ID: ${productId}`);
-    try {
-        const response = await fetch('/toggleWishlist', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                productId: productId,
-            }),
-        });
+        async function toggleWishlist(productId) {
+            console.log(`Toggling wishlist for product ID: ${productId}`);
+            try {
+                const response = await fetch('/toggleWishlist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        productId: productId,
+                    }),
+                });
 
-        const data = await response.json();
-        if (data.success) {
-            fetchFilteredData('', '', 'popularity', '', 1);
+                const data = await response.json();
+                if (data.success) {
+                    fetchFilteredData('', '', 'popularity', '', 1);
 
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'success',
-                title: data.message,
-                showConfirmButton: false,
-                timer: 2000,
-                timerProgressBar: true,
-            });
-        } else {
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'error',
-                title: data.message,
-                showConfirmButton: false,
-                timer: 2000,
-                timerProgressBar: true,
-            });
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true,
+                    });
+                } else {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true,
+                    });
+                }
+            } catch (error) {
+                console.log('Error:', error.message);
+
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'Error updating wishlist. Please try again later.',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true,
+                });
+            }
         }
-    } catch (error) {
-        console.log('Error:', error.message);
-
-        Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'error',
-            title: 'Error updating wishlist. Please try again later.',
-            showConfirmButton: false,
-            timer: 2000,
-            timerProgressBar: true,
-        });
-    }
-}
 
 
         // Debounce function to limit the rate of API calls
@@ -240,41 +275,41 @@ async function toggleWishlist(productId) {
                 debounceTimer = setTimeout(() => func.apply(this, args), delay);
             };
         }
-    
+
         // Event listeners for search, category filter, and sort selection
         document.querySelector('.search-input').addEventListener('input', debounce(function (e) {
             const query = e.target.value;
             console.log('Query:', query);
             fetchFilteredData(query, document.getElementById('categorySelect').value, document.getElementById('sortSelect').value, document.getElementById('price-filter').value, 1);
         }, 300));
-    
+
         document.getElementById('categorySelect').addEventListener('change', function () {
             const category = this.value;
             fetchFilteredData(document.querySelector('.search-input').value, category, document.getElementById('sortSelect').value, document.getElementById('price-filter').value, 1);
         });
-    
+
         document.getElementById('sortSelect').addEventListener('change', function () {
             const sortBy = this.value;
             fetchFilteredData(document.querySelector('.search-input').value, document.getElementById('categorySelect').value, sortBy, document.getElementById('price-filter').value, 1);
         });
-    
+
         document.getElementById('price-filter').addEventListener('change', function () {
             const priceRange = this.value;
             fetchFilteredData(document.querySelector('.search-input').value, document.getElementById('categorySelect').value, document.getElementById('sortSelect').value, priceRange, 1);
         });
-    
+
         // Fetch filtered data from the backend
         async function fetchFilteredData(query = '', category = '', sortBy = 'popularity', priceRange = '', page = 1) {
             showLoading(true);
             hideErrorMessage();
-    
+
             try {
                 const response = await fetch(`/searchAndFilter?query=${encodeURIComponent(query)}&category=${category}&sort=${sortBy}&priceRange=${priceRange}&page=${page}&limit=8`);
                 if (!response.ok) throw new Error('Failed to fetch data');
-    
+
                 const data = await response.json();
                 console.log('Total Items:', data.totalItems);
-                renderProducts(data.products,data.wishlistProducts);
+                renderProducts(data.products, data.wishlistProducts);
                 renderPagination(data.totalItems, page);
             } catch (error) {
                 console.error('Error fetching filtered data:', error.message);
@@ -283,34 +318,34 @@ async function toggleWishlist(productId) {
                 showLoading(false);
             }
         }
-    
+
         // Render the products on the page
         function renderProducts(products, wishlistProducts) {
-    console.log(products, 'products');
-    console.log(wishlistProducts, 'wishlistProducts');
+            console.log(products, 'products');
+            console.log(wishlistProducts, 'wishlistProducts');
 
-    // Extract product IDs if wishlistProducts is an array of objects
-    const wishlistProductIds = wishlistProducts.map(item => item.productId.toString());
+            // Extract product IDs if wishlistProducts is an array of objects
+            const wishlistProductIds = wishlistProducts.map(item => item.productId.toString());
 
-    const productList = document.getElementById('productList');
-    productList.innerHTML = ''; // Clear the existing products
+            const productList = document.getElementById('productList');
+            productList.innerHTML = ''; // Clear the existing products
 
-    products.forEach(product => {
-        const offerBadge = product.productOffer > 0 ? `
+            products.forEach(product => {
+                const offerBadge = product.productOffer > 0 ? `
             <div class="badge rounded-pill text-white d-flex gap-1" 
                 style="position: absolute; top: 10px; left: 10px; font-size: 12px; background-color: #f1b44c; padding: 2px 5px;">
                 <span class="mt-0 p-1">${product.productOffer}% OFF</span>
                 <i class="fa-solid fa-tag mt-1"></i>
             </div>` : '';
 
-        // Check if the product is in the wishlist
-        const isInWishlist = wishlistProductIds.includes(product._id.toString());
-        console.log(isInWishlist);
-        
+                // Check if the product is in the wishlist
+                const isInWishlist = wishlistProductIds.includes(product._id.toString());
+                console.log(isInWishlist);
 
-        const wishlistIcon = isInWishlist ? '❤️' : '🤍'; // Red heart if in wishlist, white heart otherwise
 
-        const productCard = `
+                const wishlistIcon = isInWishlist ? '❤️' : '🤍'; // Red heart if in wishlist, white heart otherwise
+
+                const productCard = `
             <div class="col-12 col-md-4 col-lg-3 mb-5 position-relative">
                 <a class="product-item rounded" href="/productDetail/${product._id}">
                     ${offerBadge}
@@ -325,13 +360,11 @@ async function toggleWishlist(productId) {
                     </span>
             </div>
         `;
-        productList.innerHTML += productCard;
-    });
-}
+                productList.innerHTML += productCard;
+            });
+        }
 
 
-
-    
         // Render pagination dynamically
         function renderPagination(totalItems, currentPage) {
             const pagination = document.getElementById('pagination');
@@ -352,23 +385,21 @@ async function toggleWishlist(productId) {
             }
         }
 
-    
-        
-    
+
         function showLoading(show) {
             document.getElementById('loadingIndicator').style.display = show ? 'block' : 'none';
         }
-    
+
         function showErrorMessage() {
             document.getElementById('errorMessage').style.display = 'block';
         }
-    
+
         function hideErrorMessage() {
             document.getElementById('errorMessage').style.display = 'none';
         }
-    
+
         // Initial load of products on page load
         fetchFilteredData('', '', 'popularity', '', 1);
     </script>
-    
+
     <%-include("../../views/partials/user/footer")%>

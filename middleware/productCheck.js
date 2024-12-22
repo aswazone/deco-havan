@@ -4,16 +4,18 @@ const Product = require('../models/productModel');
 const status = async (req, res, next) => {
     try {
         const { cartId } = req.query; // Assuming cartId is passed as a URL parameter
+        console.log(cartId,'in middle ware');
+        
     
         if (!cartId) {
-          return res.status(400).json({ message: 'Cart ID is required' });
+          return res.status(400).json({success:false, message: 'Cart ID is required' });
         }
     
         // Fetch the cart details
         const cart = await Cart.findById(cartId);
     
         if (!cart || !cart.items || cart.items.length === 0) {
-          return res.status(404).json({ message: 'Cart not found or is empty' });
+          return res.status(404).json({ success: false, message: 'Cart not found or is empty' });
         }
     
         // Extract all product IDs from the cart

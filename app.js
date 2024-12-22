@@ -10,11 +10,14 @@ const passport = require('./config/passport')
 const env = require('dotenv').config();
 const DB = require('./config/db');
 
+
 const MongoStore = require('connect-mongo')
 
 DB()
-
-app.use(bodyParser.json({ limit: '50mb' })); // Adjust the limit as needed
+app.use(bodyParser.json({
+  encoding: 'utf8',
+  limit: '50mb',
+})); // Adjust the limit as needed
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 app.use((err, req, res, next) => {
@@ -51,6 +54,7 @@ app.use((req,res,next)=>{
 app.set('view engine','ejs');
 app.set('views', [path.join(__dirname,'views/user'),path.join(__dirname,'views/admin')])
 app.use(express.static('public'))
+
 
 app.use('/',userRouter);
 app.use('/admin',adminRouter);
