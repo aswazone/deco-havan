@@ -216,13 +216,6 @@ const checkout = async (req, res) => {
     // const secretKey = "my-secret-key";
     try {
 
-        // const encryptedAmount = req.query.encAmount;
-        // console.log('Encrypted Amount:', encryptedAmount);
-
-        // const decryptedAmount = await CryptoJS.AES.decrypt(encryptedAmount, secretKey);
-        // const finalAmount = await decryptedAmount.toString(CryptoJS.enc.Utf8);
-        // console.log('Decrypted Amount:', finalAmount);
-
         const finalAmount = req.session.finalAmount
 
         const couponCode = req.query.code;
@@ -254,7 +247,7 @@ const checkout = async (req, res) => {
         console.log(total,discount,finalAmount,shipping,'total=------------------');
         
         // Fetch Saved Addresses
-        const addresses = await Address.find({ userId: req.session.user });
+        const addresses = await Address.find({ userId: req.session.user});
 
         res.render('cart-checkout', {
             cartItems,

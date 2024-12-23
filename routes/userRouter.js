@@ -65,7 +65,7 @@ router.post('/order', checkUserBlocked, cartController.placeOrder); // Place an 
 router.post('/order/retry-payment', checkUserBlocked, cartController.retryPayment); // Retry payment
 router.post('/order/confirm-order', checkUserBlocked, cartController.confirmOrder); // Confirm an order
 router.put('/order/:orderId/cancel', checkUserBlocked, profileController.cancelOrder); // Cancel an order
-router.get('/order/:orderId/details', checkUserBlocked, profileController.viewOrderDetails); // View order details
+router.get('/:orderId', checkUserBlocked, profileController.viewOrderDetails); // View order details
 router.post('/order/:id/request-return', checkUserBlocked, profileController.requestReturn); // Request return for an order
 router.get('/order/:id/confirmation', checkUserBlocked,cartController.confirmation);
 router.get('/order/:id/download-receipt', checkUserBlocked,cartController.downloadReceipt);

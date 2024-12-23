@@ -28,9 +28,6 @@ const addCoupon = async (req, res) => {
             if (minOrderValue < 0) {
                 return 'Minimum order value must be non-negative.';
             }
-            if(minOrderValue < 1000){
-                return 'Minimum order value must be greater than 1000';
-            }
             return null; // No errors
         }
 

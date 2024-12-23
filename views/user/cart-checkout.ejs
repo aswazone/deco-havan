@@ -818,7 +818,7 @@
 
             // Render saved addresses
             if (addressList[0].address.length > 0) {
-              addressList[0].address.forEach((address) => {
+              addressList[0].address.filter((address) => address.isDeleted === false).forEach((address) => {
                 const addressDiv = document.createElement("div");
                 addressDiv.classList.add("form-check", "mt-2", "alert", "alert-success", "p-2", "rounded", "d-flex", "gap-2", "align-items-start");
                 addressDiv.innerHTML = `

@@ -1,4 +1,11 @@
 <%- include("../../views/partials/admin/header") %>
+<style>
+    .error-message {
+        color: red;
+        font-size: 13px;
+        display: none;
+    }
+</style>
 <div class="container mt-4 p-4 ">
     
     <!-- Add New Coupon Form -->
@@ -11,6 +18,7 @@
         <div class="form-group">
             <label for="code">Coupon Code</label>
             <input type="text" class="form-control" id="code" name="code" value="<%=coupon.code%>" required>
+            <div class="error-message " id="code-error"></div>
         </div>
         <div class="form-group">
             <label for="discountType">Discount Type</label>
@@ -18,26 +26,32 @@
                 <option value="Flat">Flat</option>
                 <option value="Percentage">Percentage</option>
             </select>
+            <div class="error-message " id="discountType-error"></div>
         </div>
         <div class="form-group">
             <label for="discountValue">Discount Value</label>
             <input type="number" class="form-control" id="discountValue" name="discountValue" value="<%=coupon.discountValue%>" required>
+            <div class="error-message " id="discountValue-error"></div>
         </div>
         <div class="form-group">
             <label for="minOrderValue">Minimum Order Value</label>
             <input type="number" class="form-control" value="<%=coupon.minOrderValue%>" id="minOrderValue" name="minOrderValue">
+            <div class="error-message " id="minOrderValue-error"></div>
         </div>
         <div class="form-group">
             <label for="maxDiscount">Maximum Discount (for Percentage)</label>
             <input type="number" class="form-control" value="<%=coupon.maxDiscount%>" id="maxDiscount" name="maxDiscount">
+            <div class="error-message " id="maxDiscount-error"></div>
         </div>
         <div class="form-group">
             <label for="expiryDate">Expiry Date</label>
             <input type="date" class="form-control" value="<%=new Date(coupon.expiryDate).toISOString().split('T')[0]%>" id="expiryDate" name="expiryDate" required>
+            <div class="error-message " id="expiryDate-error"></div>
         </div>
         <div class="form-group">
             <label for="usageLimit">Usage Limit</label>
             <input type="number" class="form-control" value="<%=coupon.usageLimit%>" id="usageLimit" name="usageLimit">
+            <div class="error-message " id="usageLimit-error"></div>
         </div>
     </form>
 
@@ -45,8 +59,41 @@
 </div>
 
 <script>
+
+    document.getElementById('code').addEventListener('change', () => {
+        validateCouponForm();
+    });
+
+    document.getElementById('discountType').addEventListener('change', () => {
+        validateCouponForm();
+    });
+
+    document.getElementById('discountValue').addEventListener('change', () => {
+        validateCouponForm();
+    });
+
+    document.getElementById('minOrderValue').addEventListener('change', () => {
+        validateCouponForm();
+    });
+
+    document.getElementById('maxDiscount').addEventListener('change', () => {
+        validateCouponForm();
+    });
+
+    document.getElementById('expiryDate').addEventListener('change', () => {
+        validateCouponForm();
+    });
+
+    document.getElementById('usageLimit').addEventListener('change', () => {
+        validateCouponForm();
+    });
+    
     document.getElementById('editCouponForm').addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        if (!validateCouponForm()) {
+            return;
+        }
 
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
@@ -67,7 +114,7 @@
                 showConfirmButton: false,
                 timer: 2000
             }).then(() => {
-                location.reload();
+                location.href = '/admin/list-coupon';
             });
         } else {
             Swal.fire({
@@ -81,6 +128,7 @@
             });
         }
     });
+
 </script>
 
 <%- include("../../views/partials/admin/footer") %>

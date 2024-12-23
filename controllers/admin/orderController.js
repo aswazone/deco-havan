@@ -1,6 +1,7 @@
 const Order = require('../../models/orderModel');
 const Product = require('../../models/productModel');
 const Address = require('../../models/addressModel');
+const Wallet = require('../../models/walletModel');
 
 const loadOrder = async (req,res) => {
     try {
@@ -93,25 +94,65 @@ const returnStatus = async (req, res) => {
     const { orderId } = req.params;
     const { status } = req.body;
 
-
+    
     try {
+
+        console.log(orderId, status,'----------------------');
+        
         const order = await Order.findById(orderId);
         if (!order) return res.status(404).json({ success: false, message: 'Order not found' });
 
-        // Update the return status and status of the order
+        const handleRefundToWallet = async () => {
+            const wallet = await Wallet.findOne({ userId: order.userId });
+            if (!wallet) {
+                const newWallet = new Wallet({
+                    userId: order.userId,
+                    balance: order.finalAmount,
+                    transactions: [
+                        {
+                            transactionId: `REF-${Date.now()}`,
+                            type: 'Credit',
+                            amount: order.finalAmount,
+                            description: `Refund for Returning order ${order.orderId}`,
+                        },
+                    ],
+                });
+                await newWallet.save();
+                order.paymentStatus = 'Refunded';
+                await order.save();
+                console.log('Wallet created for user and updated:', newWallet);
+            } else {
+                const refundAmount = order.finalAmount;
+                wallet.balance += refundAmount;
+                wallet.transactions.push({
+                    transactionId: `REF-${Date.now()}`,
+                    type: 'Credit',
+                    amount: refundAmount,
+                    description: `Refund for Returning order ${order.orderId}`,
+                });
+                await wallet.save();
+                order.paymentStatus = 'Refunded';
+                await order.save();
+                console.log('Wallet updated for user:', wallet);
+            }
+        };
+
         order.status = status === 'approved' ? 'Returned' : 'Delivered';
         order.returnReason = status === 'approved' ? 'Return approved' : 'Return rejected';
         await order.save();
 
-        res.json({ success: true });
+        if (order.paymentMethod === 'razorpay' && order.paymentStatus === 'Completed' ||
+            order.paymentMethod === 'wallet' && order.paymentStatus === 'Completed' ||
+            order.paymentMethod === 'cod' && order.paymentStatus === 'Completed') {
+            await handleRefundToWallet();
+        }
+
+        res.json({ success: true, message: 'Order Returned successfully.' });
     } catch (error) {
-        console.error(error.message,'return status error');
+        console.error(error.message, 'return status error');
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 }
-
-
-
 
 
 module.exports = {

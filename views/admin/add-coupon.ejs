@@ -1,4 +1,11 @@
 <%- include("../../views/partials/admin/header") %>
+<style>
+    .error-message {
+        color: red;
+        font-size: 13px;
+        display: none;
+    }
+</style>
 <div class="container mt-4 p-4 ">
     
     <!-- Add New Coupon Form -->
@@ -13,6 +20,7 @@
         <div class="form-group">
             <label for="code">Coupon Code</label>
             <input type="text" class="form-control" id="code" name="code" required>
+            <div class="error-message" id="code-error"></div>
         </div>
         <div class="form-group">
             <label for="discountType">Discount Type</label>
@@ -20,26 +28,32 @@
                 <option value="Flat">Flat</option>
                 <option value="Percentage">Percentage</option>
             </select>
+            <div class="error-message" id="discountType-error"></div>
         </div>
         <div class="form-group">
             <label for="discountValue">Discount Value</label>
             <input type="number" class="form-control" id="discountValue" name="discountValue" required>
+            <div class="error-message" id="discountValue-error"></div>
         </div>
         <div class="form-group">
             <label for="minOrderValue">Minimum Order Value</label>
-            <input type="number" class="form-control" id="minOrderValue" name="minOrderValue">
+            <input type="number" class="form-control" id="minOrderValue" name="minOrderValue" required>
+            <div class="error-message" id="minOrderValue-error"></div>
         </div>
         <div class="form-group">
             <label for="maxDiscount">Maximum Discount (for Percentage)</label>
-            <input type="number" class="form-control" id="maxDiscount" name="maxDiscount">
+            <input type="number" class="form-control" id="maxDiscount" name="maxDiscount" required>
+            <div class="error-message" id="maxDiscount-error"></div>
         </div>
         <div class="form-group">
             <label for="expiryDate">Expiry Date</label>
             <input type="date" class="form-control" id="expiryDate" name="expiryDate" required>
+            <div class="error-message" id="expiryDate-error"></div>
         </div>
         <div class="form-group">
             <label for="usageLimit">Usage Limit</label>
             <input type="number" class="form-control" id="usageLimit" name="usageLimit">
+            <div class="error-message" id="usageLimit-error"></div>
         </div>
     </form>
 
@@ -47,6 +61,34 @@
 </div>
 
 <script>
+
+    document.getElementById('code').addEventListener('change', () => {
+        validateCouponForm();
+    });
+
+    document.getElementById('discountType').addEventListener('change', () => {
+        validateCouponForm();
+    });
+
+    document.getElementById('discountValue').addEventListener('change', () => {
+        validateCouponForm();
+    });
+
+    document.getElementById('minOrderValue').addEventListener('change', () => {
+        validateCouponForm();
+    });
+
+    document.getElementById('maxDiscount').addEventListener('change', () => {
+        validateCouponForm();
+    });
+
+    document.getElementById('expiryDate').addEventListener('change', () => {
+        validateCouponForm();
+    });
+
+    document.getElementById('usageLimit').addEventListener('change', () => {
+        validateCouponForm();
+    });
 
 
     const currentDate = new Date().toISOString().split('T')[0];
@@ -56,6 +98,10 @@
 
     document.getElementById('addCouponForm').addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        if (!validateCouponForm()) {
+            return;
+        }
 
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
@@ -90,6 +136,124 @@
             });
         }
     });
+
+    function validateCouponForm() {
+        clearErrorMessages();
+        const code = document.getElementById('code').value;
+        const discountType = document.getElementById('discountType').value;
+        const discountValue = document.getElementById('discountValue').value;
+        const minOrderValue = document.getElementById('minOrderValue').value;
+        const maxDiscount = document.getElementById('maxDiscount').value;
+        const expiryDate = document.getElementById('expiryDate').value;
+        const usageLimit = document.getElementById('usageLimit').value;
+
+        let isValid = true;
+
+        const couponValidationRules = {
+            code: {
+                required: true,
+                minLength: 5,
+                pattern: /^[a-zA-Z0-9]+$/,
+                message: 'Please enter a valid coupon code. (Minimum 5 characters, only alphanumeric characters allowed)'
+            },
+            discountType: {
+                required: true,
+                allowedValues: ['Flat', 'Percentage'],
+                message: 'Please select a valid discount type. (Allowed values: Flat, Percentage)'
+            },
+            discountValue: {
+                required: true,
+                pattern: /^\d+(\.\d{1,2})?$/,
+                min: discountType === 'Percentage' ? 0.01 : 1,
+                message: ''
+            },
+            minOrderValue: {
+                required: false,
+                pattern: /^\d+(\.\d{1,2})?$/,
+                min: 10000,
+                message: 'Please enter a valid minimum order value. (Minimum 10000)'
+            },
+            maxDiscount: {
+                required: false,
+                pattern: /^\d+(\.\d{1,2})?$/,
+                min: 0.01,
+                max: 70,
+                message: 'Please enter a valid maximum discount. (Allowed range 0.01 to 70, only for percentage)'
+            },
+            expiryDate: {
+                required: true,
+                validate: (value) => {
+                    const selectedDate = new Date(value);
+                    const today = new Date();
+                    return selectedDate > today;
+                },
+                message: 'Expiry date must be in the future.'
+            },
+            usageLimit: {
+                required: true,
+                pattern: /^\d+$/,
+                min: 1,
+                max: 500,
+                message: 'Please enter a valid usage limit. (Allowed range 1 to 500)'
+            }
+        };
+
+        if (discountType === 'Percentage') {
+            couponValidationRules.discountValue.max = 70;
+            couponValidationRules.discountValue.message = 'Please enter a valid discount value. (Minimum 0.01, Maximum 70, up to 2 decimal places)';
+        } else {
+            couponValidationRules.discountValue.message = 'Please enter a valid discount value. (Minimum 1, up to 2 decimal places)';
+        }
+
+        
+
+        Object.keys(couponValidationRules).forEach((fieldName) => {
+            const field = document.getElementById(fieldName);
+            const rule = couponValidationRules[fieldName];
+
+            if (rule.required && !field.value) {
+                displayErrorMessage(`${fieldName}-error`, rule.message);
+                isValid = false;
+            }
+
+            if (field.value && rule.pattern && !rule.pattern.test(field.value)) {
+                displayErrorMessage(`${fieldName}-error`, rule.message);
+                isValid = false;
+            }
+
+            if (field.value && rule.min && parseFloat(field.value) < rule.min) {
+                displayErrorMessage(`${fieldName}-error`, rule.message);
+                isValid = false;
+            }
+
+            if (field.value && rule.max && parseFloat(field.value) > rule.max) {
+                displayErrorMessage(`${fieldName}-error`, rule.message);
+                isValid = false;
+            }
+
+            if (field.value && rule.validate && !rule.validate(field.value)) {
+                displayErrorMessage(`${fieldName}-error`, rule.message);
+                isValid = false;
+            }
+        });
+
+        return isValid;
+    }
+
+
+    function displayErrorMessage(elementId, message) {
+        var errorElement = document.getElementById(elementId);
+        errorElement.innerText = message;
+        errorElement.style.display = "block";
+    }
+
+    function clearErrorMessages() {
+        const errorElements = document.getElementsByClassName('error-message');
+        Array.from(errorElements).forEach(element => {
+            element.innerText = '';
+            element.style.display = "none";
+        });
+    }
 </script>
 
 <%- include("../../views/partials/admin/footer") %>

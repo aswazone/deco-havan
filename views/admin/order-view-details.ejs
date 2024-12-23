@@ -136,7 +136,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" <% if (order.status === 'Delivered' || ( order.paymentMethod === 'razorpay' && order.paymentStatus === 'Pending')) { %> disabled <% } %>>Save Changes</button>
+                        <button type="submit" class="btn btn-primary" <%= (order.status === 'Delivered' || order.paymentMethod === 'razorpay' && order.paymentStatus === 'Pending' || order.status === 'Return Request' || order.status === 'Returned' || order.status === 'Cancelled') ? 'disabled' : '' %>>Save Changes</button>
                     </div>
                 </form>
             </div>
@@ -163,7 +163,14 @@
             if (result.success) {
                 console.log(result.success,status);
                 
-                alert(`Return request ${status === 'approved' ? 'approved' : 'rejected'}`);
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: `Return request ${status === 'approved' ? 'approved' : 'rejected'}`,
+                    showConfirmButton: false,
+                    timer: 2000
+                });
                 location.reload(); // Reload the page to reflect changes
             } else {
                 alert('Failed to update return request. Please try again.');
