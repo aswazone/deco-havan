@@ -17,36 +17,43 @@ const pageNotFound = async (req, res) => {
     }
 }
 
+const NodeCache = require("node-cache");
+const cache = new NodeCache({ stdTTL: 600 }); // Cache expires in 10 minutes
+
 const loadHomepage = async (req, res) => {
-    console.log('home');
-
     try {
-        console.log(req.session.user);
-        const today = new Date().toISOString();
-        const findBanner = await Banner.find({
-            startDate: { $lt: new Date(today) }, endDate: { $gt: new Date(today) },
-        })
-        if(req.session.user){
-            
-            const userData = await User.findById(req.session.user);
-            const product = await Product.find()
-            console.log(product,'home try');
-            
+        const today = new Date();
 
-            return res.render('home',{user: userData, product: product ,banner: findBanner || []})
-        }else{
-            const product = await Product.find()
-            console.log(product,'homeelse');
-            return res.render('home',{product: product, banner: findBanner || []})
+        let findBanner = cache.get("banners");
+        if (!findBanner) {
+            findBanner = await Banner.find({
+                startDate: { $lt: today },
+                endDate: { $gt: today },
+            });
+            cache.set("banners", findBanner);
         }
 
+        let product = cache.get("products");
+        if (!product) {
+            product = await Product.find();
+            cache.set("products", product);
+        }
 
+        let userData = null;
+        if (req.session.user) {
+            userData = await User.findById(req.session.user);
+        }
+
+        return res.render("home", {
+            user: userData,
+            product: product,
+            banner: findBanner || [],
+        });
     } catch (error) {
-        console.log(error.message, 'home page not found!!');
-        res.status(500).send('server error');
-
+        console.error("Error loading homepage:", error.message);
+        res.status(500).send("Server error");
     }
-}
+};
 const loadSignup = async (req, res) => {
     try {
         console.log(req.session.user, 'loadsignup');

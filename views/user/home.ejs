@@ -203,10 +203,11 @@
         <p><a href="/shop" class="btn btn-explore">Explore</a></p>
       </div>
       <!-- End Column 1 -->
+      <% if (product && product.length > 0) { %>
       <% for (var i=product.length - 1; i>= product.length - 3; i--) { %>
 
       <div class="col-12 col-md-4 col-lg-3 mb-0 mb-md-0">
-        <a class="product-item" href="/productDetail/<%=product[i]._id%>">
+        <a class="product-item" href="/productDetail/<%=product[i]?._id%>">
           <img
             src="uploads/product-images/<%= product[i].productImage[0] %>"
             alt="Image"
@@ -219,6 +220,13 @@
           >
 
         </a>
+      </div>
+      <% } %>
+      <% } else { %>
+      <div class="col-12 col-md-4 col-lg-3 mb-0 mb-md-0">
+        <div class="product-item">
+          <h3 class="product-title text-left">No product found</h3>
+        </div>
       </div>
       <% } %>
     </div>
@@ -344,7 +352,7 @@
           <li>Free shipping on orders over ₹ 10000</li>
           <li>Easy returns and exchanges</li>
         </ul>
-        <p><a herf="#" class="btn">Explore</a></p>
+        <p><a href="#" class="btn">Explore</a></p>
       </div>
     </div>
   </div>
