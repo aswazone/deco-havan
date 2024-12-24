@@ -633,15 +633,15 @@
                             </div>
                             <div class="mb-3">
                                 <label for="pincode" class="form-label">Pincode</label>
-                                <input type="number" id="pincode" class="form-control" placeholder="Pincode" name="pincode" required>
+                                <input type="number" id="pincode" class="form-control"  placeholder="Pincode" name="pincode"  maxlength="6" oninput="if(this.value.length > 6) this.value = this.value.slice(0, 6)" required>
                             </div>
                             <div class="mb-3">
                                 <label for="phone" class="form-label">Phone</label>
-                                <input type="number" id="phone" class="form-control" placeholder="Phone" name="phone" required>
+                                <input type="text" id="phone" class="form-control" placeholder="Phone" name="phone" maxlength="10" required>
                             </div>
                             <div class="mb-3">
                                 <label for="altPhone" class="form-label">Alternate Phone</label>
-                                <input type="number" id="altPhone" class="form-control" placeholder="Alternate Phone" name="altPhone">
+                                <input type="text" id="altPhone" class="form-control" placeholder="Alternate Phone" maxlength="10" name="altPhone">
                             </div>
                             <button type="submit" class="btn btn-success">Submit</button>
                         </form>
@@ -674,15 +674,15 @@
                             </div>
                             <div class="mb-3">
                                 <label for="pincode" class="form-label">Pincode</label>
-                                <input type="number" id="pincode" class="form-control" placeholder="Pincode" name="pincode" required>
+                                <input type="number" id="pincode" class="form-control" placeholder="Pincode" name="pincode" maxlength="6" oninput="if(this.value.length > 6) this.value = this.value.slice(0, 6)" required>
                             </div>
                             <div class="mb-3">
                                 <label for="phone" class="form-label">Phone</label>
-                                <input type="text" id="phone" class="form-control" placeholder="Phone" name="phone" required>
+                                <input type="text" id="phone" class="form-control" placeholder="Phone" name="phone" maxlength="10" required>
                             </div>
                             <div class="mb-3">
                                 <label for="altPhone" class="form-label">Alternate Phone</label>
-                                <input type="text" id="altPhone" class="form-control" placeholder="Alternate Phone" name="altPhone">
+                                <input type="text" id="altPhone" class="form-control" placeholder="Alternate Phone" maxlength="10" name="altPhone">
                             </div>
                             <button type="submit" class="btn btn-success">Submit</button>
                         </form>
