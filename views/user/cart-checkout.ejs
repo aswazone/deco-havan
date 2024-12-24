@@ -152,6 +152,7 @@
                           class="form-control"
                           placeholder="Pincode"
                           name="pincode"
+                          oninput="if(this.value.length > 6) this.value = this.value.slice(0, 6)"
                           required
                         />
                       </div>
@@ -163,6 +164,7 @@
                           class="form-control"
                           placeholder="Phone"
                           name="phone"
+                          maxlength="10"
                           required
                         />
                       </div>
@@ -176,6 +178,7 @@
                           class="form-control"
                           placeholder="Alternate Phone"
                           name="altPhone"
+                          maxlength="10"
                         />
                       </div>
                     </div>
