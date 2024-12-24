@@ -414,7 +414,7 @@
                                     
                                     <p class="mb-0"><strong>Product:</strong> 
                                         <% order.orderItems.forEach(item => { %>
-                                            <span><%= item.product.productName %></span><% if(order.orderItems.indexOf(item) !== order.orderItems.length - 1) { %>, <% } %>
+                                            <span><%= item.product?.productName %></span><% if(order.orderItems.indexOf(item) !== order.orderItems.length - 1) { %>, <% } %>
                                         <% }) %>
                                     </p>
                                     <p class="mb-0"><strong>Date:</strong> <%= new Date(order.invoiceDate).toLocaleDateString() %></p>

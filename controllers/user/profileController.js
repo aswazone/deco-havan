@@ -67,7 +67,8 @@ const profile = async (req, res) => {
             .populate({
                 path: 'orderItems.product',  // Populate the product field inside orderItems
                 model: 'Products'              // Specify the model (optional if 'Product' is already referenced in schema)
-            });
+            })
+            .exec();
         
         let wallet = await Wallet.findOne({ userId: req.session.user });
         if (!wallet) {
