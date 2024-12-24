@@ -464,10 +464,6 @@
                                             onclick="location.href='/<%= order.orderId %>'">
                                         <i class="bi bi-eye"></i> View
                                     </button>
-                                    <button class="btn btn-sm btn-view me-1" 
-                                            onclick="location.href='/<%= order.orderId %>'">
-                                        <i class="bi bi-eye"></i> View
-                                    </button>
                                     <% if (order.status === 'Delivered') { %>
                                         <button id="return-order-<%= order.orderId %>" 
                                                 class="btn btn-sm btn-warning me-1" 
