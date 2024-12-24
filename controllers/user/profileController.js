@@ -203,7 +203,7 @@ const addAddress = async (req,res)=>{
         const userData = await User.findById(userId);
         const {addressType,name,phone,pincode,city,state,landMark,altPhone} = req.body;
         console.log(userId,req.body);
-        
+
         const userAddress = await Address.findOne({userId:userData._id});
         console.log(userAddress);
 
